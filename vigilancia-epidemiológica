@@ -1,0 +1,2211 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MÓDULO DE VIGILANCIA EPIDEMIOLÓGICA INTEGRAL - VEA</title>
+    <!-- Tailwind CSS para maquetación fluida y profesional -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js para visualización científica de curvas y pirámides clínicas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS (XLSX) para procesamiento masivo de datos Excel/CSV -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.5s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+        .theme-transition { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
+
+    <!-- Modal de Notificaciones Clínicas -->
+    <div id="modalNotificacion" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl max-w-sm w-full mx-4 shadow-2xl text-center transform scale-95 transition-all duration-300">
+            <div id="modalIconContainer" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border">
+                <svg id="modalIconExito" class="h-8 w-8 text-emerald-400 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <svg id="modalIconError" class="h-8 w-8 text-rose-400 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h3 id="modalTitle" class="text-lg font-black text-white mb-2">Notificación</h3>
+            <p id="modalDesc" class="text-xs text-slate-400 mb-6 leading-relaxed hidden"></p>
+            <button id="modalBtn" onclick="cerrarModalNotificacion()" class="w-full font-bold py-2.5 px-4 rounded-xl text-xs transition-all shadow-lg">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
+    <!-- Cabecera Institucional del Hospital -->
+    <header class="border-b border-slate-800 bg-slate-950/95 backdrop-blur-md px-4 md:px-6 py-4 sticky top-0 z-40 shadow-xl">
+        <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div id="headerIconContainer" class="p-4 bg-red-650 rounded-xl text-white shadow-lg theme-transition">
+                    <svg class="h-6 w-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex flex-col">
+                        <h1 id="txtHospitalBranding" class="text-xl md:text-2xl font-black text-red-500 uppercase tracking-wide leading-none transition-colors duration-300">Hospital de Ventanilla</h1>
+                        <h2 class="text-xs md:text-sm font-bold text-slate-200 tracking-wide uppercase mt-1">Módulo de Vigilancia Epidemiológica Integral - VEA</h2>
+                        <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                            <span id="badgeVersion" class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-0.5 rounded-full font-bold transition-colors duration-300">PROYECTO V3.8</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selectores de Evento Epidemiológico -->
+            <div class="bg-slate-900 p-1.5 rounded-xl border border-slate-800 flex gap-1 w-full sm:w-auto">
+                <button onclick="cambiarEventoSurveillance('EDAs')" id="btnEventEDAs" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-white bg-red-650 shadow-md">EDAs</button>
+                <button onclick="cambiarEventoSurveillance('IRAs')" id="btnEventIRAs" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-slate-400 hover:text-slate-200">IRAs</button>
+                <button onclick="cambiarEventoSurveillance('Febriles')" id="btnEventFebriles" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-slate-400 hover:text-slate-200">Febriles</button>
+            </div>
+
+            <!-- Ingesta de Datos (ETL) -->
+            <div class="flex flex-col sm:flex-row items-center gap-3 bg-slate-900/80 border border-slate-800 p-2 rounded-xl w-full xl:w-auto">
+                <button onclick="document.getElementById('excelFileInput').click()" class="w-full sm:w-auto bg-indigo-650 hover:bg-indigo-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2" title="Ingesta masiva y validación del repositorio epidemiológico">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M9 11l3 3L22 4" /></svg>
+                    Ingestar Repositorio VEA
+                </button>
+                <input type="file" id="excelFileInput" accept=".xlsx, .csv" class="hidden" onchange="procesarArchivoExcel(event)">
+                <div class="flex flex-col min-w-[130px] w-full sm:w-auto">
+                    <div class="flex justify-between items-center text-[9px] mb-0.5 font-bold">
+                        <span id="textoProgreso" class="text-slate-400 font-bold flex items-center gap-1.5"><span id="ledEstadoSincronizacion" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>Modo Demo</span>
+                        <span id="porcentajeProgreso" class="text-slate-500 font-extrabold"></span>
+                    </div>
+                    <div id="progresoSincronizacion" class="w-full bg-slate-800 rounded-full h-1 overflow-hidden"><div id="barraProgreso" class="bg-indigo-500 h-full w-0 transition-all duration-300"></div></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 flex-grow w-full">
+        <!-- Banda de Alerta y Semáforo Clínico -->
+        <div id="bandaSituacionCompleta" class="w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg bg-slate-900 border-slate-800 text-slate-400 transition-all duration-300">
+            <div class="flex items-center gap-3">
+                <div class="relative flex h-3 w-3 shrink-0">
+                    <span id="ledParpadeantePing" class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-slate-500"></span>
+                    <span id="ledParpadeanteStatic" class="relative inline-flex rounded-full h-3 w-3 bg-slate-500"></span>
+                </div>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest block opacity-70">Nivel de Vigilancia y Alerta Temprana</span>
+                    <h2 id="bandaTextSituacion" class="text-base md:text-lg font-black tracking-tight text-white uppercase font-bold">Evaluando Alertas...</h2>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-xl border border-white/10 max-w-xl">
+                <svg class="h-4 w-4 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <p id="bandaRecomendacion" class="text-xs text-slate-300 font-medium font-bold">Cargando sugerencias de salud pública...</p>
+            </div>
+        </div>
+
+        <!-- Filtros de Segmentación Independientes (Fieles a image_08c2c7.png) -->
+        <div class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <svg class="h-5 w-5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                    <div>
+                        <h2 class="text-base font-bold text-slate-200 tracking-wide">Filtros de Segmentación</h2>
+                        <p class="text-xs text-slate-400">Seleccione los parámetros para el recálculo automático del brote epidemiológico.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-start md:self-auto shrink-0">
+                    <button id="btnLimpiarFiltros" onclick="restablecerFiltros()" class="flex items-center gap-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-850 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all transition-colors duration-200" title="Borrar filtros y recalcular indicadores">
+                        <svg class="h-3.5 w-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Limpiar Filtros
+                    </button>
+                    <span id="badgeRegistros" class="text-xs bg-[#0b1329] text-slate-300 px-3.5 py-1.5 rounded-lg font-bold border border-slate-800">Cargando registros...</span>
+                </div>
+            </div>
+
+            <!-- Grid de Filtros de 3 Columnas Simétricas (image_08c2c7.png) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Dropdown de Años de Análisis / Comparar -->
+                <div class="relative">
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5">Años de Análisis / Comparar</label>
+                    <button id="btnDropdownAnios" onclick="toggleAniosDropdown()" class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 flex justify-between items-center transition-all font-semibold">
+                        <span id="txtAniosSeleccionados" class="truncate">Ninguno</span>
+                        <svg class="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div id="dropdownAniosContent" class="absolute left-0 right-0 mt-1.5 bg-slate-950 border border-slate-800 rounded-xl shadow-2xl z-50 p-2.5 hidden max-h-52 overflow-y-auto divide-y divide-slate-900">
+                        <!-- Checkboxes dinámicos cargados por JS -->
+                    </div>
+                </div>
+
+                <!-- Selector de Mes de Análisis -->
+                <div class="relative">
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5">Mes de Análisis</label>
+                    <select id="selectMes" onchange="filtrarYActualizarDashboard()" class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 appearance-none cursor-pointer font-semibold" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2394a3b8\' stroke-width=\'2.5\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M19 9l-7 7-7-7\'/></svg>'); background-position: right 0.75rem center; background-size: 1rem; background-repeat: no-repeat;">
+                        <option value="Todos">Todos los Meses</option>
+                        <option value="Ene">Enero</option>
+                        <option value="Feb">Febrero</option>
+                        <option value="Mar">Marzo</option>
+                        <option value="Abr">Abril</option>
+                        <option value="May">Mayo</option>
+                        <option value="Jun">Junio</option>
+                        <option value="Jul">Julio</option>
+                        <option value="Ago">Agosto</option>
+                        <option value="Sep">Septiembre</option>
+                        <option value="Oct">Octubre</option>
+                        <option value="Nov">Noviembre</option>
+                        <option value="Dic">Diciembre</option>
+                    </select>
+                </div>
+
+                <!-- Selector de Semana Epidemiológica -->
+                <div class="relative">
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5">Semana Epidemiológica</label>
+                    <select id="selectSemana" onchange="actualizarCalculosYGraficos()" class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 appearance-none cursor-pointer font-semibold" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2394a3b8\' stroke-width=\'2.5\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M19 9l-7 7-7-7\'/></svg>'); background-position: right 0.75rem center; background-size: 1rem; background-repeat: no-repeat;">
+                        <option value="Todas">Todas las Semanas</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestañas de Navegación -->
+        <div class="flex border-b border-slate-800 gap-2 overflow-x-auto">
+            <button onclick="cambiarTab('dashboard')" id="btnTabDashboard" class="px-5 py-3 text-sm font-bold border-b-2 border-red-500 text-red-400 whitespace-nowrap">Dashboard de Vigilancia</button>
+            <button onclick="cambiarTab('canal')" id="btnTabCanal" class="px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Canal Endémico Científico</button>
+            <button onclick="cambiarTab('tabla')" id="btnTabTabla" class="px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Matriz de Reporte S.E.</button>
+            <button onclick="cambiarTab('hospitalizados')" id="btnTabHospitalizados" class="px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap font-bold">Vigilancia de Hospitalizados</button>
+        </div>
+
+        <!-- TAB 1: DASHBOARD -->
+        <div id="contentDashboard" class="space-y-6">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+                
+                <!-- KPI 1: TOTAL HISTÓRICO INGRESADOS -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">TOTAL HISTORICO INGRESADOS</p>
+                            <h3 id="kpiHistoricoGeneral" class="text-2xl font-black text-white mt-1">0</h3>
+                        </div>
+                        <div class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="kpiDetalleHistorico" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">
+                        Casos consolidados totales.
+                    </div>
+                </div>
+
+                <!-- KPI 2: CASOS TOTALES DEL AÑO -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p id="kpiLabelCasesAno" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">CASOS TOTALES DEL AÑO</p>
+                            <h3 id="kpiCasesAno" class="text-2xl font-black text-white mt-1">0</h3>
+                        </div>
+                        <div class="p-2 bg-rose-500/10 rounded-lg text-rose-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="kpiDetalleAño" class="mt-4 text-[10px] text-red-400 leading-relaxed font-bold">
+                        Línea base anual acumulada.
+                    </div>
+                </div>
+
+                <!-- KPI 3: CASO POR MES -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p id="kpiLabelCasosMes" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">CASO POR MES</p>
+                            <h3 id="kpiCasosPorMes" class="text-2xl font-black text-white mt-1">0</h3>
+                        </div>
+                        <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-450">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="kpiDetalleCasosMes" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">
+                        Casos del período mensual.
+                    </div>
+                </div>
+
+                <!-- KPI 4: CASO POR S.E. -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p id="kpiLabelSE" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">CASO POR S.E</p>
+                            <h3 id="kpiCasosPorSE" class="text-2xl font-black text-white mt-1">0</h3>
+                        </div>
+                        <div class="p-2 bg-teal-500/10 rounded-lg text-teal-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="kpiDetalleCasosSE" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">
+                        Casos de la semana epi activa.
+                    </div>
+                </div>
+
+                <!-- KPI 5: TASA INCIDENCIA x 10K -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">TASA INCIDENCIA x 10K</p>
+                            <h3 id="kpiTasaIncidencia" class="text-2xl font-black text-white mt-1">0.00</h3>
+                        </div>
+                        <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="kpiDetalleTasa" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">
+                        Ataque por 10K habitantes.
+                    </div>
+                </div>
+
+                <!-- KPI 6: GRUPO ETARIO PREVALENTE -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">GRUPO ETARIO PREVALENTE</p>
+                            <h3 id="kpiGrupoPrevalente" class="text-lg font-black text-white mt-1">--</h3>
+                        </div>
+                        <div class="p-2 bg-amber-500/10 rounded-lg text-amber-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="kpiGrupoDetalle" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">
+                        Máxima prevalencia etaria.
+                    </div>
+                </div>
+
+                <!-- KPI 7: HOSPITALIZADOS DEL AÑO -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p id="kpiLabelHospAno" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">HOSPITALIZADOS DEL AÑO</p>
+                            <h3 id="kpiHospAno" class="text-2xl font-black text-white mt-1">0</h3>
+                        </div>
+                        <div class="p-2 bg-pink-500/10 rounded-lg text-pink-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="kpiDetalleHospAno" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">
+                        Pacientes internados en el período.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Tablas de Diarreas -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- DIARREA ACUOSA -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                            <h3 class="text-sm font-bold text-slate-200">Diarrea Acuosa (100% de Casos en Base)</h3>
+                        </div>
+                        <button id="btnToggleAcuosaTable" onclick="toggleAcuosaTable()" class="p-1.5 hover:bg-slate-900 rounded-lg text-slate-400 hover:text-slate-200 border border-slate-850">
+                            <svg id="arrowAcuosaTable" class="h-5 w-5 transform -rotate-90 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                    </div>
+                    
+                    <div id="tableAcuosaContent" class="hidden overflow-x-auto border border-slate-800/80 rounded-xl bg-slate-900/40 transition-all">
+                        <table class="w-full min-w-[500px] text-center text-xs">
+                            <thead>
+                                <tr class="bg-slate-950/80 border-b border-slate-800 text-slate-300 font-bold">
+                                    <th class="p-3 border-r border-slate-800/60 font-black text-indigo-400 text-left pl-4 w-[120px]">S.E. / Período</th>
+                                    <th class="p-3">&lt; 1 a</th><th class="p-3">1-4 a</th><th class="p-3">5-11 a</th>
+                                    <th class="p-3">12-17 a</th><th class="p-3">18-29 a</th><th class="p-3">30-59 a</th>
+                                    <th class="p-3">&gt;60 a</th><th class="p-3 bg-slate-900/60 font-bold text-slate-200">TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="acuosaTablaBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- DIARREA DISENTÉRICA -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                            <h3 class="text-sm font-bold text-slate-200 font-bold">Diarrea Disentérica (Casos Clínicos Estimados)</h3>
+                        </div>
+                        <button id="btnToggleDisentericaTable" onclick="toggleDisentericaTable()" class="p-1.5 hover:bg-slate-900 rounded-lg text-slate-400 hover:text-slate-200 border border-slate-850">
+                            <svg id="arrowDisentericaTable" class="h-5 w-5 transform -rotate-90 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                    </div>
+                    
+                    <div id="tableDisentericaContent" class="hidden overflow-x-auto border border-slate-800/80 rounded-xl bg-slate-900/40 transition-all">
+                        <table class="w-full min-w-[500px] text-center text-xs">
+                            <thead>
+                                <tr class="bg-slate-950/80 border-b border-slate-800 text-slate-300 font-bold">
+                                    <th class="p-3 border-r border-slate-800/60 font-black text-indigo-400 text-left pl-4 w-[120px]">S.E. / Período</th>
+                                    <th class="p-3">&lt; 1 a</th><th class="p-3">1-4 a</th><th class="p-3">5-11 a</th>
+                                    <th class="p-3">12-17 a</th><th class="p-3">18-29 a</th><th class="p-3">30-59 a</th>
+                                    <th class="p-3">&gt;60 a</th><th class="p-3 bg-slate-900/60 font-bold text-slate-200">TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="disentericaTablaBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos del Dashboard -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <!-- Comparativo Mensual -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute top-0 left-0 right-0 h-1 flex">
+                        <div class="bg-blue-600 w-1/2"></div>
+                        <div class="bg-red-650 w-1/2"></div>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 mt-2">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200">Comparativo Mensual Interanual</h3>
+                            <p class="text-[10px] text-slate-400">Curva de distribución mensual de episodios</p>
+                        </div>
+                        <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
+                            <div class="font-extrabold text-slate-100 uppercase tracking-wide">AÑO ACTIVO: <span id="txtMesualGraficoAño" class="text-red-500 font-black">--</span></div>
+                            <div class="font-extrabold text-slate-400 uppercase tracking-wide mt-0.5">TOTAL: <span id="txtMensualGraficoTotal" class="text-red-500 font-black">0</span></div>
+                        </div>
+                    </div>
+                    <div class="h-56 w-full relative mb-4">
+                        <canvas id="chartComparativoMensualMinsa"></canvas>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-800/80 rounded-lg">
+                        <table class="w-full text-center text-[10px] bg-slate-900/30 min-w-[500px]">
+                            <thead>
+                                <tr class="bg-slate-950/80 border-b border-slate-800 text-slate-400 font-bold">
+                                    <th class="p-1.5 text-left pl-3 font-extrabold">Año</th>
+                                    <th class="p-1.5 font-extrabold">Ene</th>
+                                    <th class="p-1.5 font-extrabold">Feb</th>
+                                    <th class="p-1.5 font-extrabold">Mar</th>
+                                    <th class="p-1.5 font-extrabold">Abr</th>
+                                    <th class="p-1.5 font-extrabold">May</th>
+                                    <th class="p-1.5 font-extrabold">Jun</th>
+                                    <th class="p-1.5 font-extrabold">Jul</th>
+                                    <th class="p-1.5 font-extrabold">Ago</th>
+                                    <th class="p-1.5 font-extrabold">Set</th>
+                                    <th class="p-1.5 font-extrabold">Oct</th>
+                                    <th class="p-1.5 font-extrabold">Nov</th>
+                                    <th class="p-1.5 font-extrabold">Dic</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyTablaMensualComparativa" class="text-slate-300 divide-y divide-slate-800/40"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Línea de Tiempo Semanal -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute top-0 left-0 right-0 h-1 flex">
+                        <div class="bg-blue-600 w-1/2"></div>
+                        <div class="bg-red-650 w-1/2"></div>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 mt-2">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200">Línea de Tiempo de Vigilancia Semanal Multianual</h3>
+                            <p class="text-[10px] text-slate-400 font-semibold">Tendencia continua secuencial de los últimos años con líneas de corte</p>
+                        </div>
+                        <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
+                            <div class="font-extrabold text-slate-100 uppercase tracking-wide">AÑO ACTIVO: <span id="txtSemanalGraficoAño" class="text-red-500 font-black">--</span></div>
+                            <div class="font-extrabold text-slate-400 uppercase tracking-wide mt-0.5">TOTAL: <span id="txtSemanalGraficoTotal" class="text-red-500 font-black">0</span></div>
+                        </div>
+                    </div>
+                    <div class="h-64 w-full relative mb-1">
+                        <canvas id="chartSemanalMultianualMinsa"></canvas>
+                    </div>
+                    <div id="timelineSemanasDivisiones" class="flex justify-between text-[9px] text-slate-500 font-extrabold px-1 border-t border-slate-800/50 pt-2 font-bold">
+                        <!-- Divisiones de año generadas dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CANAL ENDÉMICO -->
+        <div id="contentCanal" class="hidden bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+            <h3 id="canalTitleText" class="text-lg font-bold text-slate-100">Canal Endémico Científico</h3>
+            <div class="h-96 w-full relative"><canvas id="chartCanalEndemico"></canvas></div>
+        </div>
+
+        <!-- TAB 3: MATRIZ DE REPORTE -->
+        <div id="contentTabla" class="hidden bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-850">
+                <h3 class="text-base font-bold text-slate-200">Reporte Desglosado por Semana Epidemiológica</h3>
+                <button onclick="exportarDataACSV()" class="text-xs bg-slate-800 text-red-400 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1 font-semibold">Descargar Dataset Procesado</button>
+            </div>
+            <div class="overflow-x-auto max-h-[480px] overflow-y-auto border border-slate-800 rounded-xl">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-900 text-slate-400 font-bold sticky top-0 border-b border-slate-800 z-10">
+                        <tr><th class="p-3">S.E.</th><th class="p-3">Mes</th><th class="p-3 text-right">Casos Registrados (TO ACU)</th><th class="p-3 text-right text-red-400">Hospitalizados (TO HOS)</th><th class="p-3 text-right">Menores 1 Año</th><th class="p-3 text-right">Infantes 1-4 Años</th><th class="p-3 text-right">Adulto Mayor (60+)</th><th class="p-3 text-center font-bold">Nivel del Canal</th></tr>
+                    </thead>
+                    <tbody id="tablaCuerpoReporte" class="divide-y divide-slate-800/60"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: MONITOREO DE HOSPITALIZADOS -->
+        <div id="contentHospitalizados" class="hidden space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- KPI H1: TOTAL ADMISIONES HOSPITALARIAS -->
+                <div class="bg-slate-950 border border-slate-855 rounded-xl p-5 shadow-xl flex flex-col justify-between hover:scale-[1.01] transition-all duration-200 relative overflow-hidden group min-h-[140px]">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">TOTAL ADMISIONES HOSP.</p>
+                            <h3 id="kpiHospTotalPeriodo" class="text-3xl font-black text-white mt-1.5 leading-none">0</h3>
+                        </div>
+                        <div class="p-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg shadow-inner">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-[10px] text-slate-500 font-bold leading-normal">
+                        Casos internados consolidados.
+                    </div>
+                </div>
+
+                <!-- KPI H2: TASA DE SEVERIDAD CLÍNICA -->
+                <div class="bg-slate-950 border border-slate-855 rounded-xl p-5 shadow-xl flex flex-col justify-between hover:scale-[1.01] transition-all duration-200 relative overflow-hidden group min-h-[140px]">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">TASA DE SEVERIDAD CLÍNICA</p>
+                            <h3 id="kpiHospTasaSeveridad" class="text-3xl font-black text-white mt-1.5 leading-none">0.0%</h3>
+                        </div>
+                        <div class="p-2 bg-amber-500/10 border border-amber-500/20 text-amber-455 rounded-lg shadow-inner">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-[10px] text-amber-500/90 font-extrabold leading-normal">
+                        % de ingresos sobre casos totales.
+                    </div>
+                </div>
+
+                <!-- KPI H3: PICO ADMISIÓN EN S.E. -->
+                <div class="bg-slate-950 border border-slate-855 rounded-xl p-5 shadow-xl flex flex-col justify-between hover:scale-[1.01] transition-all duration-200 relative overflow-hidden group min-h-[140px]">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">PICO DE ADMISIÓN (S.E.)</p>
+                            <h3 id="kpiHospMaxSemana" class="text-xl md:text-2xl font-black text-white mt-1.5 leading-none">--</h3>
+                        </div>
+                        <div class="p-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg shadow-inner">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-[10px] text-slate-500 font-bold leading-normal">
+                        Demanda máxima detectada.
+                    </div>
+                </div>
+
+                <!-- KPI H4: GRUPO ETARIO PREVALENTE EN HOSPITALIZADOS -->
+                <div class="bg-slate-950 border border-slate-855 rounded-xl p-5 shadow-xl flex flex-col justify-between hover:scale-[1.01] transition-all duration-200 relative overflow-hidden group min-h-[140px]">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider font-bold">GRUPO ETARIO PREVALENTE</p>
+                            <h3 id="kpiHospGrupoPrevalente" class="text-3xl font-black text-white mt-1.5 leading-none">--</h3>
+                        </div>
+                        <div class="p-2 bg-pink-500/10 border border-pink-500/20 text-pink-400 rounded-lg shadow-inner">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="kpiHospGrupoDetalle" class="mt-4 text-[10px] text-pink-400/90 font-extrabold leading-normal">
+                        Prevalencia de internamiento clínico.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- DISTRIBUCIÓN POR CURSO DE VIDA / GRUPO DE EDAD (HOSPITALIZADOS) -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-sm font-bold text-slate-200">Distribución por Curso de Vida de Hospitalizados (MINSA)</h3>
+                    </div>
+                    <button id="btnToggleHospMinsaTable" onclick="toggleHospMinsaTable()" class="p-1.5 hover:bg-slate-900 rounded-lg text-slate-400 hover:text-slate-200 border border-slate-850">
+                        <svg id="arrowHospMinsaTable" class="h-5 w-5 transform -rotate-90 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                </div>
+                
+                <div id="tableHospMinsaContent" class="hidden overflow-x-auto border border-slate-800/80 rounded-xl bg-slate-900/40 transition-all">
+                    <table class="w-full min-w-[800px] text-center text-xs">
+                        <thead>
+                            <tr class="bg-slate-950/80 border-b border-slate-800 text-slate-300 font-bold">
+                                <th class="p-3 border-r border-slate-800/60 font-black text-indigo-400 text-left pl-4 w-[200px]">S.E. / Período</th>
+                                <th class="p-3">&lt; 1 a</th><th class="p-3">1-4 a</th><th class="p-3">5-11 a</th>
+                                <th class="p-3">12-17 a</th><th class="p-3">18-29 a</th><th class="p-3">30-59 a</th>
+                                <th class="p-3">&gt;60 a</th><th class="p-3 bg-slate-900/60 font-bold text-slate-200">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hospMinsaTablaBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- GRÁFICOS EXCLUSIVOS DE HOSPITALIZADOS -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <!-- Comparativo Mensual Hospitalizados -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute top-0 left-0 right-0 h-1 flex">
+                        <div class="bg-blue-600 w-1/2"></div>
+                        <div class="bg-red-650 w-1/2"></div>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 mt-2">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200">Comparativo Mensual Interanual de Hospitalizaciones</h3>
+                            <p class="text-[10px] text-slate-400">Curva de distribución mensual de admisiones (TO_HOS)</p>
+                        </div>
+                        <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
+                            <div class="font-extrabold text-slate-100 uppercase tracking-wide">AÑO ACTIVO: <span id="txtHospMensualAño" class="text-red-500 font-black">--</span></div>
+                            <div class="font-extrabold text-slate-400 uppercase tracking-wide mt-0.5">TOTAL: <span id="txtHospMensualTotal" class="text-red-500 font-black">0</span></div>
+                        </div>
+                    </div>
+                    <div class="h-64 w-full relative mb-4">
+                        <canvas id="chartHospComparativoMensual"></canvas>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-800/80 rounded-lg">
+                        <table class="w-full text-center text-[10px] bg-slate-900/30 min-w-[500px]">
+                            <thead>
+                                <tr class="bg-slate-950/80 border-b border-slate-800 text-slate-400 font-bold">
+                                    <th class="p-1.5 text-left pl-3 font-extrabold">Año</th>
+                                    <th class="p-1.5 font-extrabold">Ene</th>
+                                    <th class="p-1.5 font-extrabold">Feb</th>
+                                    <th class="p-1.5 font-extrabold">Mar</th>
+                                    <th class="p-1.5 font-extrabold">Abr</th>
+                                    <th class="p-1.5 font-extrabold">May</th>
+                                    <th class="p-1.5 font-extrabold">Jun</th>
+                                    <th class="p-1.5 font-extrabold">Jul</th>
+                                    <th class="p-1.5 font-extrabold">Ago</th>
+                                    <th class="p-1.5 font-extrabold">Set</th>
+                                    <th class="p-1.5 font-extrabold">Oct</th>
+                                    <th class="p-1.5 font-extrabold">Nov</th>
+                                    <th class="p-1.5 font-extrabold">Dic</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyTablaHospMensual" class="text-slate-300 divide-y divide-slate-800/40"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Línea de Tiempo Hospitalizados -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute top-0 left-0 right-0 h-1 flex">
+                        <div class="bg-blue-600 w-1/2"></div>
+                        <div class="bg-red-650 w-1/2"></div>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 mt-2">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200">Línea de Tiempo Semanal Multianual de Hospitalizaciones</h3>
+                            <p class="text-[10px] text-slate-400 font-semibold">Tendencia continua secuencial de internamientos clínicos (TO_HOS) de los últimos años</p>
+                        </div>
+                        <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
+                            <div class="font-extrabold text-slate-100 uppercase tracking-wide">AÑO ACTIVO: <span id="txtHospSemanalAño" class="text-red-500 font-black">--</span></div>
+                            <div class="font-extrabold text-slate-400 uppercase tracking-wide mt-0.5">TOTAL: <span id="txtHospSemanalTotal" class="text-red-500 font-black">0</span></div>
+                        </div>
+                    </div>
+                    <div class="h-64 w-full relative mb-1">
+                        <canvas id="chartHospSemanalMultianual"></canvas>
+                    </div>
+                    <div id="hospTimelineDivisiones" class="flex justify-between text-[9px] text-slate-500 font-extrabold px-1 border-t border-slate-800/50 pt-2 font-bold">
+                        <!-- Divisiones de año de hospitalización generadas dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <button id="btnScrollToTop" onclick="scrollToTop()" class="fixed bottom-6 right-6 p-3 bg-red-650 text-white rounded-full shadow-2xl opacity-0 translate-y-10 pointer-events-none transition-all duration-300 hover:scale-110 z-50">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+    </button>
+
+    <script>
+        // Simulación de datos estacionales estables sin errores
+        function generarDataEstacional(ano, totalCasosSugerido, tipoEvento) {
+            const records = [];
+            const maxSemanas = (ano === 2026) ? 22 : 52;
+            
+            let factores = Array(53).fill(1.0);
+            for(let s = 1; s <= 52; s++) {
+                if (tipoEvento === 'EDAs') {
+                    factores[s] = (s <= 12 || s >= 45) ? (1.3 + Math.sin(s * 0.5) * 0.2) : (0.7 + Math.sin(s * 0.5) * 0.1);
+                } else if (tipoEvento === 'IRAs') {
+                    factores[s] = (s >= 20 && s <= 35) ? (1.4 + Math.sin(s * 0.4) * 0.2) : (0.6 + Math.sin(s * 0.4) * 0.1);
+                } else {
+                    factores[s] = 1.0 + Math.sin(s * 0.2) * 0.3;
+                }
+            }
+            
+            let sumFactores = 0;
+            for (let s = 1; s <= maxSemanas; s++) {
+                sumFactores += factores[s];
+            }
+            
+            const semanasMeses = [
+                {limite: 4, mes: "Ene"}, {limite: 8, mes: "Feb"}, {limite: 13, mes: "Mar"},
+                {limite: 17, mes: "Abr"}, {limite: 21, mes: "May"}, {limite: 26, mes: "Jun"},
+                {limite: 30, mes: "Jul"}, {limite: 35, mes: "Ago"}, {limite: 39, mes: "Sep"},
+                {limite: 44, mes: "Oct"}, {limite: 48, mes: "Nov"}, {limite: 52, mes: "Dic"}
+            ];
+            
+            function getMesDeSemana(s) {
+                for (let pair of semanasMeses) {
+                    if (s <= pair.limite) return pair.mes;
+                }
+                return "Dic";
+            }
+            
+            let casosSemanales = [];
+            for (let s = 1; s <= maxSemanas; s++) {
+                let proporcion = factores[s] / sumFactores;
+                let val = Math.round(totalCasosSugerido * proporcion);
+                casosSemanales.push(val);
+            }
+            
+            for (let s = 1; s <= maxSemanas; s++) {
+                let casos = casosSemanales[s - 1] || 5;
+                if (casos < 2) casos = 2;
+                
+                let m1 = Math.round(casos * 0.20);
+                let m1_4 = Math.round(casos * 0.25);
+                let m5_11 = Math.round(casos * 0.15);
+                let m12_17 = Math.round(casos * 0.10);
+                let m18_29 = Math.round(casos * 0.12);
+                let m30_59 = Math.round(casos * 0.10);
+                let m60 = casos - (m1 + m1_4 + m5_11 + m12_17 + m18_29 + m30_59);
+                if (m60 < 0) m60 = 0;
+                
+                let tasaHosp = 0.02 + (Math.sin(s) * 0.015); 
+                let hosp = Math.round(casos * tasaHosp);
+                if (hosp < 0) hosp = 0;
+                
+                records.push({
+                    ANO: ano,
+                    SEMANA: s,
+                    MES: getMesDeSemana(s),
+                    CASOS: casos,
+                    M_1: m1,
+                    M_1_4: m1_4,
+                    M_5_11: m5_11,
+                    M_12_17: m12_17,
+                    M_18_29: m18_29,
+                    M_30_59: m30_59,
+                    M_60: m60,
+                    TO_HOS: hosp
+                });
+            }
+            
+            return records;
+        }
+
+        const databaseActiva = {
+            EDAs: [
+                ...generarDataEstacional(2024, 3012, 'EDAs'), 
+                ...generarDataEstacional(2025, 2214, 'EDAs'), 
+                ...generarDataEstacional(2026, 1251, 'EDAs')  
+            ],
+            IRAs: [
+                ...generarDataEstacional(2024, 4500, 'IRAs'),
+                ...generarDataEstacional(2025, 3800, 'IRAs'),
+                ...generarDataEstacional(2026, 2100, 'IRAs')
+            ],
+            Febriles: [
+                ...generarDataEstacional(2024, 1800, 'Febriles'),
+                ...generarDataEstacional(2025, 1600, 'Febriles'),
+                ...generarDataEstacional(2026, 900, 'Febriles')
+            ]
+        };
+
+        // Estado global
+        let selectedEvent = "EDAs";
+        let tabActiva = "dashboard";
+        let acuosaTableCollapsed = true;
+        let disentericaTableCollapsed = true;
+        let hospMinsaTableCollapsed = true;
+        let lastFilterStateActive = false;
+        
+        // Configuración unificada de Años a Comparar
+        let aniosSeleccionadosComparativa = [];
+
+        // Instancias de Chart.js
+        let chartCanalInstance = null;
+        let chartComparativoMensualMinsaInstance = null;
+        let chartSemanalMultianualMinsaInstance = null;
+        let chartHospComparativoMensualInstance = null;
+        let chartHospSemanalMultianualInstance = null;
+
+        const TEMAS_EVENTO = {
+            EDAs: { primario: '#ef4444' },
+            IRAs: { primario: '#3b82f6' },
+            Febriles: { primario: '#f59e0b' }
+        };
+
+        const logsSincronizacion = {
+            EDAs: { cargada: true, registros: 6477, cabeceraEncontrada: "Establecida de forma nativa" },
+            IRAs: { cargada: false, registros: 0, cabeceraEncontrada: "Ninguna" },
+            Febriles: { cargada: false, registros: 0, cabeceraEncontrada: "Ninguna" }
+        };
+
+        const redDividerPlugin = {
+            id: 'redDividerPlugin',
+            afterDraw: (chart, args, options) => {
+                const { ctx, chartArea: { top, bottom }, scales: { x } } = chart;
+                if (!options || !options.indexes) return;
+                ctx.save();
+                ctx.strokeStyle = '#ff0000';
+                ctx.lineWidth = 2.5;
+                options.indexes.forEach(index => {
+                    const xPos = x.getPixelForValue(index);
+                    if (xPos >= chart.chartArea.left && xPos <= chart.chartArea.right) {
+                        ctx.beginPath();
+                        ctx.moveTo(xPos, top);
+                        ctx.lineTo(xPos, bottom);
+                        ctx.stroke();
+                    }
+                });
+                ctx.restore();
+            }
+        };
+        Chart.register(redDividerPlugin);
+
+        // --- SOLUCIÓN DE INICIALIZACIÓN DE FILTROS ---
+        function inicializarAniosPorDefecto() {
+            const dataActivaDeEvento = databaseActiva[selectedEvent] || [];
+            const todosLosAnios = [...new Set(dataActivaDeEvento.map(d => d.ANO))].sort((a,b) => a - b);
+            aniosSeleccionadosComparativa = [...todosLosAnios];
+        }
+
+        // --- MANEJADORES COLLAPSIBLES ---
+        function toggleAcuosaTable() { acuosaTableCollapsed = !acuosaTableCollapsed; syncAcuosaTableState(); }
+        function syncAcuosaTableState() {
+            const tableContent = document.getElementById('tableAcuosaContent');
+            const arrow = document.getElementById('arrowAcuosaTable');
+            if (!tableContent || !arrow) return;
+            if (acuosaTableCollapsed) { tableContent.classList.add('hidden'); arrow.classList.add('-rotate-90'); }
+            else { tableContent.classList.remove('hidden'); arrow.classList.remove('-rotate-90'); }
+        }
+
+        function toggleDisentericaTable() { disentericaTableCollapsed = !disentericaTableCollapsed; syncDisentericaTableState(); }
+        function syncDisentericaTableState() {
+            const tableContent = document.getElementById('tableDisentericaContent');
+            const arrow = document.getElementById('arrowDisentericaTable');
+            if (!tableContent || !arrow) return;
+            if (disentericaTableCollapsed) { tableContent.classList.add('hidden'); arrow.classList.add('-rotate-90'); }
+            else { tableContent.classList.remove('hidden'); arrow.classList.remove('-rotate-90'); }
+        }
+
+        function toggleHospMinsaTable() { hospMinsaTableCollapsed = !hospMinsaTableCollapsed; syncHospMinsaTableState(); }
+        function syncHospMinsaTableState() {
+            const tableContent = document.getElementById('tableHospMinsaContent');
+            const arrow = document.getElementById('arrowHospMinsaTable');
+            if (!tableContent || !arrow) return;
+            if (hospMinsaTableCollapsed) { tableContent.classList.add('hidden'); arrow.classList.add('-rotate-90'); }
+            else { tableContent.classList.remove('hidden'); arrow.classList.remove('-rotate-90'); }
+        }
+
+        // Modal y Notificaciones
+        function mostrarModalNotificacion(titulo, mensaje, tipo = 'exito') {
+            const modal = document.getElementById('modalNotificacion');
+            const iconContainer = document.getElementById('modalIconContainer');
+            const iconExito = document.getElementById('modalIconExito');
+            const iconError = document.getElementById('modalIconError');
+            const titleEl = document.getElementById('modalTitle');
+            const descEl = document.getElementById('modalDesc');
+            const btnEl = document.getElementById('modalBtn');
+            if (!modal) return;
+            if (tipo === 'exito') {
+                iconContainer.className = "w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/20 animate-bounce";
+                iconExito.classList.remove('hidden'); iconError.classList.add('hidden');
+                titleEl.textContent = titulo;
+                btnEl.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all shadow-lg";
+            } else {
+                iconContainer.className = "w-16 h-16 bg-rose-500/10 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20";
+                iconExito.classList.add('hidden'); iconError.classList.remove('hidden');
+                titleEl.textContent = titulo;
+                btnEl.className = "w-full bg-rose-650 hover:bg-rose-550 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all shadow-lg";
+            }
+            if (mensaje) { descEl.innerHTML = mensaje; descEl.classList.remove('hidden'); } else { descEl.classList.add('hidden'); }
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 50);
+        }
+
+        function cerrarModalNotificacion() {
+            const modal = document.getElementById('modalNotificacion');
+            if (!modal) return;
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // Auxiliares de parsing
+        function normalizeTexto(txt) {
+            if (!txt) return "";
+            return txt.toString().toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+        }
+
+        function limpiarYParsearEntero(val) {
+            if (val === undefined || val === null || val === "") return 0;
+            let limpio = val.toString().replace(/[^0-9\-]/g, '');
+            let p = parseInt(limpio, 10);
+            return isNaN(p) ? 0 : p;
+        }
+
+        function getValByCandidatos(row, candidatos) {
+            const normRowKeys = {};
+            for (let key in row) { normRowKeys[normalizeTexto(key)] = row[key]; }
+            for (let cand of candidatos) {
+                const normCand = normalizeTexto(cand);
+                if (normRowKeys[normCand] !== undefined) return normRowKeys[normCand];
+            }
+            for (let key in row) {
+                const normKey = normalizeTexto(key);
+                for (let cand of candidatos) {
+                    const normCand = normalizeTexto(cand);
+                    if (normCand.length >= 3 && (normKey.includes(normCand) || normCand.includes(normKey))) {
+                        return row[key];
+                    }
+                }
+            }
+            if (candidatos.includes("tohos")) {
+                for (let key in row) {
+                    const normKey = normalizeTexto(key);
+                    if (normKey.includes("hos") || normKey.includes("hosp") || normKey.includes("hospital")) {
+                        return row[key];
+                    }
+                }
+            }
+            return "";
+        }
+
+        function getNumericValByCandidatos(row, candidatos) {
+            return limpiarYParsearEntero(getValByCandidatos(row, candidatos));
+        }
+
+        function obtenerAnioDeRegistro(r) {
+            let val = getValByCandidatos(r, ["ano", "anio", "year", "ingano", "ing_ano", "ing_año", "ano_epi", "anoepi", "anio_epi", "anioepi"]);
+            return limpiarYParsearEntero(val);
+        }
+
+        function obtenerMesDeRegistro(r) {
+            return getValByCandidatos(r, ["mes", "meses", "mesepi", "ingmes", "ing_mes"]);
+        }
+
+        // --- CÁLCULO CIENTÍFICO DE CANAL ENDÉMICO ---
+        function calcularUmbralesCanalEndemico(semana, añoAnalizado) {
+            const dataActivaDeEvento = databaseActiva[selectedEvent];
+            const casosAñosPrevios = dataActivaDeEvento
+                .filter(item => item.ANO < añoAnalizado && item.SEMANA === semana)
+                .map(item => item.CASOS)
+                .sort((a, b) => a - b);
+
+            if (casosAñosPrevios.length >= 2) {
+                const q1Idx = Math.floor(casosAñosPrevios.length * 0.25);
+                const q2Idx = Math.floor(casosAñosPrevios.length * 0.50);
+                const q3Idx = Math.floor(casosAñosPrevios.length * 0.75);
+                return {
+                    Q1_Exito: casosAñosPrevios[q1Idx] || 10,
+                    Q2_Seguridad: casosAñosPrevios[q2Idx] || 25,
+                    Q3_Alerta: casosAñosPrevios[q3Idx] || 40
+                };
+            }
+            
+            let baseProporcional = 45;
+            if (selectedEvent === 'IRAs') baseProporcional = 110;
+            if (selectedEvent === 'Febriles') baseProporcional = 30;
+            const factorEstacional = (semana <= 12 || semana >= 45) ? 1.3 : 0.8;
+            const finalBase = baseProporcional * factorEstacional;
+            return {
+                Q1_Exito: Math.round(finalBase * 0.7),
+                Q2_Seguridad: Math.round(finalBase * 1.0),
+                Q3_Alerta: Math.round(finalBase * 1.35)
+            };
+        }
+
+        // CÁLCULO DINÁMICO DEL AÑO PRINCIPAL: se basa en el año más reciente de los comparados, 
+        // o en su defecto el año más reciente de la base de datos activa.
+        function obtenerAnioPrincipalActivo() {
+            if (aniosSeleccionadosComparativa && aniosSeleccionadosComparativa.length > 0) {
+                return Math.max(...aniosSeleccionadosComparativa);
+            }
+            return null; // Devuelve null si no hay ninguno marcado para disparar el estado de Cero Seguro
+        }
+
+        function actualizarSemanasDisponibles() {
+            const selectSemana = document.getElementById('selectSemana');
+            const añoSeleccionado = obtenerAnioPrincipalActivo();
+            if (!selectSemana) return;
+            if (!añoSeleccionado) {
+                selectSemana.innerHTML = '<option value="Todas">Todas las Semanas</option>';
+                selectSemana.value = "Todas";
+                return;
+            }
+            const mesSeleccionado = document.getElementById('selectMes').value;
+            const dataActivaDeEvento = databaseActiva[selectedEvent];
+            const valorPrevio = selectSemana.value;
+
+            let registrosFiltrados = dataActivaDeEvento.filter(item => item.ANO === añoSeleccionado);
+            if (mesSeleccionado !== "Todos") {
+                registrosFiltrados = registrosFiltrados.filter(item => item.MES.toLowerCase().startsWith(mesSeleccionado.toLowerCase().slice(0,3)));
+            }
+            const semanasUnicas = [...new Set(registrosFiltrados.map(item => item.SEMANA))].sort((a, b) => a - b);
+            selectSemana.innerHTML = '<option value="Todas">Todas las Semanas</option>';
+            semanasUnicas.forEach(wk => {
+                const opt = document.createElement('option');
+                opt.value = wk;
+                opt.textContent = "S.E. " + wk;
+                selectSemana.appendChild(opt);
+            });
+            if (semanasUnicas.includes(parseInt(valorPrevio))) { selectSemana.value = valorPrevio; } else { selectSemana.value = "Todas"; }
+        }
+
+        // --- MANEJADORES DE FILTROS COMPARATIVOS POR CHECKBOX ---
+        function toggleAniosDropdown() {
+            const dropdown = document.getElementById('dropdownAniosContent');
+            if (dropdown) dropdown.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('dropdownAniosContent');
+            const btn = document.getElementById('btnDropdownAnios');
+            if (dropdown && btn && !btn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        function renderDropdownAnios() {
+            const container = document.getElementById('dropdownAniosContent');
+            if (!container) return;
+            const dataActivaDeEvento = databaseActiva[selectedEvent];
+            const todosLosAnios = [...new Set(dataActivaDeEvento.map(d => d.ANO))].sort((a,b) => b - a);
+            
+            container.innerHTML = '';
+            todosLosAnios.forEach(anio => {
+                const isChecked = aniosSeleccionadosComparativa.includes(anio);
+                const label = document.createElement('label');
+                label.className = "flex items-center gap-3 p-2.5 hover:bg-slate-900 rounded-lg cursor-pointer text-xs font-semibold text-slate-300 transition-colors w-full select-none";
+                
+                let accentColorClass = 'accent-red-500';
+                if (selectedEvent === 'IRAs') accentColorClass = 'accent-blue-500';
+                else if (selectedEvent === 'Febriles') accentColorClass = 'accent-amber-500';
+                
+                label.innerHTML = `
+                    <input type="checkbox" value="${anio}" ${isChecked ? 'checked' : ''} 
+                           class="w-4 h-4 rounded text-indigo-600 bg-slate-950 border-slate-800 focus:ring-0 ${accentColorClass}"
+                           onchange="toggleAnioComparativo(${anio})">
+                    <span>AÑO ${anio}</span>
+                `;
+                container.appendChild(label);
+            });
+
+            const txtBtn = document.getElementById('txtAniosSeleccionados');
+            if (txtBtn) {
+                if (aniosSeleccionadosComparativa.length === 0) { 
+                    txtBtn.textContent = "Ninguno"; 
+                } else { 
+                    txtBtn.textContent = aniosSeleccionadosComparativa.sort((a,b)=>a-b).join(', '); 
+                }
+            }
+        }
+
+        function toggleAnioComparativo(anio) {
+            const index = aniosSeleccionadosComparativa.indexOf(anio);
+            if (index > -1) { 
+                aniosSeleccionadosComparativa.splice(index, 1); 
+            } else { 
+                aniosSeleccionadosComparativa.push(anio); 
+            }
+            renderDropdownAnios();
+            actualizarSemanasDisponibles();
+            actualizarCalculosYGraficos(); 
+        }
+
+        function cargarFiltrosYControles() {
+            renderDropdownAnios();
+            actualizarSemanasDisponibles();
+        }
+
+        function cambiarEventoSurveillance(evento) {
+            selectedEvent = evento;
+            inicializarAniosPorDefecto(); 
+            aplicarTemaGraficoYBotones();
+            cargarFiltrosYControles();
+            actualizarCalculosYGraficos();
+        }
+
+        function filtrarYActualizarDashboard() {
+            actualizarSemanasDisponibles();
+            actualizarCalculosYGraficos();
+        }
+
+        function cambiarTab(tab) {
+            tabActiva = tab;
+            ['dashboard', 'canal', 'tabla', 'hospitalizados'].forEach(t => {
+                const btn = document.getElementById(`btnTab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                const content = document.getElementById(`content${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                if (t === tab) {
+                    btn.className = "px-5 py-3 text-sm font-bold border-b-2 border-red-500 text-red-400 whitespace-nowrap";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap";
+                    content.classList.add('hidden');
+                }
+            });
+
+            const añoSeleccionado = obtenerAnioPrincipalActivo();
+            if (tab === 'canal') {
+                renderCanalEndemicoChart(añoSeleccionado);
+            } else if (tab === 'tabla') {
+                actualizarTablaMatrizSemanas();
+            } else if (tab === 'hospitalizados') {
+                actualizarGraficosHospitalizados();
+            }
+        }
+
+        function aplicarTemaGraficoYBotones() {
+            const textHospital = document.getElementById('txtHospitalBranding');
+            if (textHospital) {
+                if (selectedEvent === 'EDAs') { textHospital.className = "text-xl md:text-2xl font-black text-red-500 uppercase tracking-wide leading-none transition-colors duration-300"; } 
+                else if (selectedEvent === 'IRAs') { textHospital.className = "text-xl md:text-2xl font-black text-blue-500 tracking-wide uppercase transition-colors duration-300"; } 
+                else { textHospital.className = "text-xl md:text-2xl font-black text-amber-500 tracking-wide uppercase transition-colors duration-300"; }
+            }
+
+            ['EDAs', 'IRAs', 'Febriles'].forEach(ev => {
+                const btn = document.getElementById(`btnEvent${ev}`);
+                if (btn) {
+                    if (ev === selectedEvent) {
+                        btn.className = `flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-white shadow-md ${ev === 'EDAs' ? 'bg-red-650' : ev === 'IRAs' ? 'bg-blue-600' : 'bg-amber-500'}`;
+                    } else {
+                        btn.className = `flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-slate-400 hover:text-slate-200`;
+                    }
+                }
+            });
+        }
+
+        // CORRECCIÓN SOLICITADA: Limpiar filtros ahora vacía por completo el dropdown comparativo multianual (aniosSeleccionadosComparativa = []).
+        // Se desmarcan los checkboxes de forma absoluta mostrando "Ninguno" en el botón para que el usuario elija libremente de manera manual.
+        function restablecerFiltros() {
+            const selectMes = document.getElementById('selectMes');
+            const selectSemana = document.getElementById('selectSemana');
+            
+            if (selectMes) selectMes.value = "Todos";
+            
+            // Limpieza absoluta de años para la selección manual
+            aniosSeleccionadosComparativa = []; 
+            renderDropdownAnios(); // Redibuja el listado con los checkboxes vacíos y actualiza el texto del botón a "Ninguno"
+            actualizarSemanasDisponibles(); // Carga las semanas epidemiológicas en limpio
+            
+            if (selectSemana) {
+                selectSemana.value = "Todas";
+            }
+            actualizarCalculosYGraficos(); // Ejecuta el refresco de KPIs en cero clínico seguro
+        }
+
+        // --- CÁLCULO E INTEGRACIÓN DE KPIs Y SEMÁFORO EN TIEMPO REAL ---
+        function actualizarCalculosYGraficos() {
+            const dataActivaDeEvento = databaseActiva[selectedEvent] || [];
+            const añoPrincipal = obtenerAnioPrincipalActivo();
+            const mesSeleccionado = document.getElementById('selectMes').value;
+            const selectSemana = document.getElementById('selectSemana');
+            const semanaSeleccionada = selectSemana ? selectSemana.value : "Todas";
+
+            // SALVAGUARDA DE CERO CLÍNICO: Si no hay ningún año de comparación activo, evitamos errores y limpiamos KPIs
+            if (!añoPrincipal) {
+                document.getElementById('kpiLabelCasesAno').textContent = "CASOS TOTALES DEL AÑO";
+                document.getElementById('kpiLabelHospAno').textContent = "HOSPITALIZADOS DEL AÑO";
+                document.getElementById('kpiLabelCasosMes').textContent = "CASO POR MES";
+                document.getElementById('kpiCasesAno').textContent = "0";
+                document.getElementById('kpiHospAno').textContent = "0";
+                document.getElementById('kpiCasosPorMes').textContent = "0";
+                document.getElementById('kpiCasosPorSE').textContent = "0";
+                document.getElementById('kpiLabelSE').textContent = "CASO POR S.E";
+                
+                const kpiTasaIncidencia = document.getElementById('kpiTasaIncidencia');
+                if (kpiTasaIncidencia) kpiTasaIncidencia.textContent = "0.00";
+                
+                const kpiGrupoPrev = document.getElementById('kpiGrupoPrevalente');
+                if (kpiGrupoPrev) {
+                    kpiGrupoPrev.textContent = "--";
+                    kpiGrupoPrev.className = "text-lg font-black text-white mt-1";
+                }
+                document.getElementById('kpiGrupoDetalle').textContent = "Sin casos en el período.";
+                
+                const badgeRegistros = document.getElementById('badgeRegistros');
+                if (badgeRegistros) {
+                    badgeRegistros.textContent = `0 reg. (${selectedEvent})`;
+                }
+
+                // Banner neutralizado
+                const topBanner = document.getElementById('bandaSituacionCompleta');
+                const topText = document.getElementById('bandaTextSituacion');
+                const topRecomendacion = document.getElementById('bandaRecomendacion');
+                if (topText) topText.textContent = "SIN REGISTROS - SELECCIONE AÑO";
+                if (topRecomendacion) topRecomendacion.innerHTML = "Por favor, marque al menos un Año de Análisis/Comparar en la sección superior para calcular el canal endémico.";
+                if (topBanner) topBanner.className = "w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg bg-slate-900 border-slate-800 text-slate-400";
+
+                renderTablaMinsaDinamica([], "");
+                renderCanalEndemicoChart("");
+                actualizarGraficosHospitalizados();
+                return;
+            }
+
+            let registrosAño = dataActivaDeEvento.filter(item => item.ANO === añoPrincipal);
+            
+            let registrosFiltrados = [...registrosAño];
+            if (mesSeleccionado !== "Todos") {
+                registrosFiltrados = registrosFiltrados.filter(item => item.MES.toLowerCase().startsWith(mesSeleccionado.toLowerCase().slice(0,3)));
+            }
+            if (semanaSeleccionada !== "Todas") {
+                registrosFiltrados = registrosFiltrados.filter(item => item.SEMANA === parseInt(semanaSeleccionada));
+            }
+
+            // KPI 1: Total Histórico General
+            const totalHistorico = dataActivaDeEvento.reduce((acc, curr) => acc + curr.CASOS, 0);
+            document.getElementById('kpiHistoricoGeneral').textContent = totalHistorico.toLocaleString();
+
+            // KPI 2: Casos Año Activo
+            const totalAno = registrosAño.reduce((acc, curr) => acc + curr.CASOS, 0);
+            document.getElementById('kpiCasesAno').textContent = totalAno.toLocaleString();
+            document.getElementById('kpiLabelCasesAno').textContent = `CASOS ${añoPrincipal}`;
+
+            // KPI 3: Caso por Mes
+            const totalMes = dataActivaDeEvento
+                .filter(item => item.ANO === añoPrincipal && (mesSeleccionado === "Todos" || item.MES.toLowerCase().startsWith(mesSeleccionado.toLowerCase().slice(0,3))))
+                .reduce((acc, curr) => acc + curr.CASOS, 0);
+            
+            document.getElementById('kpiCasosPorMes').textContent = totalMes.toLocaleString();
+            document.getElementById('kpiLabelCasosMes').textContent = mesSeleccionado === "Todos" ? "PROMEDIO MENSUAL" : `CASOS EN ${mesSeleccionado.toUpperCase()}`;
+            if (mesSeleccionado === "Todos") {
+                const mesesUnicos = [...new Set(registrosAño.map(item => item.MES))].length || 1;
+                document.getElementById('kpiCasosPorMes').textContent = Math.round(totalAno / mesesUnicos).toLocaleString();
+            }
+
+            // KPI 4: Caso por S.E.
+            let totalSE = 0;
+            if (semanaSeleccionada !== "Todas") {
+                const regSE = registrosAño.find(item => item.SEMANA === parseInt(semanaSeleccionada));
+                totalSE = regSE ? regSE.CASOS : 0;
+                document.getElementById('kpiLabelSE').textContent = `CASOS EN S.E. ${semanaSeleccionada}`;
+            } else {
+                const totalSemanas = registrosAño.length || 1;
+                totalSE = Math.round(totalAno / totalSemanas);
+                document.getElementById('kpiLabelSE').textContent = `PROMEDIO POR S.E.`;
+            }
+            document.getElementById('kpiCasosPorSE').textContent = totalSE.toLocaleString();
+
+            // KPI 5: Tasa Incidencia x 10K (Población Ventanilla ~ 350,000 hab.)
+            const populationVentanilla = 350000;
+            const tasaIncidencia = ((totalAno / populationVentanilla) * 10000).toFixed(2);
+            document.getElementById('kpiTasaIncidencia').textContent = tasaIncidencia;
+
+            // KPI 6: Grupo Etario Prevalente
+            let sum_1 = 0, sum_1_4 = 0, sum_5_11 = 0, sum_12_17 = 0, sum_18_29 = 0, sum_30_59 = 0, sum_60 = 0;
+            registrosFiltrados.forEach(item => {
+                sum_1 += item.M_1 || 0;
+                sum_1_4 += item.M_1_4 || 0;
+                sum_5_11 += item.M_5_11 || 0;
+                sum_12_17 += item.M_12_17 || 0;
+                sum_18_29 += item.M_18_29 || 0;
+                sum_30_59 += item.M_30_59 || 0;
+                sum_60 += item.M_60 || 0;
+            });
+            const grupos = [
+                { nombre: "< 1 a", valor: sum_1, color: "text-indigo-400" },
+                { nombre: "1-4 a", valor: sum_1_4, color: "text-cyan-400" },
+                { nombre: "5-11 a", valor: sum_5_11, color: "text-emerald-400" },
+                { nombre: "12-17 a", valor: sum_12_17, color: "text-teal-400" },
+                { nombre: "18-29 a", valor: sum_18_29, color: "text-yellow-400" },
+                { nombre: "30-59 a", valor: sum_30_59, color: "text-orange-400" },
+                { nombre: "60 a +", valor: sum_60, color: "text-rose-400" }
+            ];
+            let grupoMax = { nombre: "--", valor: -1, color: "text-slate-400" };
+            grupos.forEach(g => {
+                if (g.valor > grupoMax.valor) {
+                    grupoMax = g;
+                }
+            });
+            const totalFiltradosCasos = registrosFiltrados.reduce((acc, curr) => acc + curr.CASOS, 0);
+            const kpiGrupoPrev = document.getElementById('kpiGrupoPrevalente');
+            if (kpiGrupoPrev) {
+                if (totalFiltradosCasos > 0 && grupoMax.valor > 0) {
+                    kpiGrupoPrev.textContent = grupoMax.nombre;
+                    kpiGrupoPrev.className = `text-lg font-black mt-1 ${grupoMax.color}`;
+                    document.getElementById('kpiGrupoDetalle').textContent = `${((grupoMax.valor / totalFiltradosCasos) * 100).toFixed(1)}% de la carga epidémica.`;
+                } else {
+                    kpiGrupoPrev.textContent = "--";
+                    kpiGrupoPrev.className = "text-lg font-black text-white mt-1";
+                    document.getElementById('kpiGrupoDetalle').textContent = "Sin casos en el período.";
+                }
+            }
+
+            // KPI 7: Hospitalizados del Año Activo
+            const totalHospAno = registrosAño.reduce((acc, curr) => acc + (curr.TO_HOS || 0), 0);
+            document.getElementById('kpiHospAno').textContent = totalHospAno.toLocaleString();
+            document.getElementById('kpiLabelHospAno').textContent = `HOSPITALIZADOS ${añoPrincipal}`;
+
+            // Badge de Registros totales
+            const badgeRegistros = document.getElementById('badgeRegistros');
+            if (badgeRegistros) {
+                badgeRegistros.textContent = `${totalAno.toLocaleString()} reg. (${selectedEvent})`;
+            }
+
+            // Actualización del Semáforo de la Banda de Alerta
+            actualizarBandaAlerta(registrosAño, añoPrincipal);
+
+            // Re-renderizado de tablas y matrices
+            renderTablaMinsaDinamica(registrosFiltrados, añoPrincipal);
+            actualizarGraficosMensualesYTimelineContinuo();
+            actualizarGraficosHospitalizados();
+
+            if (tabActiva === "canal") {
+                renderCanalEndemicoChart(añoPrincipal);
+            } else if (tabActiva === "tabla") {
+                actualizarTablaMatrizSemanas();
+            }
+        }
+
+        // --- SISTEMA DINÁMICO DE ALERTAS Y SEMÁFORO EPIDEMIOLÓGICO ---
+        function actualizarBandaAlerta(registrosAño, añoPrincipal) {
+            const banda = document.getElementById('bandaSituacionCompleta');
+            const txtSituacion = document.getElementById('bandaTextSituacion');
+            const recomendacion = document.getElementById('bandaRecomendacion');
+            const ping = document.getElementById('ledParpadeantePing');
+            const ledStatic = document.getElementById('ledParpadeanteStatic');
+
+            if (!banda || !txtSituacion || !recomendacion) return;
+
+            if (registrosAño.length === 0) {
+                txtSituacion.textContent = "Sin registros para evaluar";
+                recomendacion.textContent = "Por favor ingrese un repositorio de datos válido o use el modo Demo.";
+                banda.className = "w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg bg-slate-900 border-slate-800 text-slate-400";
+                ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-slate-500";
+                ledStatic.className = "relative inline-flex rounded-full h-3 w-3 bg-slate-500";
+                return;
+            }
+
+            const sorted = [...registrosAño].sort((a, b) => b.SEMANA - a.SEMANA);
+            const ultimaSemana = sorted[0];
+            const limites = calcularUmbralesCanalEndemico(ultimaSemana.SEMANA, añoPrincipal);
+            const casos = ultimaSemana.CASOS;
+
+            if (casos > limites.Q3_Alerta) {
+                txtSituacion.textContent = `S.E. ${ultimaSemana.SEMANA} - ALERTA DE BROTE / EPIDEMIA DE ${selectedEvent}`;
+                recomendacion.innerHTML = `Los casos superan el umbral de alerta en un <strong>${Math.round(((casos - limites.Q3_Alerta)/limites.Q3_Alerta)*100)}%</strong>. Active cerco epidemiológico y triaje clínico inmediato.`;
+                banda.className = "w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg bg-rose-950/40 border-rose-800 text-rose-300";
+                ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-rose-500";
+                ledStatic.className = "relative inline-flex rounded-full h-3 w-3 bg-rose-500";
+            } else if (casos > limites.Q2_Seguridad) {
+                txtSituacion.textContent = `S.E. ${ultimaSemana.SEMANA} - ZONA DE ALARMA (VIGILANCIA COMPLEMENTARIA)`;
+                recomendacion.innerHTML = `Vigilancia intensificada. Se sugiere monitorear stocks de insumos farmacológicos y difundir medidas preventivas domésticas.`;
+                banda.className = "w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg bg-amber-950/40 border-amber-850 text-amber-300";
+                ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-amber-500";
+                ledStatic.className = "relative inline-flex rounded-full h-3 w-3 bg-amber-500";
+            } else if (casos > limites.Q1_Exito) {
+                txtSituacion.textContent = `S.E. ${ultimaSemana.SEMANA} - ZONA DE SEGURIDAD ESTABLE`;
+                recomendacion.innerHTML = `Niveles de control estacionales normales. Mantener flujo de información y reportes epidemiológicos regulares.`;
+                banda.className = "w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg bg-blue-950/40 border-blue-850 text-blue-300";
+                ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-blue-500";
+                ledStatic.className = "relative inline-flex rounded-full h-3 w-3 bg-blue-500";
+            } else {
+                txtSituacion.textContent = `S.E. ${ultimaSemana.SEMANA} - ZONA DE ÉXITO CLÍNICO`;
+                recomendacion.innerHTML = `Excelente nivel de control epidémico. Casos notablemente inferiores al promedio histórico estacional.`;
+                banda.className = "w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg bg-emerald-950/40 border-emerald-850 text-emerald-300";
+                ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-emerald-500";
+                ledStatic.className = "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
+            }
+        }
+
+        // --- RENDERIZADO DEL GRÁFICOS COMPARTIDOS ---
+        function renderCanalEndemicoChart(añoPrincipal) {
+            const ctx = document.getElementById('chartCanalEndemico');
+            if (!ctx) return;
+
+            const dataActivaDeEvento = databaseActiva[selectedEvent];
+            const labels = Array.from({ length: 52 }, (_, i) => `S.E. ${i + 1}`);
+
+            const q1Data = [];
+            const q2Data = [];
+            const q3Data = [];
+            const actualData = [];
+
+            for (let s = 1; s <= 52; s++) {
+                const umbrales = calcularUmbralesCanalEndemico(s, añoPrincipal || 2026);
+                q1Data.push(umbrales.Q1_Exito);
+                q2Data.push(umbrales.Q2_Seguridad);
+                q3Data.push(umbrales.Q3_Alerta);
+
+                const reg = dataActivaDeEvento.find(item => item.ANO === añoPrincipal && item.SEMANA === s);
+                actualData.push(reg ? reg.CASOS : null);
+            }
+
+            const titleEl = document.getElementById('canalTitleText');
+            if (titleEl) {
+                titleEl.innerHTML = `Canal Endémico Científico - ${selectedEvent} (Año Activo: <span class="text-red-500 font-extrabold">${añoPrincipal || "S/A"}</span>)`;
+            }
+
+            if (chartCanalInstance) chartCanalInstance.destroy();
+
+            chartCanalInstance = new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Casos Reales Año ' + (añoPrincipal || "S/A"),
+                            data: actualData,
+                            borderColor: '#ffffff',
+                            backgroundColor: 'transparent',
+                            borderWidth: 3.5,
+                            pointRadius: 4.5,
+                            pointBackgroundColor: '#ffffff',
+                            tension: 0.15,
+                            z: 20
+                        },
+                        {
+                            label: 'Q3 - Zona de Epidemia / Alerta',
+                            data: q3Data,
+                            borderColor: 'rgba(239, 68, 68, 0.8)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                            borderWidth: 2,
+                            fill: 'stack',
+                            tension: 0.15
+                        },
+                        {
+                            label: 'Q2 - Zona de Seguridad / Alarma',
+                            data: q2Data,
+                            borderColor: 'rgba(245, 158, 11, 0.8)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.05)',
+                            borderWidth: 2,
+                            fill: 'stack',
+                            tension: 0.15
+                        },
+                        {
+                            label: 'Q1 - Zona de Éxito',
+                            data: q1Data,
+                            borderColor: 'rgba(16, 185, 129, 0.8)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                            borderWidth: 2,
+                            fill: 'stack',
+                            tension: 0.15
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#f1f5f9', font: { weight: 'bold', size: 10 } }
+                        }
+                    },
+                    scales: {
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 9, weight: 'bold' } } }
+                    }
+                }
+            });
+        }
+
+        // --- MATRIZ DE REPORTE SEMANAL ---
+        function actualizarTablaMatrizSemanas() {
+            const tbody = document.getElementById('tablaCuerpoReporte');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const dataActivaDeEvento = databaseActiva[selectedEvent];
+            const añoPrincipal = obtenerAnioPrincipalActivo();
+            
+            if (!añoPrincipal) {
+                tbody.innerHTML = '<tr><td colspan="8" class="p-3 text-center text-slate-500">Seleccione al menos un año en el filtro superior.</td></tr>';
+                return;
+            }
+
+            let registros = dataActivaDeEvento.filter(item => item.ANO === añoPrincipal).sort((a,b) => a.SEMANA - b.SEMANA);
+
+            if (registros.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-500 font-medium">No hay registros cargados para el año ${añoPrincipal}.</td></tr>`;
+                return;
+            }
+
+            registros.forEach(item => {
+                const limites = calcularUmbralesCanalEndemico(item.SEMANA, añoPrincipal);
+                let statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 px-2.5 py-0.5 rounded-full text-[10px] font-bold">Éxito</span>';
+                if (item.CASOS > limites.Q3_Alerta) {
+                    statusBadge = '<span class="bg-rose-500/25 text-rose-400 px-2.5 py-0.5 rounded-full text-[10px] font-bold">Epidemia</span>';
+                } else if (item.CASOS > limites.Q2_Seguridad) {
+                    statusBadge = '<span class="bg-amber-500/20 text-amber-400 px-2.5 py-0.5 rounded-full text-[10px] font-bold">Alarma</span>';
+                } else if (item.CASOS > limites.Q1_Exito) {
+                    statusBadge = '<span class="bg-blue-500/20 text-blue-400 px-2.5 py-0.5 rounded-full text-[10px] font-bold">Seguridad</span>';
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-900/40 transition-colors border-b border-slate-800/60 font-bold";
+                tr.innerHTML = `
+                    <td class="p-3 text-slate-300">S.E. ${item.SEMANA}</td>
+                    <td class="p-3 text-slate-400">${item.MES}</td>
+                    <td class="p-3 text-right text-white font-black">${item.CASOS}</td>
+                    <td class="p-3 text-right text-rose-400">${item.TO_HOS || 0}</td>
+                    <td class="p-3 text-right text-indigo-400">${item.M_1 || 0}</td>
+                    <td class="p-3 text-right text-cyan-400">${item.M_1_4 || 0}</td>
+                    <td class="p-3 text-right text-orange-400">${item.M_60 || 0}</td>
+                    <td class="p-3 text-center">${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- SISTEMAS DE PARSEO Y CARGA MASIVA DE ARCHIVOS (ETL) ---
+        function parseCSVToJSON(text) {
+            const lines = text.split(/\r?\n/);
+            if (lines.length === 0) return [];
+            const delimiter = text.includes(';') ? ';' : ',';
+            const headers = lines[0].split(delimiter).map(h => h.trim().replace(/"/g, ''));
+            const list = [];
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const cols = lines[i].split(delimiter).map(c => c.trim().replace(/"/g, ''));
+                if (cols.length < headers.length) continue;
+                const obj = {};
+                headers.forEach((h, idx) => { obj[h] = cols[idx]; });
+                list.push(obj);
+            }
+            return list;
+        }
+
+        function parsearHojaExcelConCabeceraInteligente(worksheet, currentTargetKey) {
+            return XLSX.utils.sheet_to_json(worksheet);
+        }
+
+        function parsearRegistrosExcel(jsonData, targetKey) {
+            const mapped = [];
+            jsonData.forEach(row => {
+                const ano = obtenerAnioDeRegistro(row);
+                if (!ano || ano < 2010 || ano > 2030) return;
+
+                const semanaVal = getValByCandidatos(row, ["semana", "sem", "semana_epi", "sem_epi"]);
+                const semana = limpiarYParsearEntero(semanaVal);
+                if (semana < 1 || semana > 53) return;
+
+                const casosVal = getValByCandidatos(row, ["casos", "toacu", "to_acu", "tot_casos", "total_casos", "cantidad", "incidencia"]);
+                const casos = limpiarYParsearEntero(casosVal) || 0;
+
+                const mes = obtenerMesDeRegistro(row) || "Ene";
+
+                // Segmentaciones etarias
+                const m_1 = getNumericValByCandidatos(row, ["a1a", "menor1", "m_1", "m_1_ano", "< 1 a", "a < 1a"]);
+                const m_1_4 = getNumericValByCandidatos(row, ["a14a", "infante1_4", "m_1_4", "m_1_4_anos", "a 1-4 a"]);
+                const m_5_11 = getNumericValByCandidatos(row, ["a511a", "m_5_11", "a 5-11 a"]);
+                const m_12_17 = getNumericValByCandidatos(row, ["a1217a", "m_12_17", "a 12-17 a"]);
+                const m_18_29 = getNumericValByCandidatos(row, ["a1829a", "m_18_29", "a 18-29 a"]);
+                const m_30_59 = getNumericValByCandidatos(row, ["a3059a", "m_30_59", "a 30-59 a"]);
+                const m_60 = getNumericValByCandidatos(row, ["a60a", "m_60", "mayor60", ">60 a", "a >60 a"]);
+
+                const hosp = getNumericValByCandidatos(row, ["tohos", "to_hos", "hosp", "hospitalizados", "internados"]);
+
+                mapped.push({
+                    ANO: ano,
+                    SEMANA: semana,
+                    MES: mes.slice(0, 3),
+                    CASOS: casos,
+                    M_1: m_1 || Math.round(casos * 0.2),
+                    M_1_4: m_1_4 || Math.round(casos * 0.25),
+                    M_5_11: m_5_11 || Math.round(casos * 0.15),
+                    M_12_17: m_12_17 || Math.round(casos * 0.1),
+                    M_18_29: m_18_29 || Math.round(casos * 0.12),
+                    M_30_59: m_30_59 || Math.round(casos * 0.1),
+                    M_60: m_60 || Math.round(casos * 0.08),
+                    TO_HOS: hosp || Math.round(casos * 0.03)
+                });
+            });
+            return mapped;
+        }
+
+        // --- EXPORTAR REPORTES A CSV ---
+        function exportarDataACSV() {
+            const dataActivaDeEvento = databaseActiva[selectedEvent];
+            const añoPrincipal = obtenerAnioPrincipalActivo();
+            if (!añoPrincipal) return;
+            const registros = dataActivaDeEvento.filter(item => item.ANO === añoPrincipal).sort((a,b) => a.SEMANA - b.SEMANA);
+
+            if (registros.length === 0) {
+                mostrarModalNotificacion("Error", "No hay datos para exportar.", "error");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "AÑO;SEMANA;MES;CASOS;MENOR_1_ANO;DE_1_A_4_ANOS;DE_5_A_11_ANOS;DE_12_A_17_ANOS;DE_18_A_29_ANOS;DE_30_A_59_ANOS;MAYOR_60_ANOS;HOSPITALIZADOS\n";
+
+            registros.forEach(item => {
+                csvContent += `${item.ANO};${item.SEMANA};${item.MES};${item.CASOS};${item.M_1 || 0};${item.M_1_4 || 0};${item.M_5_11 || 0};${item.M_12_17 || 0};${item.M_18_29 || 0};${item.M_30_59 || 0};${item.M_60 || 0};${item.TO_HOS || 0}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${selectedEvent}_Reporte_${añoPrincipal}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- COMPORTAMIENTO SCROLL TO TOP ---
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onscroll = function() {
+            const btn = document.getElementById('btnScrollToTop');
+            if (!btn) return;
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.className = "fixed bottom-6 right-6 p-3 bg-red-650 text-white rounded-full shadow-2xl opacity-100 translate-y-0 pointer-events-auto transition-all duration-300 hover:scale-110 z-50";
+            } else {
+                btn.className = "fixed bottom-6 right-6 p-3 bg-red-650 text-white rounded-full shadow-2xl opacity-0 translate-y-10 pointer-events-none transition-all duration-300 hover:scale-110 z-50";
+            }
+        };
+
+        // --- MANEJADORES DE GRÁFICOS COMPARTIDOS ---
+        function actualizarGraficosMensualesYTimelineContinuo() {
+            const dataActivaDeEvento = databaseActiva[selectedEvent];
+            const añoSeleccionado = obtenerAnioPrincipalActivo();
+
+            if (!añoSeleccionado) {
+                if (chartComparativoMensualMinsaInstance) { chartComparativoMensualMinsaInstance.destroy(); chartComparativoMensualMinsaInstance = null; }
+                if (chartSemanalMultianualMinsaInstance) { chartSemanalMultianualMinsaInstance.destroy(); chartSemanalMultianualMinsaInstance = null; }
+                return;
+            }
+
+            let todosLosAnios = [...aniosSeleccionadosComparativa].sort((a,b) => a - b);
+            const mesesNombre = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+            const matrizMensual = {};
+
+            todosLosAnios.forEach(anio => {
+                matrizMensual[anio] = Array(12).fill(null);
+                const regsAnio = dataActivaDeEvento.filter(d => d.ANO === anio);
+                mesesNombre.forEach((mes, idx) => {
+                    const casosMes = regsAnio.filter(d => d.MES === mes).reduce((acc, curr) => acc + curr.CASOS, 0);
+                    if (anio === 2026 && idx > 5 && casosMes === 0) {
+                        matrizMensual[anio][idx] = null;
+                    } else {
+                        matrizMensual[anio][idx] = casosMes;
+                    }
+                });
+            });
+
+            const colorPrimario = TEMAS_EVENTO[selectedEvent].primario;
+            const paletaLíneas = { 0: '#38bdf8', 1: '#f87171', 2: '#34d399', 3: '#fbbf24' };
+
+            const datasetsMensuales = todosLosAnios.map((anio, idx) => {
+                const esAñoActivo = anio === añoSeleccionado;
+                return {
+                    label: String(anio),
+                    data: matrizMensual[anio],
+                    borderColor: esAñoActivo ? colorPrimario : (paletaLíneas[idx] || '#64748b'),
+                    backgroundColor: 'transparent',
+                    borderWidth: esAñoActivo ? 4 : 2,
+                    pointRadius: esAñoActivo ? 5 : 3.5,
+                    pointBackgroundColor: esAñoActivo ? colorPrimario : (paletaLíneas[idx] || '#64748b'),
+                    tension: 0.15,
+                    spanGaps: false
+                };
+            });
+
+            const totalAñoActual = dataActivaDeEvento.filter(d => d.ANO === añoSeleccionado).reduce((acc, curr) => acc + curr.CASOS, 0);
+            const txtMensualAño = document.getElementById('txtMesualGraficoAño');
+            const txtMensualTotal = document.getElementById('txtMensualGraficoTotal');
+            if (txtMensualAño) txtMensualAño.textContent = añoSeleccionado;
+            if (txtMensualTotal) txtMensualTotal.textContent = totalAñoActual.toLocaleString();
+
+            const ctxMensual = document.getElementById('chartComparativoMensualMinsa');
+            if (ctxMensual) {
+                if (chartComparativoMensualMinsaInstance) chartComparativoMensualMinsaInstance.destroy();
+                chartComparativoMensualMinsaInstance = new Chart(ctxMensual.getContext('2d'), {
+                    type: 'line',
+                    data: { labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"], datasets: datasetsMensuales },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { weight: 'bold' } } }
+                        }
+                    }
+                });
+            }
+
+            const tbodyMensual = document.getElementById('bodyTablaMensualComparativa');
+            if (tbodyMensual) {
+                tbodyMensual.innerHTML = '';
+                todosLosAnios.forEach((anio, idx) => {
+                    const esAñoActivo = anio === añoSeleccionado;
+                    const vals = matrizMensual[anio] || Array(12).fill(0);
+                    const trColor = esAñoActivo ? colorPrimario : (paletaLíneas[idx] || '#64748b');
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-slate-800/40 hover:bg-slate-900/20 text-slate-300 font-medium";
+                    let columnasMeses = '';
+                    for (let i = 0; i < 12; i++) {
+                        const valCell = vals[i] !== null ? vals[i] : '';
+                        columnasMeses += `<td class="p-2 font-bold">${valCell}</td>`;
+                    }
+                    tr.innerHTML = `<td class="p-2 text-left pl-3 font-semibold flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm inline-block" style="background-color: ${trColor}"></span>${anio}</td>${columnasMeses}`;
+                    tbodyMensual.appendChild(tr);
+                });
+            }
+
+            const timelineSemanasLabels = [];
+            const timelineSemanasCasos = [];
+            let divisorIndices = [];
+            let indiceActual = 0;
+
+            todosLosAnios.forEach((anio, indexAnio) => {
+                const regsAnioFinal = dataActivaDeEvento.filter(d => d.ANO === anio).sort((a,b) => a.SEMANA - b.SEMANA);
+                regsAnioFinal.forEach((item) => {
+                    if (item.SEMANA === 1 || item.SEMANA === 2 || (item.SEMANA % 3 === 1)) { timelineSemanasLabels.push(String(item.SEMANA)); } 
+                    else { timelineSemanasLabels.push(''); }
+                    timelineSemanasCasos.push(item.CASOS);
+                    indiceActual++;
+                });
+                if (indexAnio < todosLosAnios.length - 1) { divisorIndices.push(indiceActual - 1); }
+            });
+
+            const txtSemanalAño = document.getElementById('txtSemanalGraficoAño');
+            const txtSemanalTotal = document.getElementById('txtSemanalGraficoTotal');
+            if (txtSemanalAño) txtSemanalAño.textContent = añoSeleccionado;
+            if (txtSemanalTotal) txtSemanalTotal.textContent = totalAñoActual.toLocaleString();
+
+            const ctxSemanal = document.getElementById('chartSemanalMultianualMinsa');
+            if (ctxSemanal) {
+                if (chartSemanalMultianualMinsaInstance) chartSemanalMultianualMinsaInstance.destroy();
+                chartSemanalMultianualMinsaInstance = new Chart(ctxSemanal.getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: timelineSemanasLabels, datasets: [{ data: timelineSemanasCasos, backgroundColor: colorPrimario + "dd", borderWidth: 0, barPercentage: 0.85 }] },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, redDividerPlugin: { indexes: divisorIndices } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 8 } } }
+                        }
+                    }
+                });
+            }
+
+            const divisionesTimeline = document.getElementById('timelineSemanasDivisiones');
+            if (divisionesTimeline) {
+                divisionesTimeline.innerHTML = '';
+                todosLosAnios.forEach((anio, index) => {
+                    const divElement = document.createElement('div');
+                    divElement.className = `w-1/${todosLosAnios.length} text-center font-bold ${index < todosLosAnios.length - 1 ? 'border-r border-slate-850' : ''}`;
+                    divElement.textContent = `AÑO ${anio}`;
+                    divisionesTimeline.appendChild(divElement);
+                });
+            }
+        }
+
+        function actualizarGraficosHospitalizados() {
+            const dataActivaDeEvento = databaseActiva[selectedEvent];
+            const añoSeleccionado = obtenerAnioPrincipalActivo();
+
+            if (!añoSeleccionado) {
+                if (chartHospComparativoMensualInstance) { chartHospComparativoMensualInstance.destroy(); chartHospComparativoMensualInstance = null; }
+                if (chartHospSemanalMultianualInstance) { chartHospSemanalMultianualInstance.destroy(); chartHospSemanalMultianualInstance = null; }
+                return;
+            }
+
+            let todosLosAnios = [...aniosSeleccionadosComparativa].sort((a,b) => a - b);
+            const mesesNombre = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+            const matrizHospMensual = {};
+
+            todosLosAnios.forEach(anio => {
+                matrizHospMensual[anio] = Array(12).fill(null);
+                const regsAnio = dataActivaDeEvento.filter(d => d.ANO === anio);
+                mesesNombre.forEach((mes, idx) => {
+                    const hospMes = regsAnio.filter(d => d.MES === mes).reduce((acc, curr) => acc + (curr.TO_HOS || 0), 0);
+                    if (anio === 2026 && idx > 5 && hospMes === 0) {
+                        matrizHospMensual[anio][idx] = null;
+                    } else {
+                        matrizHospMensual[anio][idx] = hospMes;
+                    }
+                });
+            });
+
+            const colorPrimario = TEMAS_EVENTO[selectedEvent].primario;
+            const paletaLíneas = { 0: '#38bdf8', 1: '#f87171', 2: '#34d399', 3: '#fbbf24' };
+
+            const datasetsHospMensuales = todosLosAnios.map((anio, idx) => {
+                const esAñoActivo = anio === añoSeleccionado;
+                return {
+                    label: String(anio),
+                    data: matrizHospMensual[anio],
+                    borderColor: esAñoActivo ? colorPrimario : (paletaLíneas[idx] || '#64748b'),
+                    backgroundColor: 'transparent',
+                    borderWidth: esAñoActivo ? 4 : 2,
+                    pointRadius: esAñoActivo ? 5 : 3.5,
+                    pointBackgroundColor: esAñoActivo ? colorPrimario : (paletaLíneas[idx] || '#64748b'),
+                    tension: 0.15,
+                    spanGaps: false
+                };
+            });
+
+            const totalHospAñoActual = dataActivaDeEvento.filter(d => d.ANO === añoSeleccionado).reduce((acc, curr) => acc + (curr.TO_HOS || 0), 0);
+            const txtHospMensualAño = document.getElementById('txtHospMensualAño');
+            const txtHospMensualTotal = document.getElementById('txtHospMensualTotal');
+            if (txtHospMensualAño) txtHospMensualAño.textContent = añoSeleccionado;
+            if (txtHospMensualTotal) txtHospMensualTotal.textContent = totalHospAñoActual.toLocaleString();
+
+            const ctxHospMensual = document.getElementById('chartHospComparativoMensual');
+            if (ctxHospMensual) {
+                if (chartHospComparativoMensualInstance) chartHospComparativoMensualInstance.destroy();
+                chartHospComparativoMensualInstance = new Chart(ctxHospMensual.getContext('2d'), {
+                    type: 'line',
+                    data: { labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"], datasets: datasetsHospMensuales },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { weight: 'bold' } } }
+                        }
+                    }
+                });
+            }
+
+            const tbodyHospMensual = document.getElementById('bodyTablaHospMensual');
+            if (tbodyHospMensual) {
+                tbodyHospMensual.innerHTML = '';
+                todosLosAnios.forEach((anio, idx) => {
+                    const esAñoActivo = anio === añoSeleccionado;
+                    const vals = matrizHospMensual[anio] || Array(12).fill(0);
+                    const trColor = esAñoActivo ? colorPrimario : (paletaLíneas[idx] || '#64748b');
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-slate-800/40 hover:bg-slate-900/20 text-slate-300 font-medium";
+                    let columnasMeses = '';
+                    for (let i = 0; i < 12; i++) {
+                        const valCell = vals[i] !== null ? vals[i] : '';
+                        columnasMeses += `<td class="p-2 font-bold">${valCell}</td>`;
+                    }
+                    tr.innerHTML = `<td class="p-2 text-left pl-3 font-semibold flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm inline-block" style="background-color: ${trColor}"></span>${anio}</td>${columnasMeses}`;
+                    tbodyHospMensual.appendChild(tr);
+                });
+            }
+
+            const timelineSemanasLabels = [];
+            const timelineSemanasHosp = [];
+            let divisorIndices = [];
+            let indiceActual = 0;
+
+            todosLosAnios.forEach((anio, indexAnio) => {
+                const regsAnioFinal = dataActivaDeEvento.filter(d => d.ANO === anio).sort((a,b) => a.SEMANA - b.SEMANA);
+                regsAnioFinal.forEach((item) => {
+                    if (item.SEMANA === 1 || item.SEMANA === 2 || (item.SEMANA % 3 === 1)) { timelineSemanasLabels.push(String(item.SEMANA)); } 
+                    else { timelineSemanasLabels.push(''); }
+                    timelineSemanasHosp.push(item.TO_HOS || 0);
+                    indiceActual++;
+                });
+                if (indexAnio < todosLosAnios.length - 1) { divisorIndices.push(indiceActual - 1); }
+            });
+
+            const txtHospSemanalAño = document.getElementById('txtHospSemanalAño');
+            const txtHospSemanalTotal = document.getElementById('txtHospSemanalTotal');
+            if (txtHospSemanalAño) txtHospSemanalAño.textContent = añoSeleccionado;
+            if (txtHospSemanalTotal) txtHospSemanalTotal.textContent = totalHospAñoActual.toLocaleString();
+
+            const ctxHospSemanal = document.getElementById('chartHospSemanalMultianual');
+            if (ctxHospSemanal) {
+                if (chartHospSemanalMultianualInstance) chartHospSemanalMultianualInstance.destroy();
+                chartHospSemanalMultianualInstance = new Chart(ctxHospSemanal.getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: timelineSemanasLabels, datasets: [{ data: timelineSemanasHosp, backgroundColor: '#f43f5e', borderWidth: 0, barPercentage: 0.85 }] },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, redDividerPlugin: { indexes: divisorIndices } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 8 } } }
+                        }
+                    }
+                });
+            }
+
+            const divisionesHospTimeline = document.getElementById('hospTimelineDivisiones');
+            if (divisionesHospTimeline) {
+                divisionesHospTimeline.innerHTML = '';
+                todosLosAnios.forEach((anio, index) => {
+                    const divElement = document.createElement('div');
+                    divElement.className = `w-1/${todosLosAnios.length} text-center font-bold ${index < todosLosAnios.length - 1 ? 'border-r border-slate-850' : ''}`;
+                    divElement.textContent = `AÑO ${anio}`;
+                    divisionesHospTimeline.appendChild(divElement);
+                });
+            }
+
+            let dataFiltrada = [...dataActivaDeEvento.filter(item => item.ANO === añoSeleccionado)];
+            const selectMes = document.getElementById('selectMes').value;
+            const selectSemana = document.getElementById('selectSemana').value;
+            if (selectMes !== "Todos") { dataFiltrada = dataFiltrada.filter(item => item.MES.toLowerCase().startsWith(selectMes.toLowerCase().slice(0, 3))); }
+            if (selectSemana !== "Todas") { dataFiltrada = dataFiltrada.filter(item => item.SEMANA === parseInt(selectSemana)); }
+
+            let totalH_1 = 0, totalH_1_4 = 0, totalH_5_11 = 0, totalH_12_17 = 0, totalH_18_29 = 0, totalH_30_59 = 0, totalH_60 = 0;
+
+            dataFiltrada.forEach(item => {
+                let totalHosp = item.TO_HOS || 0;
+                let baseCasos = item.CASOS || 1;
+                let bases = [
+                    { id: 0, val: item.M_1 || 0 }, { id: 1, val: item.M_1_4 || 0 }, { id: 2, val: item.M_5_11 || 0 },
+                    { id: 3, val: item.M_12_17 || 0 }, { id: 4, val: item.M_18_29 || 0 }, { id: 5, val: item.M_30_59 || 0 },
+                    { id: 6, val: item.M_60 || 0 }
+                ];
+                let allocated = [];
+                if (totalHosp > 0) {
+                    allocated = bases.map(b => {
+                        let exact = (b.val / baseCasos) * totalHosp;
+                        let floor = Math.floor(exact);
+                        return { id: b.id, floor: floor, remainder: exact - floor };
+                    });
+                    let currentSum = allocated.reduce((sum, a) => sum + a.floor, 0);
+                    let diff = totalHosp - currentSum;
+                    if (diff > 0) {
+                        allocated.sort((a, b) => {
+                            if (Math.abs(b.remainder - a.remainder) < 0.000001) { return bases[b.id].val - bases[a.id].val; }
+                            return b.remainder - a.remainder;
+                        });
+                        for (let i = 0; i < diff; i++) { allocated[i].floor += 1; }
+                    }
+                    allocated.sort((a, b) => a.id - b.id);
+                } else {
+                    allocated = bases.map(b => ({ id: b.id, floor: 0 }));
+                }
+                totalH_1 += allocated[0].floor; totalH_1_4 += allocated[1].floor; totalH_5_11 += allocated[2].floor;
+                totalH_12_17 += allocated[3].floor; totalH_18_29 += allocated[4].floor; totalH_30_59 += allocated[5].floor;
+                totalH_60 += allocated[6].floor;
+            });
+
+            renderTablaHospMinsaDinamica(dataFiltrada, añoSeleccionado);
+
+            const kpiHospTotalPeriodo = document.getElementById('kpiHospTotalPeriodo');
+            const kpiHospTasaSeveridad = document.getElementById('kpiHospTasaSeveridad');
+            const kpiHospMaxSemana = document.getElementById('kpiHospMaxSemana');
+            const kpiHospGrupoPrevalente = document.getElementById('kpiHospGrupoPrevalente');
+            const kpiHospGrupoDetalle = document.getElementById('kpiHospGrupoDetalle');
+
+            const totalHospFiltrado = dataFiltrada.reduce((acc, curr) => acc + (curr.TO_HOS || 0), 0);
+            const totalCasosFiltrados = dataFiltrada.reduce((acc, curr) => acc + curr.CASOS, 0);
+
+            if (kpiHospTotalPeriodo) kpiHospTotalPeriodo.textContent = totalHospFiltrado.toLocaleString();
+            if (kpiHospTasaSeveridad) { kpiHospTasaSeveridad.textContent = totalCasosFiltrados > 0 ? ((totalHospFiltrado / totalCasosFiltrados) * 100).toFixed(1) + "%" : "0.0%"; }
+
+            let maxHospSemanaVal = -1;
+            let maxHospSemanaNum = null;
+            dataFiltrada.forEach(item => {
+                if ((item.TO_HOS || 0) > maxHospSemanaVal) { maxHospSemanaVal = item.TO_HOS || 0; maxHospSemanaNum = item.SEMANA; }
+            });
+            if (kpiHospMaxSemana) {
+                if (maxHospSemanaNum !== null && maxHospSemanaVal > 0) { kpiHospMaxSemana.textContent = `S.E. ${maxHospSemanaNum} (${maxHospSemanaVal} hosp.)`; } 
+                else { kpiHospMaxSemana.textContent = "--"; }
+            }
+
+            const cohortesHosp = [
+                { nombre: "< 1 a", valor: totalH_1, color: "text-indigo-400" }, { nombre: "1-4 a", valor: totalH_1_4, color: "text-cyan-400" },
+                { nombre: "5-11 a", valor: totalH_5_11, color: "text-emerald-400" }, { nombre: "12-17 a", valor: totalH_12_17, color: "text-teal-400" },
+                { nombre: "18-29 a", valor: totalH_18_29, color: "text-yellow-400" }, { nombre: "30-59 a", valor: totalH_30_59, color: "text-orange-400" },
+                { nombre: "60 a +", valor: totalH_60, color: "text-rose-400" }
+            ];
+            let groupMaxHosp = { nombre: "--", valor: 0, color: "text-slate-400" };
+            cohortesHosp.forEach(g => { if (g.valor > groupMaxHosp.valor) groupMaxHosp = g; });
+
+            if (kpiHospGrupoPrevalente) {
+                if (totalHospFiltrado > 0 && groupMaxHosp.valor > 0) {
+                    kpiHospGrupoPrevalente.textContent = groupMaxHosp.nombre;
+                    kpiHospGrupoPrevalente.className = `text-lg font-black mt-1 ${groupMaxHosp.color}`;
+                    if (kpiHospGrupoDetalle) {
+                        kpiHospGrupoDetalle.textContent = `${((groupMaxHosp.valor / totalHospFiltrado) * 100).toFixed(1)}% de internamientos.`;
+                    }
+                } else {
+                    kpiHospGrupoPrevalente.textContent = "--";
+                    kpiHospGrupoPrevalente.className = "text-lg font-black text-white mt-1";
+                    if (kpiHospGrupoDetalle) {
+                        kpiHospGrupoDetalle.textContent = "Sin internamientos clínicos.";
+                    }
+                }
+            }
+        }
+
+        // --- DIBUJADO DE LAS TABLAS DE CURSO DE VIDA ---
+        function renderTablaMinsaDinamica(registros, añoSeleccionado) {
+            const tbodyAcuosa = document.getElementById('acuosaTablaBody');
+            const tbodyDisenterica = document.getElementById('disentericaTablaBody');
+            const toggleAcuosaBtn = document.getElementById('btnToggleAcuosaTable');
+            const toggleDisentericaBtn = document.getElementById('btnToggleDisentericaTable');
+            const selectMes = document.getElementById('selectMes').value;
+            const selectSemana = document.getElementById('selectSemana').value;
+            
+            if (!tbodyAcuosa || !tbodyDisenterica) return;
+            tbodyAcuosa.innerHTML = ""; tbodyDisenterica.innerHTML = "";
+
+            if (selectMes === "Todos" && selectSemana === "Todas") {
+                if (toggleAcuosaBtn) toggleAcuosaBtn.classList.remove('hidden');
+                if (toggleDisentericaBtn) toggleDisentericaBtn.classList.remove('hidden');
+                if (lastFilterStateActive) { acuosaTableCollapsed = true; disentericaTableCollapsed = true; lastFilterStateActive = false; }
+            } else {
+                if (toggleAcuosaBtn) toggleAcuosaBtn.classList.add('hidden');
+                if (toggleDisentericaBtn) toggleDisentericaBtn.classList.add('hidden');
+                acuosaTableCollapsed = false; disentericaTableCollapsed = false; lastFilterStateActive = true;
+            }
+            syncAcuosaTableState(); syncDisentericaTableState();
+
+            if (!añoSeleccionado || registros.length === 0) {
+                const emptyRow = `<tr><td colspan="9" class="p-4 text-center text-slate-500 font-medium">Sin datos en el período. Seleccione un año de análisis.</td></tr>`;
+                tbodyAcuosa.innerHTML = emptyRow; tbodyDisenterica.innerHTML = emptyRow;
+                return;
+            }
+
+            registros.forEach(item => {
+                const totalAcu = (item.M_1 || 0) + (item.M_1_4 || 0) + (item.M_5_11 || 0) + (item.M_12_17 || 0) + (item.M_18_29 || 0) + (item.M_30_59 || 0) + (item.M_60 || 0);
+                const trAcu = document.createElement('tr');
+                trAcu.className = "border-b border-slate-800/40 hover:bg-slate-900/10 text-white font-medium";
+                trAcu.innerHTML = `
+                    <td class="p-3 text-indigo-400 font-extrabold bg-slate-950/10 text-left pl-4">S.E. ${item.SEMANA}</td>
+                    <td class="p-3 border-r border-slate-800/60">${item.M_1 || 0}</td><td class="p-3 border-r border-slate-800/60">${item.M_1_4 || 0}</td>
+                    <td class="p-3 border-r border-slate-800/60">${item.M_5_11 || 0}</td><td class="p-3 border-r border-slate-800/60">${item.M_12_17 || 0}</td>
+                    <td class="p-3 border-r border-slate-800/60">${item.M_18_29 || 0}</td><td class="p-3 border-r border-slate-800/60">${item.M_30_59 || 0}</td>
+                    <td class="p-3 border-r border-slate-800/60">${item.M_60 || 0}</td><td class="p-3 bg-slate-950/40 text-sm font-black text-indigo-300">${totalAcu}</td>
+                `;
+                tbodyAcuosa.appendChild(trAcu);
+
+                // Estimación clínica de diarreas disentéricas
+                const d1 = Math.round((item.M_1 || 0) * 0.05);
+                const d1_4 = Math.round((item.M_1_4 || 0) * 0.06);
+                const d5_11 = Math.round((item.M_5_11 || 0) * 0.04);
+                const d12_17 = Math.round((item.M_12_17 || 0) * 0.03);
+                const d18_29 = Math.round((item.M_18_29 || 0) * 0.04);
+                const d30_59 = Math.round((item.M_30_59 || 0) * 0.05);
+                const d60 = Math.round((item.M_60 || 0) * 0.08);
+                const totalDis = d1 + d1_4 + d5_11 + d12_17 + d18_29 + d30_59 + d60;
+
+                const trDis = document.createElement('tr');
+                trDis.className = "border-b border-slate-800/40 hover:bg-slate-900/10 text-white font-medium opacity-50";
+                trDis.innerHTML = `
+                    <td class="p-3 text-indigo-400 font-extrabold bg-slate-950/10 text-left pl-4">S.E. ${item.SEMANA}</td>
+                    <td class="p-3 border-r border-slate-800/60">${d1}</td><td class="p-3 border-r border-slate-800/60">${d1_4}</td>
+                    <td class="p-3 border-r border-slate-800/60">${d5_11}</td><td class="p-3 border-r border-slate-800/60">${d12_17}</td>
+                    <td class="p-3 border-r border-slate-800/60">${d18_29}</td><td class="p-3 border-r border-slate-800/60">${d30_59}</td>
+                    <td class="p-3 border-r border-slate-800/60">${d60}</td><td class="p-3 bg-slate-950/40 text-sm font-black text-indigo-300">${totalDis}</td>
+                `;
+                tbodyDisenterica.appendChild(trDis);
+            });
+        }
+
+        // --- REPARTO PROPORCIONAL EXACTO HOSPITALIZADOS MINSA ---
+        function renderTablaHospMinsaDinamica(registros, añoSeleccionado) {
+            const tbody = document.getElementById('hospMinsaTablaBody');
+            const toggleBtn = document.getElementById('btnToggleHospMinsaTable');
+            const selectMes = document.getElementById('selectMes').value;
+            const selectSemana = document.getElementById('selectSemana').value;
+            if (!tbody) return;
+            tbody.innerHTML = "";
+
+            if (selectMes === "Todos" && selectSemana === "Todas") { if (toggleBtn) toggleBtn.classList.remove('hidden'); } 
+            else { if (toggleBtn) toggleBtn.classList.add('hidden'); hospMinsaTableCollapsed = false; }
+            syncHospMinsaTableState();
+
+            if (!añoSeleccionado || registros.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-slate-500 font-medium">Sin datos en el período. Seleccione un año de análisis.</td></tr>`;
+                return;
+            }
+
+            registros.forEach(item => {
+                let totalHosp = item.TO_HOS || 0;
+                let baseCasos = item.CASOS || 1;
+                let bases = [
+                    { id: 0, val: item.M_1 || 0 }, { id: 1, val: item.M_1_4 || 0 }, { id: 2, val: item.M_5_11 || 0 },
+                    { id: 3, val: item.M_12_17 || 0 }, { id: 4, val: item.M_18_29 || 0 }, { id: 5, val: item.M_30_59 || 0 },
+                    { id: 6, val: item.M_60 || 0 }
+                ];
+                let allocated = [];
+                if (totalHosp > 0) {
+                    allocated = bases.map(b => {
+                        let exact = (b.val / baseCasos) * totalHosp;
+                        let floor = Math.floor(exact);
+                        return { id: b.id, floor: floor, remainder: exact - floor };
+                    });
+                    let currentSum = allocated.reduce((sum, a) => sum + a.floor, 0);
+                    let diff = totalHosp - currentSum;
+                    if (diff > 0) {
+                        allocated.sort((a, b) => {
+                            if (Math.abs(b.remainder - a.remainder) < 0.000001) { return bases[b.id].val - bases[a.id].val; }
+                            return b.remainder - a.remainder;
+                        });
+                        for (let i = 0; i < diff; i++) { allocated[i].floor += 1; }
+                    }
+                    allocated.sort((a, b) => a.id - b.id);
+                } else {
+                    allocated = bases.map(b => ({ id: b.id, floor: 0 }));
+                }
+
+                let h_1 = allocated[0].floor; let h_1_4 = allocated[1].floor; let h_5_11 = allocated[2].floor;
+                let h_12_17 = allocated[3].floor; let h_18_29 = allocated[4].floor; let h_30_59 = allocated[5].floor;
+                let h_60 = allocated[6].floor;
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-800/40 hover:bg-slate-900/10 text-white font-medium";
+                tr.innerHTML = `
+                    <td class="p-3 text-indigo-400 font-extrabold bg-slate-950/10 text-left pl-4">S.E. ${item.SEMANA}</td>
+                    <td class="p-3 border-r border-slate-800/60">${h_1}</td><td class="p-3 border-r border-slate-800/60">${h_1_4}</td>
+                    <td class="p-3 border-r border-slate-800/60">${h_5_11}</td><td class="p-3 border-r border-slate-800/60">${h_12_17}</td>
+                    <td class="p-3 border-r border-slate-800/60">${h_18_29}</td><td class="p-3 border-r border-slate-800/60">${h_30_59}</td>
+                    <td class="p-3 border-r border-slate-800/60">${h_60}</td><td class="p-3 bg-slate-950/40 text-sm font-black text-indigo-300 font-bold">${totalHosp}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- ETL SINC SEGURA Y AUTOMATIZADA ---
+        function procesarArchivoExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const barra = document.getElementById('barraProgreso');
+            const txtProgreso = document.getElementById('textoProgreso');
+            const led = document.getElementById('ledEstadoSincronizacion');
+
+            barra.style.width = '10%';
+            txtProgreso.innerHTML = `Sincronizando base de datos...`;
+
+            const fileNameUpper = file.name.toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let loadedKeys = []; let totalRecords = 0; let aniosDeCargas = [];
+                    const isCSV = file.name.toLowerCase().endsWith('.csv');
+
+                    if (isCSV) {
+                        const data = new Uint8Array(e.target.result);
+                        let text = new TextDecoder("utf-8").decode(data);
+                        let jsonData = parseCSVToJSON(text);
+                        let targetKey = null;
+                        
+                        if (fileNameUpper.includes("EDA") || fileNameUpper.includes("DIAR")) targetKey = "EDAs";
+                        else if (fileNameUpper.includes("IRA") || fileNameUpper.includes("RESP") || fileNameUpper.includes("NEUM")) targetKey = "IRAs";
+                        else if (fileNameUpper.includes("FEBR") || fileNameUpper.includes("FIEB") || fileNameUpper.includes("SIND") || fileNameUpper.includes("METAX")) targetKey = "Febriles";
+
+                        if (!targetKey) { targetKey = selectedEvent; }
+                        if (jsonData.length === 0) { throw new Error("El archivo CSV no contiene registros."); }
+
+                        const parseados = parsearRegistrosExcel(jsonData, targetKey);
+                        if (parseados.length === 0) throw new Error("No se encontraron registros válidos.");
+
+                        databaseActiva[targetKey] = parseados;
+                        logsSincronizacion[targetKey].registros = parseados.length;
+                        logsSincronizacion[targetKey].cargada = true;
+                        loadedKeys.push(targetKey); totalRecords += parseados.length;
+                        aniosDeCargas = [...new Set(parseados.map(d => d.ANO))];
+                        selectedEvent = targetKey;
+                    } else {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        
+                        workbook.SheetNames.forEach(sheetName => {
+                            const nameUpper = sheetName.toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            let currentTargetKey = null;
+                            if (nameUpper.includes("EDA") || nameUpper.includes("DIAR")) currentTargetKey = "EDAs";
+                            else if (nameUpper.includes("IRA") || nameUpper.includes("RESP") || nameUpper.includes("NEUM")) currentTargetKey = "IRAs";
+                            else if (nameUpper.includes("FEBR") || nameUpper.includes("FIEB") || nameUpper.includes("SIND") || nameUpper.includes("METAX")) currentTargetKey = "Febriles";
+                            
+                            if (currentTargetKey) {
+                                const worksheet = workbook.Sheets[sheetName];
+                                const jsonData = parsearHojaExcelConCabeceraInteligente(worksheet, currentTargetKey);
+                                if (jsonData && jsonData.length > 0) {
+                                    const parseados = parsearRegistrosExcel(jsonData, currentTargetKey);
+                                    if (parseados.length > 0) {
+                                        databaseActiva[currentTargetKey] = parseados;
+                                        logsSincronizacion[currentTargetKey].registros = parseados.length;
+                                        logsSincronizacion[currentTargetKey].cargada = true;
+                                        if (!loadedKeys.includes(currentTargetKey)) loadedKeys.push(currentTargetKey);
+                                        totalRecords += parseados.length;
+                                        aniosDeCargas = [...aniosDeCargas, ...parseados.map(d => d.ANO)];
+                                    }
+                                }
+                            }
+                        });
+
+                        if (loadedKeys.length === 0 && workbook.SheetNames.length > 0) {
+                            const firstSheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[firstSheetName];
+                            const currentTargetKey = selectedEvent; 
+                            const jsonData = parsearHojaExcelConCabeceraInteligente(worksheet, currentTargetKey);
+                            if (jsonData && jsonData.length > 0) {
+                                const parseados = parsearRegistrosExcel(jsonData, currentTargetKey);
+                                if (parseados.length > 0) {
+                                    databaseActiva[currentTargetKey] = parseados;
+                                    logsSincronizacion[currentTargetKey].registros = parseados.length;
+                                    logsSincronizacion[currentTargetKey].cargada = true;
+                                    loadedKeys.push(currentTargetKey); totalRecords += parseados.length;
+                                    aniosDeCargas = [...aniosDeCargas, ...parseados.map(d => d.ANO)];
+                                }
+                            }
+                        }
+
+                        if (loadedKeys.length === 0) { throw new Error("No se encontraron registros compatibles."); }
+                    }
+
+                    aplicarTemaGraficoYBotones();
+                    barra.style.width = '100%';
+                    led.className = "w-1.5 h-1.5 rounded-full bg-emerald-400";
+                    txtProgreso.innerHTML = `Sincronización Completa`;
+
+                    if (aniosDeCargas.length > 0) {
+                        aniosSeleccionadosComparativa = [...new Set(aniosDeCargas)].sort((a,b) => a-b);
+                    }
+                    cargarFiltrosYControles();
+                    actualizarCalculosYGraficos();
+                    mostrarModalNotificacion("¡Éxito en la carga!", `Se han sincronizado ${totalRecords} registros epidemiológicos.`, "exito");
+                } catch (err) {
+                    led.className = "w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse";
+                    txtProgreso.innerHTML = `Fallo de Sincronización`;
+                    mostrarModalNotificacion("Fallo de Sincronización", err.message, "error");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        window.onload = function() {
+            inicializarAniosPorDefecto(); 
+            cargarFiltrosYControles();
+            aplicarTemaGraficoYBotones();
+            actualizarCalculosYGraficos();
+        };
+    </script>
+</body>
+</html>

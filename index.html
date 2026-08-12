@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" class="h-full bg-slate-950">
 <head>
@@ -43,7 +44,7 @@
 
     <!-- Modal Notificaciones -->
     <div id="modalNotificacion" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-lg w-full mx-4 shadow-2xl text-center transform scale-95 transition-all duration-300">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full mx-4 shadow-2xl text-center transform scale-95 transition-all duration-300">
             <div id="modalIconContainer" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-800 bg-slate-950">
                 <svg id="modalIconExito" class="h-7 w-7 text-emerald-400 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -56,9 +57,9 @@
                 </svg>
             </div>
             <h3 id="modalTitle" class="text-lg font-bold text-white mb-2">Notificación</h3>
-            <div id="modalDesc" class="text-xs text-slate-300 mb-6 text-left bg-slate-950/80 p-4 rounded-xl border border-slate-800 max-h-60 overflow-y-auto leading-relaxed whitespace-pre-line font-mono"></div>
+            <p id="modalDesc" class="text-xs text-slate-400 mb-6 leading-relaxed whitespace-pre-line"></p>
             <button onclick="cerrarModalNotificacion()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all shadow-lg shadow-brand-900/40">
-                Aceptar y Ver Datos
+                Aceptar
             </button>
         </div>
     </div>
@@ -167,10 +168,10 @@
             <div class="p-3 border-t border-slate-800/80 space-y-2 bg-slate-950/60">
                 <button onclick="cargarDatosDemo()" title="Cargar Datos Demo MINSA" class="sidebar-nav-item w-full bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white font-bold py-2 px-2.5 rounded-xl text-xs flex items-center justify-center gap-2 border border-slate-700/60 transition-all">
                     <svg class="h-4 w-4 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    <span class="sidebar-text truncate">Cargar Datos Demo MINSA</span>
+                    <span class="sidebar-text truncate">Cargar Datos MINSA (3 Años)</span>
                 </button>
                 <div class="sidebar-text text-[10px] text-slate-500 text-center font-semibold">
-                    VEA v5.0 • Hospital Ventanilla
+                    VEA v4.2 • Ventanilla - Callao
                 </div>
             </div>
         </aside>
@@ -249,6 +250,10 @@
                             <label class="block text-[11px] font-bold text-slate-400 mb-1.5">Filtro de Período Anual</label>
                             <select id="selectAnio" onchange="aplicarFiltrosGlobales()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 font-bold focus:outline-none focus:border-brand-500">
                                 <option value="TODOS">Todos los Años Disponibles</option>
+                                <option value="ULTIMOS_3" selected>Últimos 3 Años (2024 - 2026)</option>
+                                <option value="2026">Año 2026</option>
+                                <option value="2025">Año 2025</option>
+                                <option value="2024">Año 2024</option>
                             </select>
                         </div>
 
@@ -305,14 +310,14 @@
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <span class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">CASOS FILTRADOS</span>
+                                    <span class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">CASOS AÑO SELECCIONADO</span>
                                     <h3 id="kpiCasosAnio" class="text-2xl font-black text-brand-500 mt-1">0</h3>
                                 </div>
                                 <div class="p-2 bg-brand-500/10 rounded-xl text-brand-400 border border-brand-500/20">
                                     🗓️
                                 </div>
                             </div>
-                            <p id="subKpiAnio" class="text-[10px] text-slate-500 font-semibold mt-3">Acumulado período activo</p>
+                            <p id="subKpiAnio" class="text-[10px] text-slate-500 font-semibold mt-3">Acumulado anual activo</p>
                         </div>
 
                         <!-- KPI 3 -->
@@ -333,7 +338,7 @@
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <span class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">GRUPO ETARIO PREVALENTE</span>
+                                    <span class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">GRUPO ETARIO MÁS AFECTADO</span>
                                     <h3 id="kpiGrupoPrevalente" class="text-base font-black text-amber-400 mt-1">--</h3>
                                 </div>
                                 <div class="p-2 bg-amber-500/10 rounded-xl text-amber-400 border border-amber-500/20">
@@ -409,7 +414,7 @@
                             <thead class="bg-slate-950 text-slate-400 font-bold sticky top-0 border-b border-slate-800">
                                 <tr>
                                     <th class="p-3">S.E.</th>
-                                    <th class="p-3">Año / Mes</th>
+                                    <th class="p-3">Mes</th>
                                     <th class="p-3 text-right">Casos Totales</th>
                                     <th class="p-3 text-right text-purple-400">Hospitalizados</th>
                                     <th class="p-3 text-right">&lt; 1 Año</th>
@@ -454,7 +459,7 @@
                     </div>
                 </div>
 
-                <!-- VISTA 5: VISTA INDIVIDUAL DE CASOS NOTIFICADOS -->
+                <!-- VISTA 5: VISTA INDIVIDUAL DE CASOS NOTIFICADOS (MODULO INDIVIDUALES) -->
                 <div id="vistaIndividuales" class="hidden space-y-6">
                     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -474,8 +479,8 @@
                                         <th class="p-3">ID / DNI</th>
                                         <th class="p-3">Paciente</th>
                                         <th class="p-3">Edad / Sexo</th>
-                                        <th class="p-3">Diagnóstico / CIE-10</th>
-                                        <th class="p-3">S.E. / Año</th>
+                                        <th class="p-3">Diagnóstico</th>
+                                        <th class="p-3">S.E.</th>
                                         <th class="p-3">Clasificación</th>
                                         <th class="p-3">Condición</th>
                                         <th class="p-3">Distrito</th>
@@ -498,7 +503,7 @@
         const appState = {
             moduloActivo: 'EDAs', // 'EDAs', 'IRAs', 'Febriles', 'Individuales'
             pestanaAnalitica: 'dashboard', // 'dashboard', 'canal', 'matriz', 'hospitalizados'
-            anioSeleccionado: 'TODOS',
+            anioSeleccionado: 'ULTIMOS_3',
             mesSeleccionado: 'TODOS',
             seSeleccionada: 'TODAS',
             isCollapsed: false,
@@ -520,16 +525,7 @@
             }
         };
 
-        // LIMPIEZA DE NÚMEROS Y TEXTOS EXCEL
-        function limpiarNumero(val, defecto = 0) {
-            if (val === undefined || val === null) return defecto;
-            if (typeof val === 'number') return isNaN(val) ? defecto : val;
-            let str = String(val).trim().replace(/,/g, '');
-            let parsed = parseFloat(str);
-            return isNaN(parsed) ? defecto : parsed;
-        }
-
-        // BUSCADOR FLEXIBLE DE COLUMNAS
+        // BUSCADOR INTELIGENTE DE COLUMNAS CON BUSQUEDA FLEXIBLE
         function buscarValorColumna(row, patronesRegex, valorDefecto = '') {
             if (!row || typeof row !== 'object') return valorDefecto;
             const keys = Object.keys(row);
@@ -549,114 +545,136 @@
             return valorDefecto;
         }
 
-        // DETECTOR DE FILA DE ENCABEZADOS (ENCONTRAR ENCABEZADO REAL EN EXCEL CON TÍTULOS O LOGOS)
+        // DETECTOR INTELIGENTE DE FILA ENCABEZADO (HEADER ROW DISCOVERY)
         function encontrarFilaEncabezado(rawMatrix) {
             if (!Array.isArray(rawMatrix) || rawMatrix.length === 0) return 0;
 
             const keywordsHeader = [
-                'semana', 'epi', 'año', 'anio', 'year', 'mes', 'casos', 'total', 
-                'dni', 'paciente', 'diagnostico', 'cie', 'cie10', 'edad', 'sexo', 
-                'hospital', 'distrito', 'fiebre', 'dengue', 'eda', 'ira'
+                /semana/i, /se/i, /a[nñ]o/i, /year/i, /mes/i, /casos/i, /total/i, 
+                /dni/i, /paciente/i, /diagnostico/i, /cie10/i, /edad/i, /hospitalizados/i, /fever/i
             ];
 
-            let mejorFila = 0;
-            let maxCoincidencias = 0;
-
-            for (let i = 0; i < Math.min(20, rawMatrix.length); i++) {
+            for (let i = 0; i < Math.min(15, rawMatrix.length); i++) {
                 const fila = rawMatrix[i];
                 if (Array.isArray(fila)) {
-                    let coincidencias = 0;
-                    fila.forEach(cell => {
-                        const cellStr = String(cell || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-                        if (cellStr.length > 1) {
-                            if (keywordsHeader.some(k => cellStr.includes(k))) {
-                                coincidencias++;
-                            }
-                        }
-                    });
+                    const coincidencias = fila.filter(cell => {
+                        const cellStr = String(cell || '').trim();
+                        return keywordsHeader.some(regex => regex.test(cellStr));
+                    }).length;
 
-                    if (coincidencias > maxCoincidencias) {
-                        maxCoincidencias = coincidencias;
-                        mejorFila = i;
+                    if (coincidencias >= 2) {
+                        return i;
                     }
                 }
             }
-            return mejorFila;
+            return 0;
         }
 
-        // CLASIFICADOR EPIDEMIOLÓGICO DE DIAGNÓSTICOS (CIE-10 Y TEXTO)
-        function clasificarEnfermedad(textoDiagnostico, cie10 = '') {
-            const str = (String(textoDiagnostico) + ' ' + String(cie10)).toLowerCase();
-
-            // EDAs
-            const regEDA = /eda|diarr|gastro|colera|rotavirus|shigella|salmonella|enteritis|disenteria|amebiasis|fecal|copro|parasitosis|a0[0-9]/i;
-            if (regEDA.test(str)) return 'EDAs';
-
-            // IRAs
-            const regIRA = /ira|neumon|respira|sob|bronq|influenza|resfrio|faring|laring|covid|asma|sarscov|rhino|sinusitis|j[0-2][0-9]/i;
-            if (regIRA.test(str)) return 'IRAs';
-
-            // Febriles / Dengue
-            const regFeb = /febril|dengue|fiebre|malaria|zika|chikung|leish|arbovir|plasmod|palud|leptosp|barton|mayaro|a9[0-9]|b5[0-9]/i;
-            if (regFeb.test(str)) return 'Febriles';
-
-            return null; // Indeterminado
-        }
-
-        // DETECTOR DE ESTRUCTURA MATRIZ ANCHA (E.g. Columnas S.E. 01 ... S.E. 52)
-        function esMatrizAncha(jsonRows) {
-            if (!jsonRows || jsonRows.length === 0) return false;
-            const primerRegistro = jsonRows[0];
-            const keys = Object.keys(primerRegistro);
+        // CLASIFICADOR AUTOMÁTICO DE HOJAS
+        function clasificarModuloHoja(sheetName, jsonRows, indexHoja) {
+            const nameUpper = sheetName.toUpperCase().trim();
             
-            let contadorSemanas = 0;
-            keys.forEach(k => {
-                if (/se[0-9]{1,2}/i.test(k) || /semana[0-9]{1,2}/i.test(k) || /epi[0-9]{1,2}/i.test(k) || /^s[0-9]{1,2}$/i.test(k)) {
-                    contadorSemanas++;
+            if (nameUpper.includes('EDA') || nameUpper.includes('DIARRE') || nameUpper.includes('GASTRO')) {
+                return 'EDAs';
+            }
+            if (nameUpper.includes('IRA') || nameUpper.includes('RESPIRAT') || nameUpper.includes('NEUMO') || nameUpper.includes('SOB')) {
+                return 'IRAs';
+            }
+            if (nameUpper.includes('FEBRIL') || nameUpper.includes('DENGUE') || nameUpper.includes('MALARIA') || nameUpper.includes('ZIKA')) {
+                return 'Febriles';
+            }
+            if (nameUpper.includes('INDIV') || nameUpper.includes('CASO') || nameUpper.includes('FICHA') || nameUpper.includes('NOTIF') || nameUpper.includes('PACIENTE')) {
+                return 'Individuales';
+            }
+
+            if (jsonRows && jsonRows.length > 0) {
+                const primerRegistro = jsonRows[0];
+                const keysJoined = Object.keys(primerRegistro).join(' ').toLowerCase();
+
+                if (keysJoined.includes('dni') || keysJoined.includes('paciente') || keysJoined.includes('cie10') || keysJoined.includes('diagnostico') || keysJoined.includes('enfermedad')) {
+                    return 'Individuales';
+                }
+            }
+
+            const modulosOrden = ['EDAs', 'IRAs', 'Febriles', 'Individuales'];
+            return modulosOrden[indexHoja % 4];
+        }
+
+        // GENERAR MATRICES SEMANALES DESDE CASOS INDIVIDUALES AUTOMÁTICAMENTE
+        function generarMatricesDesdeIndividuales() {
+            const indiv = appState.repositorios.Individuales || [];
+            if (!indiv.length) return;
+
+            const grupos = {
+                EDAs: {},
+                IRAs: {},
+                Febriles: {}
+            };
+
+            const diagnosticoEDA = /eda|diarr|gastro|colera|rotavirus|disenteria|shigella|salmonella|enteritis|fecal|copro|salmonelosis/i;
+            const cieEDA = /^a0[0-9]/i;
+
+            const diagnosticoIRA = /ira|neumon|respira|sob|bronq|influenza|resfrio|faring|laring|covid|asma|sarscov|rhino|sinusitis/i;
+            const cieIRA = /^j[0-9]{2}/i;
+
+            const diagnosticoFebril = /febril|dengue|fiebre|malaria|zika|chikung|leish|arbovir|plasmod|palud|leptosp/i;
+            const cieFebril = /^(a9[0-9]|b5[0-9])/i;
+
+            indiv.forEach(r => {
+                const dx = ((r.diagnostico || '') + ' ' + (r.cie10 || '')).toLowerCase();
+                let targetModulo = null;
+
+                if (cieEDA.test(dx) || diagnosticoEDA.test(dx)) {
+                    targetModulo = 'EDAs';
+                } else if (cieIRA.test(dx) || diagnosticoIRA.test(dx)) {
+                    targetModulo = 'IRAs';
+                } else if (cieFebril.test(dx) || diagnosticoFebril.test(dx)) {
+                    targetModulo = 'Febriles';
+                } else {
+                    targetModulo = 'EDAs'; // Fallback por defecto
+                }
+
+                const key = `${r.anio}_SE${r.se}`;
+                if (!grupos[targetModulo][key]) {
+                    const mesesList = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                    const mesIdx = Math.min(11, Math.max(0, Math.floor(((parseInt(r.se) || 1) - 1) / 4.35)));
+                    grupos[targetModulo][key] = {
+                        anio: String(r.anio || '2026'),
+                        se: parseInt(r.se) || 1,
+                        mes: r.mes || mesesList[mesIdx],
+                        casosTotales: 0,
+                        hospitalizados: 0,
+                        menor1: 0,
+                        de1a4: 0,
+                        de5a11: 0,
+                        de60mas: 0
+                    };
+                }
+
+                const item = grupos[targetModulo][key];
+                item.casosTotales += 1;
+                if (r.condicion === 'Hospitalizado') {
+                    item.hospitalizados += 1;
+                }
+
+                const edad = parseInt(r.edad) || 0;
+                if (edad < 1) item.menor1 += 1;
+                else if (edad >= 1 && edad <= 4) item.de1a4 += 1;
+                else if (edad >= 5 && edad <= 11) item.de5a11 += 1;
+                else if (edad >= 60) item.de60mas += 1;
+            });
+
+            // Convertir objetos agrupados en arreglos ordenados
+            ['EDAs', 'IRAs', 'Febriles'].forEach(mod => {
+                const listaMatriz = Object.values(grupos[mod]);
+                if (listaMatriz.length > 0) {
+                    listaMatriz.sort((a, b) => {
+                        if (a.anio !== b.anio) return a.anio.localeCompare(b.anio);
+                        return a.se - b.se;
+                    });
+                    appState.repositorios[mod] = listaMatriz;
                 }
             });
-
-            return contadorSemanas >= 5;
-        }
-
-        // DESPIVOTAR MATRIZ ANCHA A REGISTROS SEMANALES
-        function unpivotMatrizAncha(jsonRows) {
-            const registrosNormalizados = [];
-            
-            jsonRows.forEach(row => {
-                const keys = Object.keys(row);
-                const anioVal = String(buscarValorColumna(row, [/anio/i, /ano/i, /year/i], '2026')).replace(/[^0-9]/g, '') || '2026';
-                const diagVal = String(buscarValorColumna(row, [/diagnostico/i, /enfermedad/i, /cie/i, /evento/i], ''));
-                const moduloPertinente = clasificarEnfermedad(diagVal) || 'EDAs';
-
-                keys.forEach(k => {
-                    const matchSE = k.match(/(?:semana|se|epi|s)\s*0*([1-9][0-9]?)/i);
-                    if (matchSE) {
-                        const numSE = parseInt(matchSE[1]);
-                        const valorCasos = limpiarNumero(row[k], 0);
-
-                        if (numSE >= 1 && numSE <= 53 && valorCasos > 0) {
-                            const mesesList = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-                            const mesIdx = Math.min(11, Math.max(0, Math.floor((numSE - 1) / 4.35)));
-
-                            registrosNormalizados.push({
-                                modulo: moduloPertinente,
-                                anio: anioVal,
-                                se: numSE,
-                                mes: mesesList[mesIdx],
-                                casosTotales: valorCasos,
-                                hospitalizados: Math.floor(valorCasos * 0.08),
-                                menor1: Math.floor(valorCasos * 0.25),
-                                de1a4: Math.floor(valorCasos * 0.35),
-                                de5a11: Math.floor(valorCasos * 0.20),
-                                de60mas: Math.floor(valorCasos * 0.20)
-                            });
-                        }
-                    }
-                });
-            });
-
-            return registrosNormalizados;
         }
 
         // PROCESAMIENTO MULTI-PESTAÑA Y MONO-HOJA DE VEA_2.XLSX (SheetJS)
@@ -670,16 +688,16 @@
                     const data = new Uint8Array(evt.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     
-                    let totalPestanas = workbook.SheetNames.length;
-                    let logProcesamiento = [];
+                    let hojasMapeadas = [];
+                    let resumenInyeccion = { EDAs: 0, IRAs: 0, Febriles: 0, Individuales: 0 };
 
-                    // Limpiar repositorios para inyección limpia de la base de datos real
+                    // Limpiar repositorios para evitar colisiones
                     appState.repositorios.EDAs = [];
                     appState.repositorios.IRAs = [];
                     appState.repositorios.Febriles = [];
                     appState.repositorios.Individuales = [];
 
-                    workbook.SheetNames.forEach((sheetName) => {
+                    workbook.SheetNames.forEach((sheetName, idx) => {
                         const worksheet = workbook.Sheets[sheetName];
                         const rawMatrix = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
                         if (!rawMatrix || rawMatrix.length === 0) return;
@@ -689,68 +707,51 @@
 
                         if (!sheetData || sheetData.length === 0) return;
 
-                        // 1. Verificar si la hoja es una matriz ancha
-                        if (esMatrizAncha(sheetData)) {
-                            const unpivoted = unpivotMatrizAncha(sheetData);
-                            unpivoted.forEach(item => {
-                                appState.repositorios[item.modulo].push(item);
-                            });
-                            logProcesamiento.push(`• Hoja "${sheetName}": Matriz ancha unpivotada (${unpivoted.length} registros semanales)`);
-                            return;
-                        }
+                        const moduloDestino = clasificarModuloHoja(sheetName, sheetData, idx);
 
-                        // 2. Probar si la hoja contiene Fichas de Casos Individuales (DNI / Pacientes)
-                        const primerReg = sheetData[0];
-                        const keysStr = Object.keys(primerReg).join(' ').toLowerCase();
-
-                        const esFichaIndividual = keysStr.includes('dni') || keysStr.includes('paciente') || 
-                                                 keysStr.includes('nombres') || keysStr.includes('documento') || 
-                                                 keysStr.includes('cie10') || keysStr.includes('historia');
-
-                        if (esFichaIndividual) {
-                            const fichas = normalizarFichasIndividuales(sheetData);
-                            appState.repositorios.Individuales = appState.repositorios.Individuales.concat(fichas);
-                            logProcesamiento.push(`• Hoja "${sheetName}": ${fichas.length} fichas individuales notificadas`);
+                        if (moduloDestino === 'Individuales') {
+                            const datosNormalizados = normalizarFichasIndividuales(sheetData);
+                            if (datosNormalizados.length > 0) {
+                                appState.repositorios.Individuales = appState.repositorios.Individuales.concat(datosNormalizados);
+                                resumenInyeccion.Individuales += datosNormalizados.length;
+                                hojasMapeadas.push(`Casos Individuales (${sheetName}: ${datosNormalizados.length} reg)`);
+                            }
                         } else {
-                            // 3. Hoja de Matriz Semanal o Resumen Epidemiológico
-                            const sheetUpper = sheetName.toUpperCase();
-                            let moduloDestino = 'EDAs';
-                            if (sheetUpper.includes('IRA') || sheetUpper.includes('RESPIRAT')) moduloDestino = 'IRAs';
-                            else if (sheetUpper.includes('FEBRIL') || sheetUpper.includes('DENGUE')) moduloDestino = 'Febriles';
-
-                            const matrizSe = normalizarDataMatrizSE(sheetData);
-                            appState.repositorios[moduloDestino] = appState.repositorios[moduloDestino].concat(matrizSe);
-                            logProcesamiento.push(`• Hoja "${sheetName}": ${matrizSe.length} semanas registradas en Módulo ${moduloDestino}`);
+                            const datosNormalizados = normalizarDataMatrizSE(sheetData);
+                            if (datosNormalizados.length > 0) {
+                                appState.repositorios[moduloDestino] = appState.repositorios[moduloDestino].concat(datosNormalizados);
+                                resumenInyeccion[moduloDestino] += datosNormalizados.length;
+                                hojasMapeadas.push(`${moduloDestino} (${sheetName}: ${datosNormalizados.length} semanas)`);
+                            }
                         }
                     });
 
-                    // Si se cargaron fichas individuales, consolidar automáticamente en las matrices si estaban vacías
+                    // Si hay casos individuales cargados, inyectar y consolidar automáticamente en EDAs, IRAs y Febriles
                     if (appState.repositorios.Individuales.length > 0) {
                         generarMatricesDesdeIndividuales();
-                        logProcesamiento.push(`• Consolidación automática realizada a partir de los casos individuales`);
+                        
+                        // Actualizar resumen de inyección con los datos consolidados
+                        resumenInyeccion.EDAs = appState.repositorios.EDAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
+                        resumenInyeccion.IRAs = appState.repositorios.IRAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
+                        resumenInyeccion.Febriles = appState.repositorios.Febriles.reduce((a, b) => a + (b.casosTotales || 0), 0);
                     }
 
                     // Actualizar dropdowns y contadores
                     actualizarOpcionesAnio();
                     actualizarBadgesSidemenu();
 
-                    const countEDAs = appState.repositorios.EDAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
-                    const countIRAs = appState.repositorios.IRAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
-                    const countFebriles = appState.repositorios.Febriles.reduce((a, b) => a + (b.casosTotales || 0), 0);
-                    const countIndiv = appState.repositorios.Individuales.length;
-
-                    document.getElementById('badgeEstadoOrigen').innerText = `DATOS REALES PROCESADOS`;
+                    const totalRegs = appState.repositorios.Individuales.length || Object.values(resumenInyeccion).reduce((a, b) => a + b, 0);
+                    document.getElementById('badgeEstadoOrigen').innerText = `VEA_2.XLSX CARGADO (${totalRegs} REGS)`;
                     document.getElementById('badgeEstadoOrigen').className = 'text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full';
 
                     mostrarModalNotificacion(
-                        '¡Base de Datos Real Inyectada!', 
-                        `Se leyó correctamente el archivo "${file.name}":\n\n` +
-                        logProcesamiento.join('\n') + '\n\n' +
-                        `RESUMEN INTEGRAL DETECTADO:\n` +
-                        `• EDAs: ${countEDAs.toLocaleString()} casos totales acumulados\n` +
-                        `• IRAs: ${countIRAs.toLocaleString()} casos totales acumulados\n` +
-                        `• Febriles: ${countFebriles.toLocaleString()} casos totales acumulados\n` +
-                        `• Fichas Individuales: ${countIndiv.toLocaleString()} registros de pacientes`, 
+                        '¡Archivo VEA_2.xlsx Inyectado con Éxito!', 
+                        `Se procesaron y estructuraron los datos de "${file.name}":\n\n` +
+                        `• EDAs (Diarreicas): ${resumenInyeccion.EDAs.toLocaleString()} casos consolidados\n` +
+                        `• IRAs (Respiratorias): ${resumenInyeccion.IRAs.toLocaleString()} casos consolidados\n` +
+                        `• Febriles / Dengue: ${resumenInyeccion.Febriles.toLocaleString()} casos consolidados\n` +
+                        `• Casos Individuales: ${appState.repositorios.Individuales.length.toLocaleString()} fichas\n\n` +
+                        `Los gráficos, canal endémico y matrices epidemiológicas se han calculado dinámicamente.`, 
                         'exito'
                     );
 
@@ -759,7 +760,7 @@
 
                 } catch (err) {
                     console.error('Error al procesar el archivo Excel VEA_2.xlsx:', err);
-                    mostrarModalNotificacion('Error al Leer el Archivo', 'Ocurrió un inconveniente al procesar las celdas. Asegúrese de subir un libro de cálculo Excel de vigilancia epidemiológica.', 'error');
+                    mostrarModalNotificacion('Error al Leer el Archivo', 'Ocurrió un inconveniente al procesar la estructura de celdas. Asegúrese de subir una hoja de cálculo válida.', 'error');
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -788,27 +789,27 @@
                     mesVal = mesesList[mesIdx];
                 }
 
-                const m1 = limpiarNumero(buscarValorColumna(r, [/menor.*1/i, /m.*1/i, /0.*1/i, /m1/i], 0));
-                const d1a4 = limpiarNumero(buscarValorColumna(r, [/1.*4/i, /de1a4/i, /1a4/i, /p1.*4/i], 0));
-                const d5a11 = limpiarNumero(buscarValorColumna(r, [/5.*11/i, /de5a11/i, /5a11/i, /p5.*11/i], 0));
-                const d60mas = limpiarNumero(buscarValorColumna(r, [/60/i, /mayores.*60/i, /60mas/i], 0));
+                const m1 = parseInt(buscarValorColumna(r, [/menor.*1/i, /m.*1/i, /0.*1/i, /m1/i], 0)) || 0;
+                const d1a4 = parseInt(buscarValorColumna(r, [/1.*4/i, /de1a4/i, /1a4/i, /p1.*4/i], 0)) || 0;
+                const d5a11 = parseInt(buscarValorColumna(r, [/5.*11/i, /de5a11/i, /5a11/i, /p5.*11/i], 0)) || 0;
+                const d60mas = parseInt(buscarValorColumna(r, [/60/i, /mayores.*60/i, /60mas/i], 0)) || 0;
 
-                let totalCasos = limpiarNumero(buscarValorColumna(r, [
+                let totalCasos = parseInt(buscarValorColumna(r, [
                     /total.*caso/i, /caso.*total/i, /total.*atenci/i, /total/i, /casos/i, /cantidad/i, /atenciones/i, /confirmados/i, /notific/i, /nro.*caso/i
                 ], -1));
 
-                if (totalCasos <= 0) {
+                if (isNaN(totalCasos) || totalCasos < 0) {
                     const sumaEdades = m1 + d1a4 + d5a11 + d60mas;
                     if (sumaEdades > 0) {
                         totalCasos = sumaEdades;
                     } else {
-                        const numVals = Object.values(r).map(v => limpiarNumero(v, -1)).filter(v => v >= 0 && v < 100000);
+                        const numVals = Object.values(r).map(v => parseInt(v)).filter(v => !isNaN(v) && v >= 0 && v < 10000);
                         totalCasos = numVals.length > 0 ? numVals[numVals.length - 1] : 0;
                     }
                 }
 
-                let hospVal = limpiarNumero(buscarValorColumna(r, [/hosp/i, /ingres.*hosp/i, /cama/i], -1));
-                if (hospVal < 0) hospVal = Math.floor(totalCasos * 0.08);
+                let hospVal = parseInt(buscarValorColumna(r, [/hosp/i, /ingres.*hosp/i, /cama/i], 0));
+                if (isNaN(hospVal) || hospVal < 0) hospVal = Math.floor(totalCasos * 0.08);
 
                 return {
                     anio: anioVal,
@@ -829,7 +830,7 @@
             return jsonRows.map((r, idx) => {
                 const anioVal = String(buscarValorColumna(r, [/anio/i, /ano/i, /year/i, /periodo/i], '2026')).split('.')[0].replace(/[^0-9]/g, '') || '2026';
                 const seVal = parseInt(buscarValorColumna(r, [/semana.*epi/i, /semana/i, /se/i, /sem/i], 1)) || 1;
-                const dxVal = String(buscarValorColumna(r, [/diagnostico/i, /enfermedad/i, /dx/i, /evento/i, /patologia/i], 'Evaluación Clínica VEA'));
+                const dxVal = String(buscarValorColumna(r, [/diagnostico/i, /cie10/i, /enfermedad/i, /dx/i, /evento/i], 'Evaluación Clínica VEA'));
                 const cieVal = String(buscarValorColumna(r, [/cie10/i, /cie_10/i, /codigo_cie/i, /cie/i], ''));
                 const condVal = String(buscarValorColumna(r, [/condicion/i, /hospitalizado/i, /hosp/i, /evolucion/i], 'Ambulatorio'));
                 
@@ -838,7 +839,7 @@
                     anio: anioVal,
                     dni: String(buscarValorColumna(r, [/dni/i, /documento/i, /docidentidad/i, /cedula/i, /nro_doc/i], '7' + Math.floor(1000000 + Math.random() * 9000000))),
                     paciente: String(buscarValorColumna(r, [/paciente/i, /nombre/i, /nombres/i, /apellidos/i, /nombrecompleto/i], 'Paciente Notificado ' + (idx + 1))),
-                    edad: limpiarNumero(buscarValorColumna(r, [/edad/i, /edad_anios/i, /edad_anos/i], 30)),
+                    edad: parseInt(buscarValorColumna(r, [/edad/i, /edad_anios/i, /edad_anos/i], 30)) || 0,
                     sexo: String(buscarValorColumna(r, [/sexo/i, /genero/i], 'M')).toUpperCase().startsWith('F') ? 'F' : 'M',
                     diagnostico: dxVal,
                     cie10: cieVal,
@@ -847,57 +848,6 @@
                     condicion: (condVal.toLowerCase().includes('hosp') || condVal.toLowerCase().includes('si')) ? 'Hospitalizado' : 'Ambulatorio',
                     distrito: String(buscarValorColumna(r, [/distrito/i, /procedencia/i, /ubigeo/i, /lugar/i], 'Ventanilla'))
                 };
-            });
-        }
-
-        // SINTETIZAR MATRICES SEMANALES A PARTIR DE CASOS INDIVIDUALES
-        function generarMatricesDesdeIndividuales() {
-            const indiv = appState.repositorios.Individuales || [];
-            if (!indiv.length) return;
-
-            const grupos = { EDAs: {}, IRAs: {}, Febriles: {} };
-
-            indiv.forEach(r => {
-                const targetModulo = clasificarEnfermedad(r.diagnostico, r.cie10) || 'EDAs';
-                const key = `${r.anio}_SE${r.se}`;
-
-                if (!grupos[targetModulo][key]) {
-                    const mesesList = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-                    const mesIdx = Math.min(11, Math.max(0, Math.floor(((parseInt(r.se) || 1) - 1) / 4.35)));
-                    grupos[targetModulo][key] = {
-                        anio: String(r.anio || '2026'),
-                        se: parseInt(r.se) || 1,
-                        mes: r.mes || mesesList[mesIdx],
-                        casosTotales: 0,
-                        hospitalizados: 0,
-                        menor1: 0,
-                        de1a4: 0,
-                        de5a11: 0,
-                        de60mas: 0
-                    };
-                }
-
-                const item = grupos[targetModulo][key];
-                item.casosTotales += 1;
-                if (r.condicion === 'Hospitalizado') item.hospitalizados += 1;
-
-                const edad = parseInt(r.edad) || 0;
-                if (edad < 1) item.menor1 += 1;
-                else if (edad >= 1 && edad <= 4) item.de1a4 += 1;
-                else if (edad >= 5 && edad <= 11) item.de5a11 += 1;
-                else if (edad >= 60) item.de60mas += 1;
-            });
-
-            // Si un módulo no tenía matriz directa cargada, alimentarlo con los casos sintetizados
-            ['EDAs', 'IRAs', 'Febriles'].forEach(mod => {
-                const listaSintetizada = Object.values(grupos[mod]);
-                if (appState.repositorios[mod].length === 0 && listaSintetizada.length > 0) {
-                    listaSintetizada.sort((a, b) => {
-                        if (a.anio !== b.anio) return a.anio.localeCompare(b.anio);
-                        return a.se - b.se;
-                    });
-                    appState.repositorios[mod] = listaSintetizada;
-                }
             });
         }
 
@@ -926,6 +876,11 @@
             optTodos.innerText = 'Todos los Años Disponibles';
             selectAnio.appendChild(optTodos);
 
+            const optUltimos = document.createElement('option');
+            optUltimos.value = 'ULTIMOS_3';
+            optUltimos.innerText = 'Últimos 3 Años (2024 - 2026)';
+            selectAnio.appendChild(optUltimos);
+
             listaAnios.forEach(anio => {
                 const opt = document.createElement('option');
                 opt.value = anio;
@@ -933,7 +888,7 @@
                 selectAnio.appendChild(opt);
             });
 
-            if (listaAnios.includes(valPrevio) || valPrevio === 'TODOS') {
+            if (listaAnios.includes(valPrevio) || valPrevio === 'TODOS' || valPrevio === 'ULTIMOS_3') {
                 selectAnio.value = valPrevio;
             } else {
                 selectAnio.value = 'TODOS';
@@ -946,7 +901,15 @@
             const data = appState.repositorios[appState.moduloActivo] || [];
             
             return data.filter(r => {
-                const cumpleAnio = (appState.anioSeleccionado === 'TODOS' || String(r.anio) === String(appState.anioSeleccionado));
+                let cumpleAnio = false;
+                if (appState.anioSeleccionado === 'ULTIMOS_3') {
+                    cumpleAnio = ['2024', '2025', '2026'].includes(String(r.anio));
+                } else if (appState.anioSeleccionado === 'TODOS') {
+                    cumpleAnio = true;
+                } else {
+                    cumpleAnio = (String(r.anio) === String(appState.anioSeleccionado));
+                }
+
                 const cumpleMes = (appState.mesSeleccionado === 'TODOS' || r.mes === appState.mesSeleccionado);
                 const cumpleSE = (appState.seSeleccionada === 'TODAS' || String(r.se) === String(appState.seSeleccionada));
                 
@@ -955,7 +918,7 @@
         }
 
         function restablecerFiltros() {
-            document.getElementById('selectAnio').value = 'TODOS';
+            document.getElementById('selectAnio').value = 'ULTIMOS_3';
             document.getElementById('selectMes').value = 'TODOS';
             document.getElementById('selectSE').value = 'TODAS';
             aplicarFiltrosGlobales();
@@ -1186,7 +1149,7 @@
 
                 tr.innerHTML = `
                     <td class="p-3 font-bold text-slate-200">S.E. ${r.se}</td>
-                    <td class="p-3 text-slate-400">${r.anio} / ${r.mes}</td>
+                    <td class="p-3 text-slate-400">${r.mes} (${r.anio})</td>
                     <td class="p-3 text-right font-extrabold text-white">${r.casosTotales}</td>
                     <td class="p-3 text-right font-bold text-purple-400">${r.hospitalizados}</td>
                     <td class="p-3 text-right text-slate-300">${r.menor1}</td>
@@ -1222,7 +1185,7 @@
                     <td class="p-3 font-mono text-slate-300 font-bold">${item.dni || item.id}</td>
                     <td class="p-3 font-bold text-white">${item.paciente}</td>
                     <td class="p-3 text-slate-300">${item.edad} a / ${item.sexo}</td>
-                    <td class="p-3 text-cyan-300 font-medium">${item.diagnostico} ${item.cie10 ? '('<span class="text-xs font-mono font-bold text-amber-400">' + item.cie10 + '</span>)' : ''}</td>
+                    <td class="p-3 text-cyan-300 font-medium">${item.diagnostico}</td>
                     <td class="p-3 font-bold text-slate-400">S.E. ${item.se} (${item.anio})</td>
                     <td class="p-3">${badgeClasif}</td>
                     <td class="p-3">${badgeCond}</td>
@@ -1437,16 +1400,7 @@
             appState.repositorios.Febriles = crearSerieSemanas(0.9);
 
             const nombres = ['Carlos Mendoza', 'María Gutiérrez', 'Juan Pérez', 'Ana Flores', 'Luis Ramos', 'Elena Torres', 'Diego Castro', 'Sofía Vargas', 'José Martínez', 'Lucía Morales', 'Gabriel Díaz', 'Valeria Silva', 'Mateo Rojas', 'Camila Benítez', 'Lucas Fernández'];
-            const diagnosticos = [
-                { dx: 'Dengue sin signos de alarma', cie: 'A97.0' },
-                { dx: 'SIRA Severe', cie: 'J80' },
-                { dx: 'EDA Acuosa Aguda', cie: 'A09.0' },
-                { dx: 'Síndrome Febril Agudo', cie: 'R50.9' },
-                { dx: 'Gastroenteritis Infecciosa', cie: 'A09' },
-                { dx: 'Neumonía Adquirida en Comunidad', cie: 'J18.9' },
-                { dx: 'Infección Respiratoria Aguda', cie: 'J06.9' },
-                { dx: 'Dengue con signos de alarma', cie: 'A97.1' }
-            ];
+            const diagnosticos = ['Dengue sin signos de alarma', 'SIRA Severe', 'EDA Acuosa Aguda', 'Síndrome Febril Agudo', 'Gastroenteritis Infecciosa', 'Neumonía Adquirida en Comunidad', 'Infección Respiratoria Aguda', 'Dengue con signos de alarma'];
             const distritos = ['Ventanilla', 'Mi Perú', 'Ventanilla Alta', 'Pachacútec', 'Angamos', 'Ciudad Satélite'];
 
             const listaIndiv = [];
@@ -1454,7 +1408,6 @@
                 const anio = anios[i % 3];
                 const se = (i * 3) % 52 + 1;
                 const nombre = nombres[i % nombres.length] + ' ' + String.fromCharCode(65 + (i % 26)) + '.';
-                const dxItem = diagnosticos[i % diagnosticos.length];
                 listaIndiv.push({
                     id: 'FICHA-' + anio + '-' + String(i).padStart(4, '0'),
                     anio: anio,
@@ -1462,8 +1415,7 @@
                     paciente: nombre,
                     edad: Math.floor(Math.random() * 75) + 1,
                     sexo: i % 2 === 0 ? 'M' : 'F',
-                    diagnostico: dxItem.dx,
-                    cie10: dxItem.cie,
+                    diagnostico: diagnosticos[i % diagnosticos.length],
                     se: se,
                     clasificacion: i % 4 === 0 ? 'Sospechoso' : 'Confirmado',
                     condicion: i % 5 === 0 ? 'Hospitalizado' : 'Ambulatorio',
@@ -1480,7 +1432,7 @@
         function cargarDatosDemo() {
             generarDatosDemo();
             actualizarInterfaceyGraficos();
-            mostrarModalNotificacion('Demo Cargada', 'Se han inicializado los repositorios independientes de EDAs, IRAs, Febriles y Casos Individuales con datos simulados del MINSA.', 'exito');
+            mostrarModalNotificacion('Demo Cargada', 'Se han inicializado los repositorios independientes de EDAs, IRAs, Febriles y Casos Individuales con estructura de 3 años del MINSA.', 'exito');
         }
 
         function mostrarModalNotificacion(titulo, desc, tipo) {

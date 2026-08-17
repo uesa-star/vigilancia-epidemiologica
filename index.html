@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="es" class="h-full bg-slate-950">
 <head>
@@ -677,6 +678,157 @@
             });
         }
 
+        // LECTOR ESPECÍFICO PARA LA ESTRUCTURA DEL ARCHIVO VEA
+        // Conserva los nombres originales del Excel, evita valores estimados y consolida por Año + S.E.
+        const MESES_VEA = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+        function claveVEA(value) {
+            return String(value ?? '')
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
+        function valorVEA(row, aliases, defecto = '') {
+            const keys = Object.keys(row || {});
+            for (const alias of aliases) {
+                const wanted = claveVEA(alias);
+                const key = keys.find(k => claveVEA(k) === wanted);
+                if (key !== undefined && row[key] !== undefined && row[key] !== null && row[key] !== '') return row[key];
+            }
+            return defecto;
+        }
+
+        function numeroVEA(row, aliases, defecto = 0) {
+            const value = valorVEA(row, aliases, defecto);
+            const number = Number(String(value).replace(',', '.'));
+            return Number.isFinite(number) && number >= 0 ? number : defecto;
+        }
+
+        function mesVEA(value, semana) {
+            const monthNumber = Number(value);
+            if (Number.isInteger(monthNumber) && monthNumber >= 1 && monthNumber <= 12) return MESES_VEA[monthNumber - 1];
+            const text = claveVEA(value);
+            const match = MESES_VEA.find(m => text.startsWith(claveVEA(m)));
+            return match || MESES_VEA[Math.min(11, Math.max(0, Math.floor((semana - 1) / 4.35)))];
+        }
+
+        function sumarValoresVEA(row, aliases) {
+            return aliases.reduce((sum, alias) => sum + numeroVEA(row, [alias]), 0);
+        }
+
+        function consolidarSemanasVEA(registros) {
+            const agrupados = new Map();
+            const vistos = new Set();
+
+            registros.forEach(registro => {
+                const claveUnica = registro.sourceKey ? `${registro.modulo}|${registro.sourceKey}` : '';
+                if (claveUnica && vistos.has(claveUnica)) return;
+                if (claveUnica) vistos.add(claveUnica);
+
+                const key = `${registro.anio}|${registro.se}`;
+                const actual = agrupados.get(key) || {
+                    anio: registro.anio, se: registro.se, mes: registro.mes,
+                    casosTotales: 0, hospitalizados: 0,
+                    menor1: 0, de1a4: 0, de5a11: 0, de60mas: 0,
+                    hospMenor1: 0, hospDe1a4: 0, hospDe5a11: 0, hospDe60mas: 0,
+                    registrosFuente: 0
+                };
+
+                ['casosTotales', 'hospitalizados', 'menor1', 'de1a4', 'de5a11', 'de60mas',
+                 'hospMenor1', 'hospDe1a4', 'hospDe5a11', 'hospDe60mas'].forEach(field => {
+                    actual[field] += Number(registro[field]) || 0;
+                });
+                actual.registrosFuente += 1;
+                agrupados.set(key, actual);
+            });
+
+            return [...agrupados.values()].sort((a, b) =>
+                String(a.anio).localeCompare(String(b.anio)) || a.se - b.se
+            );
+        }
+
+        function normalizarDatosVEA(jsonRows, modulo) {
+            const registros = jsonRows.map((row, index) => {
+                const anio = String(valorVEA(row, ['ANO', 'AÑO', 'AÑO EPI', 'anio', 'year'], '2026')).replace(/\.0$/, '');
+                const se = Math.min(53, Math.max(1, Math.trunc(numeroVEA(row, ['SEMANA', 'SEMANA EPI', 'SE', 'semana'], (index % 52) + 1))));
+                const base = {
+                    modulo, anio, se,
+                    // El período mensual se deriva de la S.E.; los campos MES/ING_MES
+                    // del archivo corresponden a la fecha de registro y pueden diferir.
+                    mes: mesVEA('', se),
+                    casosTotales: 0, hospitalizados: 0,
+                    menor1: 0, de1a4: 0, de5a11: 0, de60mas: 0,
+                    hospMenor1: 0, hospDe1a4: 0, hospDe5a11: 0, hospDe60mas: 0,
+                    sourceKey: ''
+                };
+
+                if (modulo === 'EDAs') {
+                    base.casosTotales = numeroVEA(row, ['TO ACU']);
+                    base.hospitalizados = numeroVEA(row, ['TO HOS']);
+                    base.menor1 = numeroVEA(row, ['A < 1a']);
+                    base.de1a4 = numeroVEA(row, ['A 1-4 a']);
+                    base.de5a11 = numeroVEA(row, ['A 5-11 a']);
+                    base.de60mas = numeroVEA(row, ['A >60 a']);
+                    base.hospMenor1 = sumarValoresVEA(row, ['DAA_H1 a', 'DIS_H1 a']);
+                    base.hospDe1a4 = sumarValoresVEA(row, ['DAA_H1_4 a', 'DIS_H1_4 a']);
+                    base.hospDe5a11 = sumarValoresVEA(row, ['DAA_H5_11 a', 'DIS_H5_11 a']);
+                    base.hospDe60mas = sumarValoresVEA(row, ['DAA_H60 a', 'DIS_H60 a']);
+                    base.sourceKey = valorVEA(row, ['ID'], `${anio}-${se}-${index}`);
+                } else if (modulo === 'IRAs') {
+                    base.casosTotales = numeroVEA(row, ['TOTAL IRAS']);
+                    base.hospitalizados = numeroVEA(row, ['TOTAL HOSPI']);
+                    base.menor1 = sumarValoresVEA(row, ['IRA_M2', 'IRA_2_11']);
+                    base.de1a4 = numeroVEA(row, ['IRA_1_4A']);
+                    base.de5a11 = sumarValoresVEA(row, ['IRA_5_9A', 'IRA_10_19A']);
+                    base.de60mas = numeroVEA(row, ['IRA_60A']);
+                    base.hospMenor1 = sumarValoresVEA(row, ['HOS_M2', 'HOS_2_11']);
+                    base.hospDe1a4 = numeroVEA(row, ['HOS_1_4A']);
+                    base.hospDe5a11 = numeroVEA(row, ['HOS_5_9A', 'HOS_10_19']);
+                    base.hospDe60mas = numeroVEA(row, ['HOS_60A']);
+                    base.sourceKey = valorVEA(row, ['ID'], `${anio}-${se}-${index}`);
+                } else {
+                    base.casosTotales = numeroVEA(row, ['feb_tot', 'TOT_ATEN']);
+                    base.menor1 = numeroVEA(row, ['FEB_M1']);
+                    base.de1a4 = numeroVEA(row, ['FEB_1_4 a']);
+                    base.de5a11 = numeroVEA(row, ['FEB_5 a_9']);
+                    base.de60mas = numeroVEA(row, ['FEB_M60 a']);
+                    base.sourceKey = valorVEA(row, ['CLAVE'], `${anio}-${se}-${index}`);
+                }
+                return base;
+            });
+
+            return consolidarSemanasVEA(registros);
+        }
+
+        function normalizarFichasVEA(jsonRows) {
+            return jsonRows.map((row, index) => {
+                const anio = String(valorVEA(row, ['ano', 'año', 'AÑO'], '2026')).replace(/\.0$/, '');
+                const se = Math.min(53, Math.max(1, Math.trunc(numeroVEA(row, ['semana', 'SEMANA'], 1))));
+                const apellidoPaterno = String(valorVEA(row, ['apepat'], '')).trim();
+                const apellidoMaterno = String(valorVEA(row, ['apemat'], '')).trim();
+                const nombres = String(valorVEA(row, ['nombres'], '')).trim();
+                const enfermedad = String(valorVEA(row, ['Enfermedad'], '')).trim();
+                const codigo = String(valorVEA(row, ['diagnostic'], '')).trim();
+                const fechaHospitalizacion = valorVEA(row, ['fecha_hos'], '');
+                const hospitalizado = fechaHospitalizacion instanceof Date || (typeof fechaHospitalizacion === 'number' && fechaHospitalizacion > 0) || String(fechaHospitalizacion).trim() !== '';
+
+                return {
+                    id: String(valorVEA(row, ['ficha_inv', 'identificador', 'id'], `FICHA-${anio}-${String(index + 1).padStart(4, '0')}`)),
+                    anio,
+                    dni: String(valorVEA(row, ['dni'], '')),
+                    paciente: [apellidoPaterno, apellidoMaterno, nombres].filter(Boolean).join(' ') || 'Caso sin identificación',
+                    edad: numeroVEA(row, ['edad']),
+                    sexo: String(valorVEA(row, ['sexo'], '')).toUpperCase().startsWith('F') ? 'F' : 'M',
+                    diagnostico: enfermedad || codigo || 'Evento en investigación',
+                    cie10: codigo,
+                    se,
+                    clasificacion: String(valorVEA(row, ['tipo_dx'], 'Sin clasificación')),
+                    condicion: hospitalizado ? 'Hospitalizado' : 'Ambulatorio',
+                    distrito: String(valorVEA(row, ['localidad', 'ubigeo'], 'Sin dato'))
+                };
+            });
+        }
+
         // PROCESAMIENTO MULTI-PESTAÑA Y MONO-HOJA DE VEA_2.XLSX (SheetJS)
         function procesarExcelMultiPestana(e) {
             const file = e.target.files[0];
@@ -686,10 +838,10 @@
             reader.onload = function(evt) {
                 try {
                     const data = new Uint8Array(evt.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
+                    const workbook = XLSX.read(data, { type: 'array', cellDates: true });
                     
-                    let hojasMapeadas = [];
                     let resumenInyeccion = { EDAs: 0, IRAs: 0, Febriles: 0, Individuales: 0 };
+                    let filasLeidas = 0;
 
                     // Limpiar repositorios para evitar colisiones
                     appState.repositorios.EDAs = [];
@@ -706,42 +858,41 @@
                         const sheetData = XLSX.utils.sheet_to_json(worksheet, { range: headerRowIdx, defval: '' });
 
                         if (!sheetData || sheetData.length === 0) return;
+                        filasLeidas += sheetData.length;
 
                         const moduloDestino = clasificarModuloHoja(sheetName, sheetData, idx);
 
                         if (moduloDestino === 'Individuales') {
-                            const datosNormalizados = normalizarFichasIndividuales(sheetData);
+                            const datosNormalizados = normalizarFichasVEA(sheetData);
                             if (datosNormalizados.length > 0) {
                                 appState.repositorios.Individuales = appState.repositorios.Individuales.concat(datosNormalizados);
                                 resumenInyeccion.Individuales += datosNormalizados.length;
-                                hojasMapeadas.push(`Casos Individuales (${sheetName}: ${datosNormalizados.length} reg)`);
                             }
                         } else {
-                            const datosNormalizados = normalizarDataMatrizSE(sheetData);
+                            const datosNormalizados = normalizarDatosVEA(sheetData, moduloDestino);
                             if (datosNormalizados.length > 0) {
                                 appState.repositorios[moduloDestino] = appState.repositorios[moduloDestino].concat(datosNormalizados);
                                 resumenInyeccion[moduloDestino] += datosNormalizados.length;
-                                hojasMapeadas.push(`${moduloDestino} (${sheetName}: ${datosNormalizados.length} semanas)`);
                             }
                         }
                     });
 
-                    // Si hay casos individuales cargados, inyectar y consolidar automáticamente en EDAs, IRAs y Febriles
-                    if (appState.repositorios.Individuales.length > 0) {
+                    // Solo se derivan series de fichas individuales si el Excel no trae sus matrices semanales.
+                    // Así una hoja INDIVIDUAL nunca reemplaza los totales oficiales de EDAs, IRAs o Febriles.
+                    const noHayMatrices = ['EDAs', 'IRAs', 'Febriles'].every(mod => appState.repositorios[mod].length === 0);
+                    if (appState.repositorios.Individuales.length > 0 && noHayMatrices) {
                         generarMatricesDesdeIndividuales();
-                        
-                        // Actualizar resumen de inyección con los datos consolidados
-                        resumenInyeccion.EDAs = appState.repositorios.EDAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
-                        resumenInyeccion.IRAs = appState.repositorios.IRAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
-                        resumenInyeccion.Febriles = appState.repositorios.Febriles.reduce((a, b) => a + (b.casosTotales || 0), 0);
                     }
+
+                    resumenInyeccion.EDAs = appState.repositorios.EDAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
+                    resumenInyeccion.IRAs = appState.repositorios.IRAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
+                    resumenInyeccion.Febriles = appState.repositorios.Febriles.reduce((a, b) => a + (b.casosTotales || 0), 0);
 
                     // Actualizar dropdowns y contadores
                     actualizarOpcionesAnio();
                     actualizarBadgesSidemenu();
 
-                    const totalRegs = appState.repositorios.Individuales.length || Object.values(resumenInyeccion).reduce((a, b) => a + b, 0);
-                    document.getElementById('badgeEstadoOrigen').innerText = `VEA_2.XLSX CARGADO (${totalRegs} REGS)`;
+                    document.getElementById('badgeEstadoOrigen').innerText = `VEA CARGADO (${filasLeidas.toLocaleString()} FILAS)`;
                     document.getElementById('badgeEstadoOrigen').className = 'text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full';
 
                     mostrarModalNotificacion(
@@ -988,7 +1139,7 @@
                 ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-amber-400";
                 dot.className = "relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500";
                 txt.innerText = "ZONA DE ALARMA EPIDEMIOLÓGICA";
-                rec.innerText = "Reforzar triaje diferenciado y muestreo serológico/microbiológico intensivo.";
+                rec.innerText = "Reforzar clasificación clínica diferenciada y muestreo serológico/microbiológico intensivo.";
             } else {
                 banner.className = "w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-900 border-slate-800";
                 ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-emerald-400";
@@ -1105,10 +1256,12 @@
         function renderizarGraficoHospitalizacion(data) {
             if (appState.charts.hospEdad) appState.charts.hospEdad.destroy();
 
-            const sumMenor1 = data.reduce((a, b) => a + Math.floor((b.hospitalizados || 0) * 0.35), 0);
-            const sumDe1a4 = data.reduce((a, b) => a + Math.floor((b.hospitalizados || 0) * 0.30), 0);
-            const sumDe5a11 = data.reduce((a, b) => a + Math.floor((b.hospitalizados || 0) * 0.15), 0);
-            const sumDe60mas = data.reduce((a, b) => a + Math.floor((b.hospitalizados || 0) * 0.20), 0);
+            // Se usan las columnas de hospitalización por grupo etario del Excel.
+            // No se estiman porcentajes cuando el archivo no informa ese desglose.
+            const sumMenor1 = data.reduce((a, b) => a + (b.hospMenor1 || 0), 0);
+            const sumDe1a4 = data.reduce((a, b) => a + (b.hospDe1a4 || 0), 0);
+            const sumDe5a11 = data.reduce((a, b) => a + (b.hospDe5a11 || 0), 0);
+            const sumDe60mas = data.reduce((a, b) => a + (b.hospDe60mas || 0), 0);
 
             const ctx = document.getElementById('chartHospEdad').getContext('2d');
             appState.charts.hospEdad = new Chart(ctx, {

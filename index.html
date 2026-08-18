@@ -65,6 +65,23 @@
         </div>
     </div>
 
+    <!-- Detalle de ficha: campos originales importados desde la hoja INDIVIDUAL -->
+    <div id="modalFichaIndividual" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-5xl w-full max-h-[88vh] flex flex-col shadow-2xl">
+            <div class="flex items-start justify-between gap-4 p-5 border-b border-slate-800">
+                <div>
+                    <h3 class="text-base font-black text-white">Ficha individual — datos importados del Excel</h3>
+                    <p id="subtituloFichaIndividual" class="text-xs text-slate-400 mt-1">Campos originales de la hoja INDIVIDUAL</p>
+                </div>
+                <button onclick="cerrarFichaIndividual()" class="text-slate-400 hover:text-white text-xl leading-none" aria-label="Cerrar">×</button>
+            </div>
+            <div id="contenidoFichaIndividual" class="overflow-y-auto p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            <div class="p-4 border-t border-slate-800 flex justify-end">
+                <button onclick="cerrarFichaIndividual()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 py-2 rounded-xl text-xs">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="flex flex-1 min-h-screen overflow-hidden">
 
         <!-- MENÚ LATERAL (SIDEBAR) -->
@@ -166,11 +183,7 @@
             </div>
 
             <!-- Botón Carga de Datos & Info footer -->
-            <div class="p-3 border-t border-slate-800/80 space-y-2 bg-slate-950/60">
-                <button onclick="cargarDatosDemo()" title="Cargar Datos Demo MINSA" class="sidebar-nav-item w-full bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white font-bold py-2 px-2.5 rounded-xl text-xs flex items-center justify-center gap-2 border border-slate-700/60 transition-all">
-                    <svg class="h-4 w-4 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    <span class="sidebar-text truncate">Cargar Datos MINSA (3 Años)</span>
-                </button>
+            <div class="p-3 border-t border-slate-800/80 bg-slate-950/60">
                 <div class="sidebar-text text-[10px] text-slate-500 text-center font-semibold">
                     VEA v4.2 • Ventanilla - Callao
                 </div>
@@ -195,13 +208,12 @@
                     </div>
                 </div>
 
-                <!-- Botón Subir Excel VEA_2.xlsx -->
+                <!-- Botón para cargar un archivo de datos VEA -->
                 <div class="flex items-center gap-3">
                     <input type="file" id="inputExcelFile" accept=".xlsx, .xls, .csv" class="hidden" onchange="procesarExcelMultiPestana(event)">
                     <button onclick="document.getElementById('inputExcelFile').click()" class="bg-brand-600 hover:bg-brand-500 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-brand-900/40 flex items-center gap-2 border border-brand-500/30">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                        <span class="hidden sm:inline">Subir Excel VEA_2.xlsx</span>
-                        <span class="sm:hidden">VEA_2.xlsx</span>
+                        <span>Subir archivo</span>
                     </button>
                 </div>
             </header>
@@ -351,30 +363,65 @@
 
                     </div>
 
-                    <!-- GRÁFICOS Y TABLAS COMPARATIVAS -->
+                    <!-- GRÁFICOS PRINCIPALES DE VIGILANCIA -->
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <h2 id="tituloDashboardComparativo" class="text-base font-black text-white">Dashboard comparativo — EDAs</h2>
+                            <p id="subtituloDashboardComparativo" class="text-[11px] text-slate-400 font-semibold">Comparativo de los últimos 3 años disponibles</p>
+                        </div>
+                        <span id="badgePeriodoDashboard" class="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">2024 · 2025 · 2026</span>
+                    </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Comparativo Mensual -->
+                        <!-- Comparativo anual -->
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <h3 class="text-sm font-black text-white">Comparativo Mensual Interanual</h3>
-                                    <p class="text-[11px] text-slate-400 font-semibold">Evolución de episodios por mes</p>
+                                    <h3 class="text-sm font-black text-white">Comparativo Anual</h3>
+                                    <p class="text-[11px] text-slate-400 font-semibold">Casos acumulados por año</p>
                                 </div>
-                                <span class="text-xs font-black text-brand-500 bg-brand-500/10 px-2.5 py-1 rounded-lg border border-brand-500/20">HISTÓRICO</span>
+                                <span id="badgeAnualDashboard" class="text-xs font-black text-brand-500 bg-brand-500/10 px-2.5 py-1 rounded-lg border border-brand-500/20">3 AÑOS</span>
+                            </div>
+                            <div class="h-64 relative">
+                                <canvas id="chartAnual"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Comparativo mensual -->
+                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="text-sm font-black text-white">Comparativo Mensual</h3>
+                                    <p class="text-[11px] text-slate-400 font-semibold">Evolución mensual por año</p>
+                                </div>
+                                <span id="badgeMensualDashboard" class="text-xs font-black text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/20">3 AÑOS</span>
                             </div>
                             <div class="h-64 relative">
                                 <canvas id="chartMensual"></canvas>
                             </div>
                         </div>
 
-                        <!-- Curva Semanal -->
+                        <!-- Etapa de vida -->
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <h3 class="text-sm font-black text-white">Línea de Tiempo Semanal (S.E.)</h3>
-                                    <p class="text-[11px] text-slate-400 font-semibold">Tendencia por semana epidemiológica</p>
+                                    <h3 class="text-sm font-black text-white">Etapa de Vida</h3>
+                                    <p class="text-[11px] text-slate-400 font-semibold">Distribución de casos por grupo etario</p>
                                 </div>
-                                <span class="text-xs font-black text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20">S.E. 1 - 52</span>
+                                <span id="badgeEtapaDashboard" class="text-xs font-black text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">EDAD</span>
+                            </div>
+                            <div class="h-64 relative">
+                                <canvas id="chartEtapaVida"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Curva semanal -->
+                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="text-sm font-black text-white">Tendencia Semanal (S.E.)</h3>
+                                    <p class="text-[11px] text-slate-400 font-semibold">Comparativo por semana epidemiológica</p>
+                                </div>
+                                <span id="badgeSemanalDashboard" class="text-xs font-black text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20">3 AÑOS · S.E.</span>
                             </div>
                             <div class="h-64 relative">
                                 <canvas id="chartSemanal"></canvas>
@@ -466,31 +513,46 @@
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                             <div>
                                 <h3 class="text-base font-black text-white">Repositorio de Fichas Epidemiológicas Individuales</h3>
-                                <p class="text-xs text-slate-400 font-semibold">Buscador y filtro detallado de casos notificados uno a uno (Ficha de Notificación Individual MINSA).</p>
+                                <p id="resumenTablaIndividuales" class="text-xs text-slate-400 font-semibold">Ficha de Notificación Individual MINSA. Ordenado del caso más reciente al más antiguo.</p>
                             </div>
                             <div class="flex items-center gap-2">
-                                <input type="text" id="inputBuscarIndividual" oninput="filtrarTablaIndividuales()" placeholder="🔍 Buscar por DNI, Nombre o Diagnóstico..." class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 w-full md:w-64 focus:outline-none focus:border-brand-500">
+                                <input type="search" id="inputBuscarIndividual" oninput="programarBusquedaIndividual()" placeholder="🔍 DNI, ficha, nombre, enfermedad..." class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 w-full md:w-72 focus:outline-none focus:border-brand-500">
+                                <button onclick="limpiarBusquedaIndividual()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-black px-3 py-2 rounded-xl text-xs whitespace-nowrap">Limpiar</button>
                             </div>
                         </div>
+                        <p id="contadorResultadosIndividuales" class="text-[11px] text-slate-500 font-bold">0 resultados</p>
 
                         <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-[550px]">
                             <table class="w-full text-left text-xs">
                                 <thead class="bg-slate-950 text-slate-400 font-bold sticky top-0 border-b border-slate-800">
                                     <tr>
-                                        <th class="p-3">ID / DNI</th>
-                                        <th class="p-3">Paciente</th>
-                                        <th class="p-3">Edad / Sexo</th>
+                                        <th class="p-3">Año</th>
+                                        <th class="p-3">Semana</th>
+                                        <th class="p-3">Fecha inicio</th>
+                                        <th class="p-3">DNI</th>
+                                        <th class="p-3">HC</th>
+                                        <th class="p-3">Apellidos y nombres</th>
+                                        <th class="p-3">Edad</th>
+                                        <th class="p-3">Sexo</th>
+                                        <th class="p-3">Enfermedad</th>
                                         <th class="p-3">Diagnóstico</th>
-                                        <th class="p-3">S.E.</th>
-                                        <th class="p-3">Clasificación</th>
+                                        <th class="p-3">Tipo DX</th>
+                                        <th class="p-3">Fecha notificación</th>
                                         <th class="p-3">Condición</th>
-                                        <th class="p-3">Distrito</th>
+                                        <th class="p-3 text-center">Detalle</th>
                                     </tr>
                                 </thead>
                                 <tbody id="bodyTablaIndividuales" class="divide-y divide-slate-800/60 bg-slate-900/40">
                                     <!-- Datos de casos individuales cargados dinámicamente -->
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="flex items-center justify-between gap-3">
+                            <span id="estadoPaginacionIndividual" class="text-[11px] text-slate-500 font-bold">Página 1</span>
+                            <div class="flex gap-2">
+                                <button id="btnPaginaAnterior" onclick="cambiarPaginaIndividual(-1)" class="bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed border border-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-lg text-xs">← Anterior</button>
+                                <button id="btnPaginaSiguiente" onclick="cambiarPaginaIndividual(1)" class="bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed border border-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-lg text-xs">Siguiente →</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -519,8 +581,10 @@
 
             // Instancias de Gráficos Chart.js
             charts: {
+                anual: null,
                 mensual: null,
                 semanal: null,
+                etapaVida: null,
                 canal: null,
                 hospEdad: null
             }
@@ -718,25 +782,26 @@
 
         function consolidarSemanasVEA(registros) {
             const agrupados = new Map();
-            const vistos = new Set();
 
             registros.forEach(registro => {
-                const claveUnica = registro.sourceKey ? `${registro.modulo}|${registro.sourceKey}` : '';
-                if (claveUnica && vistos.has(claveUnica)) return;
-                if (claveUnica) vistos.add(claveUnica);
-
+                // Una misma S.E. puede tener varias filas válidas en la fuente.
+                // Todas se suman; no se descartan registros por la clave de origen.
                 const key = `${registro.anio}|${registro.se}`;
                 const actual = agrupados.get(key) || {
                     anio: registro.anio, se: registro.se, mes: registro.mes,
                     casosTotales: 0, hospitalizados: 0,
                     menor1: 0, de1a4: 0, de5a11: 0, de60mas: 0,
                     hospMenor1: 0, hospDe1a4: 0, hospDe5a11: 0, hospDe60mas: 0,
+                    etapasVida: {},
                     registrosFuente: 0
                 };
 
                 ['casosTotales', 'hospitalizados', 'menor1', 'de1a4', 'de5a11', 'de60mas',
                  'hospMenor1', 'hospDe1a4', 'hospDe5a11', 'hospDe60mas'].forEach(field => {
                     actual[field] += Number(registro[field]) || 0;
+                });
+                Object.entries(registro.etapasVida || {}).forEach(([etapa, valor]) => {
+                    actual.etapasVida[etapa] = (actual.etapasVida[etapa] || 0) + (Number(valor) || 0);
                 });
                 actual.registrosFuente += 1;
                 agrupados.set(key, actual);
@@ -759,6 +824,7 @@
                     casosTotales: 0, hospitalizados: 0,
                     menor1: 0, de1a4: 0, de5a11: 0, de60mas: 0,
                     hospMenor1: 0, hospDe1a4: 0, hospDe5a11: 0, hospDe60mas: 0,
+                    etapasVida: {},
                     sourceKey: ''
                 };
 
@@ -773,6 +839,15 @@
                     base.hospDe1a4 = sumarValoresVEA(row, ['DAA_H1_4 a', 'DIS_H1_4 a']);
                     base.hospDe5a11 = sumarValoresVEA(row, ['DAA_H5_11 a', 'DIS_H5_11 a']);
                     base.hospDe60mas = sumarValoresVEA(row, ['DAA_H60 a', 'DIS_H60 a']);
+                    base.etapasVida = {
+                        '< 1 año': base.menor1,
+                        '1–4 años': base.de1a4,
+                        '5–11 años': base.de5a11,
+                        '12–17 años': numeroVEA(row, ['A 12-17 a']),
+                        '18–29 años': numeroVEA(row, ['A 18-29 a']),
+                        '30–59 años': numeroVEA(row, ['A 30-59 a']),
+                        '60+ años': base.de60mas
+                    };
                     base.sourceKey = valorVEA(row, ['ID'], `${anio}-${se}-${index}`);
                 } else if (modulo === 'IRAs') {
                     base.casosTotales = numeroVEA(row, ['TOTAL IRAS']);
@@ -785,6 +860,14 @@
                     base.hospDe1a4 = numeroVEA(row, ['HOS_1_4A']);
                     base.hospDe5a11 = numeroVEA(row, ['HOS_5_9A', 'HOS_10_19']);
                     base.hospDe60mas = numeroVEA(row, ['HOS_60A']);
+                    base.etapasVida = {
+                        '< 1 año': base.menor1,
+                        '1–4 años': base.de1a4,
+                        '5–9 años': numeroVEA(row, ['IRA_5_9A']),
+                        '10–19 años': numeroVEA(row, ['IRA_10_19A']),
+                        '20–59 años': numeroVEA(row, ['IRA_20_59A']),
+                        '60+ años': base.de60mas
+                    };
                     base.sourceKey = valorVEA(row, ['ID'], `${anio}-${se}-${index}`);
                 } else {
                     base.casosTotales = numeroVEA(row, ['feb_tot', 'TOT_ATEN']);
@@ -792,6 +875,14 @@
                     base.de1a4 = numeroVEA(row, ['FEB_1_4 a']);
                     base.de5a11 = numeroVEA(row, ['FEB_5 a_9']);
                     base.de60mas = numeroVEA(row, ['FEB_M60 a']);
+                    base.etapasVida = {
+                        '< 1 año': base.menor1,
+                        '1–4 años': base.de1a4,
+                        '5–9 años': base.de5a11,
+                        '10–19 años': numeroVEA(row, ['FEB_10_19 a']),
+                        '20–59 años': numeroVEA(row, ['FEB_20_59 a']),
+                        '60+ años': base.de60mas
+                    };
                     base.sourceKey = valorVEA(row, ['CLAVE'], `${anio}-${se}-${index}`);
                 }
                 return base;
@@ -800,31 +891,79 @@
             return consolidarSemanasVEA(registros);
         }
 
+        function fechaOrdenVEA(...valores) {
+            for (const valor of valores) {
+                if (valor instanceof Date && !Number.isNaN(valor.getTime())) return valor.getTime();
+                if (typeof valor === 'number' && Number.isFinite(valor)) return valor;
+                const fecha = Date.parse(String(valor || ''));
+                if (!Number.isNaN(fecha)) return fecha;
+            }
+            return 0;
+        }
+
+        function esFilaCabeceraRepetidaVEA(row) {
+            const anio = claveVEA(valorVEA(row, ['ano', 'año'], ''));
+            const semana = claveVEA(valorVEA(row, ['semana'], ''));
+            const fechaNot = claveVEA(valorVEA(row, ['fecha_not'], ''));
+            return anio === 'ano' || semana === 'semana' || fechaNot === 'fechanot';
+        }
+
+        function formatoFechaVEA(valor) {
+            if (valor === null || valor === undefined || valor === '') return '—';
+            if (valor instanceof Date && !Number.isNaN(valor.getTime())) {
+                return `${String(valor.getDate()).padStart(2, '0')}/${String(valor.getMonth() + 1).padStart(2, '0')}/${valor.getFullYear()}`;
+            }
+            const texto = String(valor).trim();
+            const iso = texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+            return texto;
+        }
+
         function normalizarFichasVEA(jsonRows) {
-            return jsonRows.map((row, index) => {
+            return jsonRows.filter(row => !esFilaCabeceraRepetidaVEA(row)).map((row, index) => {
                 const anio = String(valorVEA(row, ['ano', 'año', 'AÑO'], '2026')).replace(/\.0$/, '');
                 const se = Math.min(53, Math.max(1, Math.trunc(numeroVEA(row, ['semana', 'SEMANA'], 1))));
                 const apellidoPaterno = String(valorVEA(row, ['apepat'], '')).trim();
                 const apellidoMaterno = String(valorVEA(row, ['apemat'], '')).trim();
                 const nombres = String(valorVEA(row, ['nombres'], '')).trim();
+                const ficha = String(valorVEA(row, ['ficha_inv'], '')).trim();
+                const identificador = String(valorVEA(row, ['identificador', 'id'], '')).trim();
                 const enfermedad = String(valorVEA(row, ['Enfermedad'], '')).trim();
                 const codigo = String(valorVEA(row, ['diagnostic'], '')).trim();
+                const tipoDx = String(valorVEA(row, ['tipo_dx'], 'Sin clasificación')).trim();
+                const fechaNotificacion = valorVEA(row, ['fecha_not'], '');
+                const fechaInvestigacion = valorVEA(row, ['fecha_inv'], '');
+                const fechaInicio = valorVEA(row, ['fecha_ini'], '');
+                const localidad = String(valorVEA(row, ['localidad', 'ubigeo'], 'Sin dato')).trim();
                 const fechaHospitalizacion = valorVEA(row, ['fecha_hos'], '');
                 const hospitalizado = fechaHospitalizacion instanceof Date || (typeof fechaHospitalizacion === 'number' && fechaHospitalizacion > 0) || String(fechaHospitalizacion).trim() !== '';
 
                 return {
-                    id: String(valorVEA(row, ['ficha_inv', 'identificador', 'id'], `FICHA-${anio}-${String(index + 1).padStart(4, '0')}`)),
+                    id: ficha || identificador || `FICHA-${anio}-${String(index + 1).padStart(4, '0')}`,
+                    ficha,
+                    identificador,
                     anio,
                     dni: String(valorVEA(row, ['dni'], '')),
+                    hc: String(valorVEA(row, ['hc'], '')).trim(),
                     paciente: [apellidoPaterno, apellidoMaterno, nombres].filter(Boolean).join(' ') || 'Caso sin identificación',
                     edad: numeroVEA(row, ['edad']),
                     sexo: String(valorVEA(row, ['sexo'], '')).toUpperCase().startsWith('F') ? 'F' : 'M',
+                    enfermedad: enfermedad || 'Sin enfermedad registrada',
+                    diagnosticoCodigo: codigo || 'Sin diagnóstico registrado',
                     diagnostico: enfermedad || codigo || 'Evento en investigación',
                     cie10: codigo,
                     se,
-                    clasificacion: String(valorVEA(row, ['tipo_dx'], 'Sin clasificación')),
+                    tipoDx,
+                    clasificacion: tipoDx,
+                    fechaInicio,
+                    fechaNotificacion,
+                    fechaOrden: fechaOrdenVEA(fechaInicio, fechaNotificacion, fechaInvestigacion),
                     condicion: hospitalizado ? 'Hospitalizado' : 'Ambulatorio',
-                    distrito: String(valorVEA(row, ['localidad', 'ubigeo'], 'Sin dato'))
+                    localidad,
+                    distrito: localidad,
+                    // Se conserva la fila completa para que todos los campos de la
+                    // hoja INDIVIDUAL puedan consultarse sin inventar ni reemplazar datos.
+                    camposOriginales: { ...row }
                 };
             });
         }
@@ -877,12 +1016,17 @@
                         }
                     });
 
-                    // Solo se derivan series de fichas individuales si el Excel no trae sus matrices semanales.
-                    // Así una hoja INDIVIDUAL nunca reemplaza los totales oficiales de EDAs, IRAs o Febriles.
-                    const noHayMatrices = ['EDAs', 'IRAs', 'Febriles'].every(mod => appState.repositorios[mod].length === 0);
-                    if (appState.repositorios.Individuales.length > 0 && noHayMatrices) {
-                        generarMatricesDesdeIndividuales();
-                    }
+                    // El primer registro visible es siempre el último caso disponible:
+                    // año, semana epidemiológica y fecha de notificación en orden descendente.
+                    appState.repositorios.Individuales.sort((a, b) =>
+                        Number(b.anio || 0) - Number(a.anio || 0) ||
+                        Number(b.se || 0) - Number(a.se || 0) ||
+                        Number(b.fechaOrden || 0) - Number(a.fechaOrden || 0)
+                    );
+
+                    // AISLAMIENTO ESTRICTO: Casos Individuales nunca crea, recalcula ni
+                    // reemplaza las matrices oficiales de EDAs, IRAs o Febriles.
+                    // Cada dashboard se alimenta exclusivamente de su propia hoja Excel.
 
                     resumenInyeccion.EDAs = appState.repositorios.EDAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
                     resumenInyeccion.IRAs = appState.repositorios.IRAs.reduce((a, b) => a + (b.casosTotales || 0), 0);
@@ -1008,13 +1152,8 @@
             if (!selectAnio) return;
 
             const aniosDetectados = new Set();
-            
-            Object.keys(appState.repositorios).forEach(mod => {
-                (appState.repositorios[mod] || []).forEach(r => {
-                    if (r && r.anio) {
-                        aniosDetectados.add(String(r.anio).trim());
-                    }
-                });
+            (appState.repositorios[appState.moduloActivo] || []).forEach(r => {
+                if (r && r.anio) aniosDetectados.add(String(r.anio).trim());
             });
 
             const listaAnios = Array.from(aniosDetectados).sort((a, b) => b.localeCompare(a));
@@ -1029,7 +1168,8 @@
 
             const optUltimos = document.createElement('option');
             optUltimos.value = 'ULTIMOS_3';
-            optUltimos.innerText = 'Últimos 3 Años (2024 - 2026)';
+            const tresAnios = listaAnios.slice(0, 3).sort();
+            optUltimos.innerText = tresAnios.length ? `Últimos ${tresAnios.length} Años (${tresAnios.join(' - ')})` : 'Últimos 3 Años';
             selectAnio.appendChild(optUltimos);
 
             listaAnios.forEach(anio => {
@@ -1050,11 +1190,12 @@
         // OBTENER DATOS FILTRADOS DEL REPOSO ACTIVO
         function obtenerDatosFiltrados() {
             const data = appState.repositorios[appState.moduloActivo] || [];
+            const ultimosTres = [...new Set(data.map(r => String(r.anio)))].sort((a, b) => b.localeCompare(a)).slice(0, 3);
             
             return data.filter(r => {
                 let cumpleAnio = false;
                 if (appState.anioSeleccionado === 'ULTIMOS_3') {
-                    cumpleAnio = ['2024', '2025', '2026'].includes(String(r.anio));
+                    cumpleAnio = ultimosTres.includes(String(r.anio));
                 } else if (appState.anioSeleccionado === 'TODOS') {
                     cumpleAnio = true;
                 } else {
@@ -1096,7 +1237,15 @@
             document.getElementById('kpiTotalHistorico').innerText = totalHistorico.toLocaleString();
             document.getElementById('kpiCasosAnio').innerText = totalAnioActivo.toLocaleString();
             document.getElementById('kpiTasaIncidencia').innerText = tasa;
-            document.getElementById('kpiGrupoPrevalente').innerText = appState.moduloActivo === 'IRAs' ? 'Niños < 5 años' : (appState.moduloActivo === 'EDAs' ? 'Niños 1-4 años' : 'Jóvenes / Adultos');
+            const distribucionEtapas = {};
+            dataFiltrada.forEach(registro => {
+                Object.entries(registro.etapasVida || {}).forEach(([etapa, valor]) => {
+                    distribucionEtapas[etapa] = (distribucionEtapas[etapa] || 0) + (Number(valor) || 0);
+                });
+            });
+            const grupoMayor = Object.entries(distribucionEtapas).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('kpiGrupoPrevalente').innerText = grupoMayor ? grupoMayor[0] : '--';
+            document.getElementById('subKpiGrupo').innerText = grupoMayor ? `${grupoMayor[1].toLocaleString()} casos notificados` : 'Sin datos por etapa de vida';
             
             document.getElementById('kpiHospTotal').innerText = totalHosp.toLocaleString();
             const severidad = totalAnioActivo > 0 ? ((totalHosp / totalAnioActivo) * 100).toFixed(1) : '0.0';
@@ -1151,65 +1300,110 @@
 
         // RENDERIZAR GRÁFICOS DASHBOARD
         function renderizarGraficosDashboard(data) {
-            if (appState.charts.mensual) appState.charts.mensual.destroy();
-            if (appState.charts.semanal) appState.charts.semanal.destroy();
-
-            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-            const casosMensuales = meses.map(m => {
-                return data.filter(r => r.mes === m).reduce((a, b) => a + (b.casosTotales || 0), 0);
+            ['anual', 'mensual', 'semanal', 'etapaVida'].forEach(nombre => {
+                if (appState.charts[nombre]) appState.charts[nombre].destroy();
             });
 
-            const ctxM = document.getElementById('chartMensual').getContext('2d');
-            appState.charts.mensual = new Chart(ctxM, {
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const semanas = Array.from({ length: 52 }, (_, i) => i + 1);
+            const anios = [...new Set(data.map(registro => String(registro.anio)))].sort();
+            const colores = ['#ef4444', '#38bdf8', '#a78bfa', '#f59e0b'];
+            const sumar = registros => registros.reduce((total, registro) => total + (Number(registro.casosTotales) || 0), 0);
+            const nombresModulo = { EDAs: 'EDAs (Diarreicas)', IRAs: 'IRAs (Respiratorias)', Febriles: 'Febriles / Dengue' };
+            const nombreModulo = nombresModulo[appState.moduloActivo] || appState.moduloActivo;
+            const periodo = anios.length ? anios.join(' · ') : 'Sin datos cargados';
+            const ponerTexto = (id, texto) => {
+                const elemento = document.getElementById(id);
+                if (elemento) elemento.innerText = texto;
+            };
+            ponerTexto('tituloDashboardComparativo', `Dashboard comparativo — ${nombreModulo}`);
+            ponerTexto('subtituloDashboardComparativo', anios.length ? `Comparativo de ${anios.length} años: ${periodo}` : 'Cargue un archivo Excel VEA para visualizar los comparativos');
+            ponerTexto('badgePeriodoDashboard', periodo);
+            ponerTexto('badgeAnualDashboard', `${anios.length} AÑOS`);
+            ponerTexto('badgeMensualDashboard', `${anios.length} AÑOS`);
+            ponerTexto('badgeEtapaDashboard', nombreModulo.toUpperCase());
+            ponerTexto('badgeSemanalDashboard', `${anios.length} AÑOS · S.E.`);
+            const opciones = (mostrarLeyenda = true) => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: mostrarLeyenda, labels: { color: '#cbd5e1', usePointStyle: true, boxWidth: 8 } },
+                    tooltip: { backgroundColor: '#020617', titleColor: '#fff', bodyColor: '#cbd5e1', borderColor: '#334155', borderWidth: 1 }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                    y: { beginAtZero: true, grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                }
+            });
+
+            appState.charts.anual = new Chart(document.getElementById('chartAnual').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: meses,
+                    labels: anios,
                     datasets: [{
-                        label: 'Casos por Mes',
-                        data: casosMensuales,
-                        backgroundColor: '#ef4444',
+                        label: 'Casos notificados',
+                        data: anios.map(anio => sumar(data.filter(registro => String(registro.anio) === anio))),
+                        backgroundColor: anios.map((_, indice) => colores[indice % colores.length]),
+                        borderRadius: 7,
+                        maxBarThickness: 64
+                    }]
+                },
+                options: opciones(false)
+            });
+
+            appState.charts.mensual = new Chart(document.getElementById('chartMensual').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: meses,
+                    datasets: anios.map((anio, indice) => ({
+                        label: anio,
+                        data: meses.map(mes => sumar(data.filter(registro => String(registro.anio) === anio && registro.mes === mes))),
+                        borderColor: colores[indice % colores.length],
+                        backgroundColor: colores[indice % colores.length] + '22',
+                        tension: 0.28,
+                        borderWidth: 2.5,
+                        pointRadius: 2.5,
+                        fill: false
+                    }))
+                },
+                options: opciones(true)
+            });
+
+            const etapas = {};
+            data.forEach(registro => Object.entries(registro.etapasVida || {}).forEach(([etapa, valor]) => {
+                etapas[etapa] = (etapas[etapa] || 0) + (Number(valor) || 0);
+            }));
+            const etiquetasEtapas = Object.keys(etapas);
+            appState.charts.etapaVida = new Chart(document.getElementById('chartEtapaVida').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: etiquetasEtapas,
+                    datasets: [{
+                        label: 'Casos por etapa de vida',
+                        data: etiquetasEtapas.map(etapa => etapas[etapa]),
+                        backgroundColor: etiquetasEtapas.map((_, indice) => colores[indice % colores.length]),
                         borderRadius: 6
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
-                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
-                    }
-                }
+                options: opciones(false)
             });
 
-            const ctxS = document.getElementById('chartSemanal').getContext('2d');
-            const labelsSE = data.map(d => 'S.E. ' + d.se);
-            const valoresSE = data.map(d => d.casosTotales);
-
-            appState.charts.semanal = new Chart(ctxS, {
+            appState.charts.semanal = new Chart(document.getElementById('chartSemanal').getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: labelsSE,
-                    datasets: [{
-                        label: 'Casos Semanales',
-                        data: valoresSE,
-                        borderColor: '#6366f1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        fill: true,
-                        tension: 0.3,
+                    labels: semanas.map(semana => 'S.E. ' + semana),
+                    datasets: anios.map((anio, indice) => ({
+                        label: anio,
+                        data: semanas.map(semana => sumar(data.filter(registro => String(registro.anio) === anio && Number(registro.se) === semana))),
+                        borderColor: colores[indice % colores.length],
+                        backgroundColor: colores[indice % colores.length] + '1A',
+                        tension: 0.25,
                         borderWidth: 2,
-                        pointRadius: 2
-                    }]
+                        pointRadius: 1.8,
+                        fill: false
+                    }))
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 9 } } },
-                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
-                    }
-                }
+                options: opciones(true)
             });
         }
 
@@ -1316,46 +1510,170 @@
         }
 
         // RENDERIZAR REPOSITORIO INDIVIDUALES
-        function renderizarTablaIndividuales() {
+        let rafBusquedaIndividual = null;
+        const FILAS_POR_PAGINA_INDIVIDUALES = 50;
+        let paginaIndividualActual = 1;
+        let resultadosIndividualesActuales = null;
+        let terminoBusquedaIndividualActual = '';
+
+        function normalizarTextoBusqueda(texto) {
+            return String(texto ?? '')
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase().trim();
+        }
+
+        function prepararIndiceBusquedaIndividual() {
+            const lista = appState.repositorios.Individuales || [];
+            lista.forEach((item, indice) => {
+                if (item.indiceRepositorio !== indice || !item.indiceBusqueda) {
+                    item.indiceRepositorio = indice;
+                    item.indiceBusqueda = normalizarTextoBusqueda([
+                        item.anio, item.se, item.ficha, item.identificador, item.id, item.dni, item.hc, item.paciente, item.edad,
+                        item.sexo, item.enfermedad, item.diagnosticoCodigo, item.tipoDx,
+                        item.fechaInicio, item.fechaNotificacion, item.localidad, item.condicion
+                    ].join(' '));
+                }
+            });
+        }
+
+        function renderizarTablaIndividuales(listaMostrada = null, termino = '') {
             const tbody = document.getElementById('bodyTablaIndividuales');
             tbody.innerHTML = '';
             
-            const lista = appState.repositorios.Individuales || [];
+            const listaTotal = appState.repositorios.Individuales || [];
+            prepararIndiceBusquedaIndividual();
+            const lista = listaMostrada || listaTotal;
+            const totalPaginas = Math.max(1, Math.ceil(lista.length / FILAS_POR_PAGINA_INDIVIDUALES));
+            paginaIndividualActual = Math.min(Math.max(1, paginaIndividualActual), totalPaginas);
+            const inicio = (paginaIndividualActual - 1) * FILAS_POR_PAGINA_INDIVIDUALES;
+            const listaPagina = lista.slice(inicio, inicio + FILAS_POR_PAGINA_INDIVIDUALES);
+            const resumen = document.getElementById('resumenTablaIndividuales');
+            const contador = document.getElementById('contadorResultadosIndividuales');
+            if (resumen) resumen.innerText = listaTotal.length
+                ? `${listaTotal.length.toLocaleString()} fichas importadas desde la hoja INDIVIDUAL. Primer registro: último caso disponible.`
+                : 'Ficha de Notificación Individual MINSA. Aún no hay fichas cargadas.';
+            if (contador) contador.innerText = termino
+                ? `${lista.length.toLocaleString()} resultado(s) para “${termino}”`
+                : `${lista.length.toLocaleString()} ficha(s) disponibles`;
+            const estadoPaginacion = document.getElementById('estadoPaginacionIndividual');
+            const btnAnterior = document.getElementById('btnPaginaAnterior');
+            const btnSiguiente = document.getElementById('btnPaginaSiguiente');
+            if (estadoPaginacion) estadoPaginacion.innerText = lista.length
+                ? `Mostrando ${inicio + 1}–${Math.min(inicio + FILAS_POR_PAGINA_INDIVIDUALES, lista.length)} de ${lista.length.toLocaleString()} · Página ${paginaIndividualActual}/${totalPaginas}`
+                : 'Sin resultados';
+            if (btnAnterior) btnAnterior.disabled = paginaIndividualActual <= 1 || !lista.length;
+            if (btnSiguiente) btnSiguiente.disabled = paginaIndividualActual >= totalPaginas || !lista.length;
 
-            lista.forEach(item => {
+            if (!lista.length) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="14" class="p-8 text-center text-slate-400 font-semibold">No hay fichas individuales cargadas. Use <span class="text-brand-400 font-black">Subir archivo</span> y seleccione un Excel VEA que contenga la hoja <span class="text-white font-black">INDIVIDUAL</span>. No se muestran casos de demostración.</td>`;
+                tbody.appendChild(tr);
+                return;
+            }
+
+            listaPagina.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-800/50 transition-colors";
-
-                const badgeClasif = item.clasificacion === 'Confirmado' 
-                    ? '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-500/20 text-rose-400 border border-rose-500/30">Confirmado</span>'
-                    : '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30">Sospechoso</span>';
 
                 const badgeCond = item.condicion === 'Hospitalizado'
                     ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300">Hospitalizado</span>'
                     : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400">Ambulatorio</span>';
 
                 tr.innerHTML = `
-                    <td class="p-3 font-mono text-slate-300 font-bold">${item.dni || item.id}</td>
-                    <td class="p-3 font-bold text-white">${item.paciente}</td>
-                    <td class="p-3 text-slate-300">${item.edad} a / ${item.sexo}</td>
-                    <td class="p-3 text-cyan-300 font-medium">${item.diagnostico}</td>
-                    <td class="p-3 font-bold text-slate-400">S.E. ${item.se} (${item.anio})</td>
-                    <td class="p-3">${badgeClasif}</td>
+                    <td class="p-3 font-bold text-slate-300">${escaparHTML(item.anio)}</td>
+                    <td class="p-3 font-bold text-slate-300">S.E. ${escaparHTML(item.se)}</td>
+                    <td class="p-3 text-slate-400 whitespace-nowrap">${escaparHTML(formatoFechaVEA(item.fechaInicio))}</td>
+                    <td class="p-3 font-mono text-slate-300 font-bold">${escaparHTML(item.dni || 'Sin DNI')}</td>
+                    <td class="p-3 font-mono text-slate-300">${escaparHTML(item.hc || '—')}</td>
+                    <td class="p-3 font-bold text-white">${escaparHTML(item.paciente)}</td>
+                    <td class="p-3 text-slate-300">${escaparHTML(item.edad)}</td>
+                    <td class="p-3 text-slate-300">${escaparHTML(item.sexo)}</td>
+                    <td class="p-3 text-cyan-300 font-medium">${escaparHTML(item.enfermedad)}</td>
+                    <td class="p-3 text-slate-300 font-mono">${escaparHTML(item.diagnosticoCodigo)}</td>
+                    <td class="p-3 text-amber-300">${escaparHTML(item.tipoDx)}</td>
+                    <td class="p-3 text-slate-400 whitespace-nowrap">${escaparHTML(formatoFechaVEA(item.fechaNotificacion))}</td>
                     <td class="p-3">${badgeCond}</td>
-                    <td class="p-3 text-slate-400">${item.distrito}</td>
+                    <td class="p-3 text-center"><button onclick="verFichaIndividual(${item.indiceRepositorio})" class="text-[10px] font-black px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20">Ver ficha</button></td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function filtrarTablaIndividuales() {
-            const term = document.getElementById('inputBuscarIndividual').value.toLowerCase();
-            const filas = document.querySelectorAll('#bodyTablaIndividuales tr');
-            
-            filas.forEach(f => {
-                const text = f.innerText.toLowerCase();
-                f.style.display = text.includes(term) ? '' : 'none';
+        function programarBusquedaIndividual() {
+            if (rafBusquedaIndividual) cancelAnimationFrame(rafBusquedaIndividual);
+            rafBusquedaIndividual = requestAnimationFrame(() => {
+                rafBusquedaIndividual = null;
+                filtrarTablaIndividuales();
             });
+        }
+
+        function filtrarTablaIndividuales() {
+            const input = document.getElementById('inputBuscarIndividual');
+            const terminoVisible = input ? input.value.trim() : '';
+            const termino = normalizarTextoBusqueda(terminoVisible);
+            const lista = appState.repositorios.Individuales || [];
+            prepararIndiceBusquedaIndividual();
+            const resultados = termino ? lista.filter(item => item.indiceBusqueda.includes(termino)) : lista;
+            paginaIndividualActual = 1;
+            resultadosIndividualesActuales = resultados;
+            terminoBusquedaIndividualActual = terminoVisible;
+            renderizarTablaIndividuales(resultados, terminoVisible);
+        }
+
+        function limpiarBusquedaIndividual() {
+            const input = document.getElementById('inputBuscarIndividual');
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+            paginaIndividualActual = 1;
+            resultadosIndividualesActuales = null;
+            terminoBusquedaIndividualActual = '';
+            renderizarTablaIndividuales();
+        }
+
+        function cambiarPaginaIndividual(direccion) {
+            const lista = resultadosIndividualesActuales || appState.repositorios.Individuales || [];
+            const totalPaginas = Math.max(1, Math.ceil(lista.length / FILAS_POR_PAGINA_INDIVIDUALES));
+            paginaIndividualActual = Math.min(Math.max(1, paginaIndividualActual + direccion), totalPaginas);
+            renderizarTablaIndividuales(lista, terminoBusquedaIndividualActual);
+        }
+
+        function escaparHTML(valor) {
+            return String(valor ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function formatoCampoIndividual(valor) {
+            if (valor === null || valor === undefined || valor === '') return '—';
+            if (valor instanceof Date && !Number.isNaN(valor.getTime())) return formatoFechaVEA(valor);
+            return String(valor);
+        }
+
+        function verFichaIndividual(indice) {
+            const ficha = (appState.repositorios.Individuales || [])[indice];
+            if (!ficha) return;
+            const contenido = document.getElementById('contenidoFichaIndividual');
+            const subtitulo = document.getElementById('subtituloFichaIndividual');
+            if (subtitulo) subtitulo.innerText = `Ficha ${ficha.id || 'sin identificador'} · campos originales de la hoja INDIVIDUAL`;
+            contenido.innerHTML = Object.entries(ficha.camposOriginales || {}).map(([campo, valor]) => `
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 min-w-0">
+                    <p class="text-[10px] uppercase tracking-wide text-slate-500 font-black break-words">${escaparHTML(campo)}</p>
+                    <p class="text-xs text-slate-200 font-semibold mt-1 break-words">${escaparHTML(formatoCampoIndividual(valor))}</p>
+                </div>
+            `).join('');
+            document.getElementById('modalFichaIndividual').classList.remove('hidden');
+            document.getElementById('modalFichaIndividual').classList.add('flex');
+        }
+
+        function cerrarFichaIndividual() {
+            const modal = document.getElementById('modalFichaIndividual');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
 
         // EXPORTACIÓN A CSV
@@ -1394,6 +1712,7 @@
         // SELECCIONAR MÓDULO (EDAs, IRAs, Febriles, Individuales)
         function seleccionarModulo(modulo) {
             appState.moduloActivo = modulo;
+            if (modulo !== 'Individuales') actualizarOpcionesAnio();
 
             const modulosBtns = {
                 EDAs: document.getElementById('navBtnEDAs'),
@@ -1532,16 +1851,32 @@
                         const casosBase = Math.floor((15 + Math.random() * 25) * multiplicadorBase * estacionalidad);
                         const hosp = Math.floor(casosBase * (0.05 + Math.random() * 0.08));
 
+                        const menor1 = Math.floor(casosBase * 0.12);
+                        const de1a4 = Math.floor(casosBase * 0.23);
+                        const de5a11 = Math.floor(casosBase * 0.18);
+                        const de12a17 = Math.floor(casosBase * 0.10);
+                        const de18a29 = Math.floor(casosBase * 0.12);
+                        const de30a59 = Math.floor(casosBase * 0.15);
+                        const de60mas = Math.max(0, casosBase - menor1 - de1a4 - de5a11 - de12a17 - de18a29 - de30a59);
                         res.push({
                             anio: anio,
                             se: se,
                             mes: mes,
                             casosTotales: casosBase,
                             hospitalizados: hosp,
-                            menor1: Math.floor(casosBase * 0.25),
-                            de1a4: Math.floor(casosBase * 0.35),
-                            de5a11: Math.floor(casosBase * 0.20),
-                            de60mas: Math.floor(casosBase * 0.20)
+                            menor1,
+                            de1a4,
+                            de5a11,
+                            de60mas,
+                            etapasVida: {
+                                '< 1 año': menor1,
+                                '1–4 años': de1a4,
+                                '5–11 años': de5a11,
+                                '12–17 años': de12a17,
+                                '18–29 años': de18a29,
+                                '30–59 años': de30a59,
+                                '60+ años': de60mas
+                            }
                         });
                     }
                 });
@@ -1552,30 +1887,9 @@
             appState.repositorios.IRAs = crearSerieSemanas(1.8);
             appState.repositorios.Febriles = crearSerieSemanas(0.9);
 
-            const nombres = ['Carlos Mendoza', 'María Gutiérrez', 'Juan Pérez', 'Ana Flores', 'Luis Ramos', 'Elena Torres', 'Diego Castro', 'Sofía Vargas', 'José Martínez', 'Lucía Morales', 'Gabriel Díaz', 'Valeria Silva', 'Mateo Rojas', 'Camila Benítez', 'Lucas Fernández'];
-            const diagnosticos = ['Dengue sin signos de alarma', 'SIRA Severe', 'EDA Acuosa Aguda', 'Síndrome Febril Agudo', 'Gastroenteritis Infecciosa', 'Neumonía Adquirida en Comunidad', 'Infección Respiratoria Aguda', 'Dengue con signos de alarma'];
-            const distritos = ['Ventanilla', 'Mi Perú', 'Ventanilla Alta', 'Pachacútec', 'Angamos', 'Ciudad Satélite'];
-
-            const listaIndiv = [];
-            for (let i = 1; i <= 40; i++) {
-                const anio = anios[i % 3];
-                const se = (i * 3) % 52 + 1;
-                const nombre = nombres[i % nombres.length] + ' ' + String.fromCharCode(65 + (i % 26)) + '.';
-                listaIndiv.push({
-                    id: 'FICHA-' + anio + '-' + String(i).padStart(4, '0'),
-                    anio: anio,
-                    dni: String(70000000 + Math.floor(Math.random() * 9999999)),
-                    paciente: nombre,
-                    edad: Math.floor(Math.random() * 75) + 1,
-                    sexo: i % 2 === 0 ? 'M' : 'F',
-                    diagnostico: diagnosticos[i % diagnosticos.length],
-                    se: se,
-                    clasificacion: i % 4 === 0 ? 'Sospechoso' : 'Confirmado',
-                    condicion: i % 5 === 0 ? 'Hospitalizado' : 'Ambulatorio',
-                    distrito: distritos[i % distritos.length]
-                });
-            }
-            appState.repositorios.Individuales = listaIndiv;
+            // Las fichas individuales nunca se generan como demostración: contienen
+            // personas reales y solo deben provenir de la hoja INDIVIDUAL del Excel VEA.
+            appState.repositorios.Individuales = [];
 
             actualizarOpcionesAnio();
             actualizarBadgesSidemenu();
@@ -1585,7 +1899,7 @@
         function cargarDatosDemo() {
             generarDatosDemo();
             actualizarInterfaceyGraficos();
-            mostrarModalNotificacion('Demo Cargada', 'Se han inicializado los repositorios independientes de EDAs, IRAs, Febriles y Casos Individuales con estructura de 3 años del MINSA.', 'exito');
+            mostrarModalNotificacion('Datos de prueba cargados', 'Se cargaron únicamente series demostrativas para EDAs, IRAs y Febriles. Para Casos Individuales, use “Subir archivo” y cargue la hoja INDIVIDUAL del Excel VEA.', 'info');
         }
 
         function mostrarModalNotificacion(titulo, desc, tipo) {

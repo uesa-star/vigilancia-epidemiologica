@@ -54,6 +54,9 @@
     <header id="cabeceraPrincipal" class="border-b border-slate-800 bg-slate-950/95 backdrop-blur-md px-4 md:px-6 py-4 sticky top-0 z-40 shadow-xl">
         <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
+                <button id="btnAbrirMenuLateral" onclick="alternarMenuLateral()" aria-label="Desplegar menú de módulos" aria-expanded="false" class="h-11 w-11 shrink-0 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 hover:border-red-500 hover:bg-slate-800 transition-colors flex items-center justify-center" title="Desplegar menú">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                </button>
                 <div id="headerIconContainer" class="p-4 bg-red-650 rounded-xl text-white shadow-lg theme-transition">
                     <svg class="h-6 w-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -81,12 +84,12 @@
             <div class="flex flex-col sm:flex-row items-center gap-3 bg-slate-900/80 border border-slate-800 p-2 rounded-xl w-full xl:w-auto">
                 <button onclick="document.getElementById('excelFileInput').click()" class="w-full sm:w-auto bg-indigo-650 hover:bg-indigo-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2" title="Ingesta masiva y validación del repositorio epidemiológico">
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M9 11l3 3L22 4" /></svg>
-                    Ingestar Repositorio VEA
+                    Subir archivo
                 </button>
-                <input type="file" id="excelFileInput" accept=".xlsx, .csv" class="hidden" onchange="procesarArchivoExcel(event)">
+                <input type="file" id="excelFileInput" accept=".xlsx" class="hidden" onchange="procesarArchivoExcel(event)">
                 <div class="flex flex-col min-w-[130px] w-full sm:w-auto">
                     <div class="flex justify-between items-center text-[9px] mb-0.5 font-bold">
-                        <span id="textoProgreso" class="text-slate-400 font-bold flex items-center gap-1.5"><span id="ledEstadoSincronizacion" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>Modo Demo</span>
+                        <span id="textoProgreso" class="text-slate-400 font-bold flex items-center gap-1.5"><span id="ledEstadoSincronizacion" class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>Esperando archivo VEA</span>
                         <span id="porcentajeProgreso" class="text-slate-500 font-extrabold"></span>
                     </div>
                     <div id="progresoSincronizacion" class="w-full bg-slate-800 rounded-full h-1 overflow-hidden"><div id="barraProgreso" class="bg-indigo-500 h-full w-0 transition-all duration-300"></div></div>
@@ -98,7 +101,7 @@
     <!-- Menú lateral colapsable: acceso único a los módulos VEA -->
     <aside id="menuLateral" class="fixed left-0 top-0 bottom-0 z-30 pt-28 lg:pt-32 w-16 bg-slate-950 border-r border-slate-800 shadow-2xl overflow-hidden">
         <div class="px-3 pb-3 border-b border-slate-800">
-            <button onclick="alternarMenuLateral()" class="w-full h-10 flex items-center justify-center gap-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 hover:border-red-500 transition-colors" title="Abrir o cerrar menú">
+            <button id="btnMenuLateral" onclick="alternarMenuLateral()" aria-label="Desplegar menú de módulos" aria-expanded="false" class="w-full h-10 flex items-center justify-center gap-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 hover:border-red-500 transition-colors" title="Desplegar menú">
                 <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
                 <span class="menu-texto text-xs font-black whitespace-nowrap">MÓDULOS VEA</span>
             </button>
@@ -794,7 +797,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full min-w-[1280px] text-xs">
                         <thead class="bg-slate-950 text-slate-400 font-black"><tr><th class="p-4 text-left">Año</th><th class="p-4 text-left">Semana</th><th class="p-4 text-left">Diagnóstico</th><th class="p-4 text-left">Tipo DX</th><th class="p-4 text-left">DNI / HC</th><th class="p-4 text-left">Apellido paterno</th><th class="p-4 text-left">Apellido materno</th><th class="p-4 text-left">Nombres</th><th class="p-4 text-left">Edad / tipo edad</th><th class="p-4 text-left">Sexo</th><th class="p-4 text-left">Fecha inicio</th><th class="p-4 text-left">Fecha notificación</th><th class="p-4 text-left">Enfermedad</th></tr></thead>
-                        <tbody id="bodyCasosIndividuales"><tr><td colspan="13" class="p-12 text-center"><p class="text-base font-black text-slate-300">Sin fichas cargadas</p><p class="text-xs text-slate-500 mt-2">Seleccione “Ingestar Repositorio VEA” y cargue el Excel con la hoja INDIVIDUAL.</p></td></tr></tbody>
+                        <tbody id="bodyCasosIndividuales"><tr><td colspan="13" class="p-12 text-center"><p class="text-base font-black text-slate-300">Sin fichas cargadas</p><p class="text-xs text-slate-500 mt-2">Seleccione “Subir archivo” y cargue el Excel con la hoja INDIVIDUAL.</p></td></tr></tbody>
                     </table>
                 </div>
                 <div class="px-5 py-4 border-t border-slate-800 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between text-xs">
@@ -810,7 +813,7 @@
     </button>
 
     <script>
-        // Simulación de datos estacionales estables sin errores
+        // Generador histórico conservado solo como utilidad de desarrollo; nunca se usa al abrir el módulo.
         function generarDataEstacional(ano, totalCasosSugerido, tipoEvento) {
             const records = [];
             const maxSemanas = (ano === 2026) ? 22 : 52;
@@ -888,23 +891,8 @@
             return records;
         }
 
-        const databaseActiva = {
-            EDAs: [
-                ...generarDataEstacional(2024, 3012, 'EDAs'), 
-                ...generarDataEstacional(2025, 2214, 'EDAs'), 
-                ...generarDataEstacional(2026, 1251, 'EDAs')  
-            ],
-            IRAs: [
-                ...generarDataEstacional(2024, 4500, 'IRAs'),
-                ...generarDataEstacional(2025, 3800, 'IRAs'),
-                ...generarDataEstacional(2026, 2100, 'IRAs')
-            ],
-            Febriles: [
-                ...generarDataEstacional(2024, 1800, 'Febriles'),
-                ...generarDataEstacional(2025, 1600, 'Febriles'),
-                ...generarDataEstacional(2026, 900, 'Febriles')
-            ]
-        };
+        // La sesión inicia vacía: ningún dato clínico ni demo queda incluido en el HTML.
+        const databaseActiva = { EDAs: [], IRAs: [], Febriles: [] };
 
         // Repositorio agregado de notificaciones individuales.
         // Solo se usa para el reporte consolidado; no expone datos personales.
@@ -947,7 +935,7 @@
         };
 
         const logsSincronizacion = {
-            EDAs: { cargada: true, registros: 6477, cabeceraEncontrada: "Establecida de forma nativa" },
+            EDAs: { cargada: false, registros: 0, cabeceraEncontrada: "Pendiente de archivo VEA" },
             IRAs: { cargada: false, registros: 0, cabeceraEncontrada: "Ninguna" },
             Febriles: { cargada: false, registros: 0, cabeceraEncontrada: "Ninguna" }
         };
@@ -1241,6 +1229,13 @@
             if (!menu) return;
             if (window.innerWidth < 1024) menu.classList.toggle('menu-movil-abierto');
             else menu.classList.toggle('menu-expandido');
+            const desplegado = window.innerWidth < 1024 ? menu.classList.contains('menu-movil-abierto') : menu.classList.contains('menu-expandido');
+            ['btnAbrirMenuLateral', 'btnMenuLateral'].forEach(id => {
+                const boton = document.getElementById(id);
+                if (!boton) return;
+                boton.setAttribute('aria-expanded', String(desplegado));
+                boton.setAttribute('title', desplegado ? 'Colapsar menú' : 'Desplegar menú');
+            });
         }
 
         function actualizarMenuLateral() {
@@ -1335,7 +1330,7 @@
             if (totalEl) totalEl.textContent = `${notificacionesIndividuales.length.toLocaleString('es-PE')} fichas`;
             if (estadoEl) estadoEl.textContent = notificacionesIndividuales.length ? `Hoja INDIVIDUAL cargada: ${notificacionesIndividuales.length.toLocaleString('es-PE')} fichas disponibles.` : 'Cargue el Excel VEA para visualizar la hoja INDIVIDUAL.';
             if (!visibles.length) {
-                cuerpo.innerHTML = `<tr><td colspan="13" class="p-12 text-center"><p class="text-base font-black text-slate-300">${notificacionesIndividuales.length ? 'No se encontraron fichas' : 'Sin fichas cargadas'}</p><p class="text-xs text-slate-500 mt-2">${notificacionesIndividuales.length ? 'Pruebe con otro criterio de búsqueda.' : 'Seleccione “Ingestar Repositorio VEA” y cargue el Excel con la hoja INDIVIDUAL.'}</p></td></tr>`;
+                cuerpo.innerHTML = `<tr><td colspan="13" class="p-12 text-center"><p class="text-base font-black text-slate-300">${notificacionesIndividuales.length ? 'No se encontraron fichas' : 'Sin fichas cargadas'}</p><p class="text-xs text-slate-500 mt-2">${notificacionesIndividuales.length ? 'Pruebe con otro criterio de búsqueda.' : 'Seleccione “Subir archivo” y cargue el Excel con la hoja INDIVIDUAL.'}</p></td></tr>`;
             } else {
                 cuerpo.innerHTML = visibles.map(ficha => `<tr class="border-t border-slate-800/80 hover:bg-slate-800/50 align-top"><td class="p-3 font-bold">${textoSeguro(ficha.ANO)}</td><td class="p-3">S.E. ${textoSeguro(ficha.SEMANA)}</td><td class="p-3 font-mono text-cyan-300">${textoSeguro(ficha.DIAGNOSTICO)}</td><td class="p-3">${etiquetaTipoDX(ficha.TIPO_DX)}</td><td class="p-3"><div>${textoSeguro(ficha.DNI || '—')}</div><div class="text-[10px] text-slate-500">HC: ${textoSeguro(ficha.HC || '—')}</div></td><td class="p-3 font-semibold">${textoSeguro(ficha.APEPAT || '—')}</td><td class="p-3 font-semibold">${textoSeguro(ficha.APEMAT || '—')}</td><td class="p-3 font-semibold">${textoSeguro(ficha.NOMBRES || '—')}</td><td class="p-3"><div>${textoSeguro(ficha.EDAD ?? '—')}</div><div class="text-[10px] text-slate-500">Tipo: ${textoSeguro(ficha.TIPO_EDAD || '—')}</div></td><td class="p-3">${textoSeguro(ficha.SEXO || '—')}</td><td class="p-3 whitespace-nowrap">${textoSeguro(formatearFechaIndividual(ficha.FECHA_INI))}</td><td class="p-3 whitespace-nowrap">${textoSeguro(formatearFechaIndividual(ficha.FECHA_NOT))}</td><td class="p-3 text-cyan-300">${textoSeguro(ficha.ENFERMEDAD)}</td></tr>`).join('');
             }
@@ -1746,7 +1741,7 @@
 
             if (registrosAño.length === 0) {
                 txtSituacion.textContent = "Sin registros para evaluar";
-                recomendacion.textContent = "Por favor ingrese un repositorio de datos válido o use el modo Demo.";
+                recomendacion.textContent = "Cargue el archivo Excel VEA validado para visualizar indicadores, gráficos y tendencias.";
                 banda.className = "w-full p-4 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg bg-slate-900 border-slate-800 text-slate-400";
                 ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-slate-500";
                 ledStatic.className = "relative inline-flex rounded-full h-3 w-3 bg-slate-500";
@@ -2658,50 +2653,69 @@
             });
         }
 
-        // --- ETL SINC SEGURA Y AUTOMATIZADA ---
+        function normalizarEtiquetaVEA(valor) {
+            return String(valor ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_|_$/g, '');
+        }
+
+        function validarPlantillaVEA(workbook) {
+            const hojas = workbook.SheetNames || [];
+            const buscarHoja = (termino) => hojas.find(nombre => normalizarEtiquetaVEA(nombre).includes(termino));
+            const requeridas = { EDAS: buscarHoja('EDA'), IRAS: buscarHoja('IRA'), FEBRILES: buscarHoja('FEBR'), INDIVIDUAL: buscarHoja('INDIVID') };
+            const faltantes = Object.entries(requeridas).filter(([, nombre]) => !nombre).map(([clave]) => clave);
+            if (faltantes.length) throw new Error(`Archivo no válido: faltan las hojas obligatorias ${faltantes.join(', ')}.`);
+
+            const tieneCabeceras = (nombreHoja, requisitos) => {
+                const filas = XLSX.utils.sheet_to_json(workbook.Sheets[nombreHoja], { header: 1, defval: '', raw: false }).slice(0, 20);
+                const texto = filas.flat().map(normalizarEtiquetaVEA).join('|');
+                return requisitos.every(grupo => grupo.some(etiqueta => texto.includes(etiqueta)));
+            };
+            ['EDAS', 'IRAS', 'FEBRILES'].forEach(clave => {
+                if (!tieneCabeceras(requeridas[clave], [['ANO', 'ANIO'], ['SEMANA', 'SEM']])) throw new Error(`Archivo no válido: la hoja ${requeridas[clave]} no tiene cabeceras de AÑO y SEMANA.`);
+            });
+            if (!tieneCabeceras(requeridas.INDIVIDUAL, [['ANO', 'ANIO'], ['SEMANA', 'SEM'], ['DIAGNOSTICO', 'DIAGNOSTIC', 'DX'], ['NOMBRES', 'NOMBRE']])) {
+                throw new Error(`Archivo no válido: la hoja ${requeridas.INDIVIDUAL} no tiene la estructura de casos individuales VEA.`);
+            }
+            return requeridas;
+        }
+
+        function limpiarSesionVEA() {
+            Object.keys(databaseActiva).forEach(evento => {
+                databaseActiva[evento] = [];
+                logsSincronizacion[evento] = { cargada: false, registros: 0, cabeceraEncontrada: 'Pendiente de archivo VEA' };
+            });
+            notificacionesIndividuales = [];
+            aniosSeleccionadosComparativa = [];
+            paginaCasosIndividuales = 1;
+        }
+
+        // --- ETL LOCAL, VALIDADA Y SIN PERSISTENCIA DE DATOS ---
         function procesarArchivoExcel(event) {
             const file = event.target.files[0];
             if (!file) return;
+
+            if (!file.name.toLowerCase().endsWith('.xlsx')) {
+                mostrarModalNotificacion('Archivo no válido', 'Solo se admite la plantilla institucional VEA en formato .xlsx.', 'error');
+                event.target.value = '';
+                return;
+            }
 
             const barra = document.getElementById('barraProgreso');
             const txtProgreso = document.getElementById('textoProgreso');
             const led = document.getElementById('ledEstadoSincronizacion');
 
             barra.style.width = '10%';
-            txtProgreso.innerHTML = `Sincronizando base de datos...`;
+            txtProgreso.innerHTML = `Validando archivo VEA...`;
 
             const fileNameUpper = file.name.toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     let loadedKeys = []; let totalRecords = 0; let aniosDeCargas = [];
-                    const isCSV = file.name.toLowerCase().endsWith('.csv');
-
-                    if (isCSV) {
-                        const data = new Uint8Array(e.target.result);
-                        let text = new TextDecoder("utf-8").decode(data);
-                        let jsonData = parseCSVToJSON(text);
-                        let targetKey = null;
-                        
-                        if (fileNameUpper.includes("EDA") || fileNameUpper.includes("DIAR")) targetKey = "EDAs";
-                        else if (fileNameUpper.includes("IRA") || fileNameUpper.includes("RESP") || fileNameUpper.includes("NEUM")) targetKey = "IRAs";
-                        else if (fileNameUpper.includes("FEBR") || fileNameUpper.includes("FIEB") || fileNameUpper.includes("SIND") || fileNameUpper.includes("METAX")) targetKey = "Febriles";
-
-                        if (!targetKey) { targetKey = selectedEvent; }
-                        if (jsonData.length === 0) { throw new Error("El archivo CSV no contiene registros."); }
-
-                        const parseados = parsearRegistrosExcel(jsonData, targetKey);
-                        if (parseados.length === 0) throw new Error("No se encontraron registros válidos.");
-
-                        databaseActiva[targetKey] = parseados;
-                        logsSincronizacion[targetKey].registros = parseados.length;
-                        logsSincronizacion[targetKey].cargada = true;
-                        loadedKeys.push(targetKey); totalRecords += parseados.length;
-                        aniosDeCargas = [...new Set(parseados.map(d => d.ANO))];
-                        selectedEvent = targetKey;
-                    } else {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    validarPlantillaVEA(workbook);
+                    limpiarSesionVEA();
+                    txtProgreso.innerHTML = `Cargando repositorio VEA...`;
                         
                         workbook.SheetNames.forEach(sheetName => {
                             const nameUpper = sheetName.toUpperCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -2737,25 +2751,7 @@
                             }
                         });
 
-                        if (loadedKeys.length === 0 && workbook.SheetNames.length > 0) {
-                            const firstSheetName = workbook.SheetNames[0];
-                            const worksheet = workbook.Sheets[firstSheetName];
-                            const currentTargetKey = selectedEvent; 
-                            const jsonData = parsearHojaExcelConCabeceraInteligente(worksheet, currentTargetKey);
-                            if (jsonData && jsonData.length > 0) {
-                                const parseados = parsearRegistrosExcel(jsonData, currentTargetKey);
-                                if (parseados.length > 0) {
-                                    databaseActiva[currentTargetKey] = parseados;
-                                    logsSincronizacion[currentTargetKey].registros = parseados.length;
-                                    logsSincronizacion[currentTargetKey].cargada = true;
-                                    loadedKeys.push(currentTargetKey); totalRecords += parseados.length;
-                                    aniosDeCargas = [...aniosDeCargas, ...parseados.map(d => d.ANO)];
-                                }
-                            }
-                        }
-
                         if (loadedKeys.length === 0) { throw new Error("No se encontraron registros compatibles."); }
-                    }
 
                     const aniosVEA = [2024, 2025, 2026];
                     const aniosDisponibles = [...new Set(aniosDeCargas.map(Number).filter(Boolean))];
@@ -2764,7 +2760,7 @@
                     renderCasosIndividuales();
                     barra.style.width = '100%';
                     led.className = "w-1.5 h-1.5 rounded-full bg-emerald-400";
-                    txtProgreso.innerHTML = `Sincronización Completa`;
+                    txtProgreso.innerHTML = `Repositorio VEA cargado`;
 
                     cargarFiltrosYControles();
                     actualizarCalculosYGraficos();
@@ -2772,7 +2768,7 @@
                     mostrarModalNotificacion("¡Éxito en la carga!", `Se han sincronizado ${totalRecords} registros epidemiológicos.`, "exito");
                 } catch (err) {
                     led.className = "w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse";
-                    txtProgreso.innerHTML = `Fallo de Sincronización`;
+                    txtProgreso.innerHTML = `Archivo VEA no cargado`;
                     mostrarModalNotificacion("Fallo de Sincronización", err.message, "error");
                 }
             };

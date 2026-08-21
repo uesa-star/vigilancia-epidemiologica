@@ -798,10 +798,154 @@
             </section>
         </div>
 
-        <!-- MÓDULO: CASOS INDIVIDUALES -->
-        <div id="contentCasos" class="hidden bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-sm">
-            <h3 class="text-lg font-bold text-slate-100">Casos Individuales</h3>
-            <p id="estadoModuloCasos" class="text-xs text-slate-400 mt-2">Sin datos cargados</p>
+        <!-- MÓDULO: CASOS INDIVIDUALES — FASE 2 DASHBOARD EPIDEMIOLÓGICO AGREGADO -->
+        <div id="contentCasos" class="hidden space-y-6">
+            <section class="bg-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-indigo-400">Vigilancia nominal · lectura agregada</p>
+                        <h3 class="text-xl font-black text-slate-100 mt-1">Casos Individuales</h3>
+                        <p class="text-xs text-slate-400 mt-2 max-w-3xl">
+                            Dashboard epidemiológico agregado multianual por año y semana epidemiológica. Los diagnósticos, sexo y grupos de edad se calculan desde la hoja INDIVIDUAL sin exponer información identificable.
+                        </p>
+                    </div>
+                    <p id="estadoModuloCasos" class="text-xs font-bold text-slate-400">Sin datos cargados</p>
+                </div>
+            </section>
+
+            <!-- FILTROS EPIDEMIOLÓGICOS -->
+            <section class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+                    <div>
+                        <h4 class="text-sm font-black text-slate-200">Filtros epidemiológicos</h4>
+                        <p id="resumenFiltrosIndividualV2" class="text-[10px] text-slate-500 mt-1">Año epidemiológico y S.E. se mantienen separados del calendario de notificación.</p>
+                    </div>
+                    <button type="button" onclick="limpiarFiltrosCasosIndividualesV2()" class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-900 hover:bg-slate-800 text-[10px] font-black uppercase tracking-wide text-slate-200">
+                        Limpiar filtros
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+                    <div class="relative">
+                        <label class="block text-[10px] font-extrabold uppercase tracking-wide text-slate-400 mb-1.5">Años epidemiológicos</label>
+                        <button id="btnAniosIndividualV2" type="button" onclick="toggleDropdownAniosIndividualV2()" class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs text-slate-300 font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500 flex items-center justify-between gap-2">
+                            <span id="txtAniosIndividualV2" class="truncate">Sin datos</span>
+                            <svg class="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div id="dropdownAniosIndividualV2" class="absolute left-0 right-0 mt-1.5 bg-slate-950 border border-slate-800 rounded-xl shadow-2xl z-50 p-2.5 hidden max-h-56 overflow-y-auto">
+                            <p class="text-[10px] text-slate-500 px-2 py-2">Sin datos</p>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="selectSemanaIndividualV2" class="block text-[10px] font-extrabold uppercase tracking-wide text-slate-400 mb-1.5">Semana epidemiológica</label>
+                        <select id="selectSemanaIndividualV2" onchange="actualizarFiltroCasosIndividualesV2('semana', this.value)" class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs text-slate-300 font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                            <option value="Todas">Todas las S.E.</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="selectDiagnosticoIndividualV2" class="block text-[10px] font-extrabold uppercase tracking-wide text-slate-400 mb-1.5">Diagnóstico</label>
+                        <select id="selectDiagnosticoIndividualV2" onchange="actualizarFiltroCasosIndividualesV2('diagnostico', this.value)" class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs text-slate-300 font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                            <option value="Todos">Todos los diagnósticos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="selectSexoIndividualV2" class="block text-[10px] font-extrabold uppercase tracking-wide text-slate-400 mb-1.5">Sexo</label>
+                        <select id="selectSexoIndividualV2" onchange="actualizarFiltroCasosIndividualesV2('sexo', this.value)" class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs text-slate-300 font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                            <option value="Todos">Todos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="selectEdadIndividualV2" class="block text-[10px] font-extrabold uppercase tracking-wide text-slate-400 mb-1.5">Grupo de edad</label>
+                        <select id="selectEdadIndividualV2" onchange="actualizarFiltroCasosIndividualesV2('grupoEdad', this.value)" class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs text-slate-300 font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                            <option value="Todos">Todos los grupos</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- KPIs -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-sm">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Casos</p>
+                    <div id="kpiCasosIndividualV2" class="text-3xl font-black text-white mt-2">0</div>
+                    <p class="text-[10px] text-slate-500 mt-2">Registros dentro del universo filtrado.</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-sm">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Diagnósticos</p>
+                    <div id="kpiDiagnosticosIndividualV2" class="text-3xl font-black text-white mt-2">0</div>
+                    <p class="text-[10px] text-slate-500 mt-2">Códigos diagnósticos distintos.</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-sm">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Diagnóstico principal</p>
+                    <div id="kpiDiagnosticoPrincipalIndividualV2" class="text-sm font-black text-white mt-2 leading-relaxed">—</div>
+                    <p id="kpiDiagnosticoPrincipalDetalleIndividualV2" class="text-[10px] text-slate-500 mt-2">Sin datos.</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-sm">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Última S.E.</p>
+                    <div id="kpiUltimaSemanaIndividualV2" class="text-3xl font-black text-white mt-2">—</div>
+                    <p class="text-[10px] text-slate-500 mt-2">Última semana real del universo filtrado.</p>
+                </div>
+            </section>
+
+            <!-- G1 | G2 -->
+            <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="mb-4">
+                        <h4 class="text-sm font-black text-slate-200">G1 · Casos Notificados por Año Epidemiológico</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Comparación de los años epidemiológicos seleccionados sobre <span class="font-mono">ano</span>.</p>
+                    </div>
+                    <div class="h-80 relative">
+                        <canvas id="chartIndividualG1V2"></canvas>
+                        <div id="estadoChartIndividualG1V2" class="absolute inset-0 hidden items-center justify-center text-center text-xs text-slate-500 px-6">Sin datos para los filtros seleccionados.</div>
+                    </div>
+                </article>
+                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="mb-4">
+                        <h4 class="text-sm font-black text-slate-200">G2 · Tendencia por Semana Epidemiológica</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Una línea por año seleccionado; S.E. reales de la fuente y <span class="font-mono">spanGaps:false</span>.</p>
+                    </div>
+                    <div class="h-80 relative">
+                        <canvas id="chartIndividualG2V2"></canvas>
+                        <div id="estadoChartIndividualG2V2" class="absolute inset-0 hidden items-center justify-center text-center text-xs text-slate-500 px-6">Sin datos para los filtros seleccionados.</div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- G3 | G4 -->
+            <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="mb-4">
+                        <h4 class="text-sm font-black text-slate-200">G3 · Casos por Diagnóstico</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Todos los diagnósticos con casos, comparados por año seleccionado.</p>
+                    </div>
+                    <div id="contenedorChartIndividualG3V2" class="min-h-[360px] relative">
+                        <canvas id="chartIndividualG3V2"></canvas>
+                        <div id="estadoChartIndividualG3V2" class="absolute inset-0 hidden items-center justify-center text-center text-xs text-slate-500 px-6">Sin diagnósticos con casos.</div>
+                    </div>
+                </article>
+                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="mb-4">
+                        <h4 class="text-sm font-black text-slate-200">G4 · Casos por Sexo</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Comparación multianual agrupada usando el campo real <span class="font-mono">sexo</span>.</p>
+                    </div>
+                    <div class="h-80 relative">
+                        <canvas id="chartIndividualG4V2"></canvas>
+                        <div id="estadoChartIndividualG4V2" class="absolute inset-0 hidden items-center justify-center text-center text-xs text-slate-500 px-6">Sin datos de sexo para los filtros seleccionados.</div>
+                    </div>
+                    <p id="resumenSexoIndividualV2" class="text-[10px] text-slate-400 text-center mt-3">—</p>
+                </article>
+            </section>
+
+            <!-- G5 -->
+            <section class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                <div class="mb-4">
+                    <h4 class="text-sm font-black text-slate-200">G5 · Casos por Grupo de Edad</h4>
+                    <p class="text-[10px] text-slate-500 mt-1">Comparación multianual por clasificación VEA a partir de <span class="font-mono">edad + tipo_edad</span>; meses y días se clasifican correctamente como menores de un año cuando corresponde.</p>
+                </div>
+                <div class="h-96 relative">
+                    <canvas id="chartIndividualG5V2"></canvas>
+                    <div id="estadoChartIndividualG5V2" class="absolute inset-0 hidden items-center justify-center text-center text-xs text-slate-500 px-6">Sin datos etarios para los filtros seleccionados.</div>
+                </div>
+            </section>
         </div>
 
         <!-- TAB 2: CANAL ENDÉMICO -->
@@ -6129,6 +6273,586 @@
             cambiarTab('dashboard');
         };
     
+
+        // =====================================================================
+        // CASOS INDIVIDUALES — FASE 2 DASHBOARD EPIDEMIOLÓGICO AGREGADO
+        // Capa exclusiva de presentación/análisis sobre datosModulosIndependientes.casos.
+        // No modifica parseINDIVIDUAL(), procesarArchivoExcel() ni navegación general.
+        // =====================================================================
+        const INDIVIDUAL_GRUPOS_EDAD_V2 = ['< 1 año','1-4 años','5-11 años','12-17 años','18-29 años','30-59 años','60+ años'];
+        const INDIVIDUAL_PALETA_V2 = ['#6366f1','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#3b82f6','#84cc16','#f97316'];
+
+        const estadoIndividualV2 = {
+            registros: [],
+            aniosDisponibles: [],
+            aniosSeleccionados: [],
+            semana: 'Todas',
+            diagnostico: 'Todos',
+            sexo: 'Todos',
+            grupoEdad: 'Todos',
+            descripcionesPorCodigo: new Map(),
+            charts: { g1: null, g2: null, g3: null, g4: null, g5: null },
+            firmaDataset: ''
+        };
+
+        function textoIndividualV2(valor) {
+            return valor === null || valor === undefined ? '' : String(valor).trim();
+        }
+
+        function enteroIndividualV2(valor) {
+            const n = Number(valor);
+            return Number.isInteger(n) ? n : null;
+        }
+
+        function escaparHtmlIndividualV2(valor) {
+            return textoIndividualV2(valor)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function clasificarEdadIndividualV2(edadValor, tipoValor) {
+            const edad = Number(edadValor);
+            const tipo = textoIndividualV2(tipoValor).toUpperCase();
+            if (!Number.isFinite(edad) || edad < 0) return 'No especificado';
+
+            let anios = null;
+            if (tipo === 'A') anios = edad;
+            else if (tipo === 'M') anios = edad / 12;
+            else if (tipo === 'D') anios = edad / 365.25;
+            else return 'No especificado';
+
+            if (anios < 1) return '< 1 año';
+            if (anios < 5) return '1-4 años';
+            if (anios < 12) return '5-11 años';
+            if (anios < 18) return '12-17 años';
+            if (anios < 30) return '18-29 años';
+            if (anios < 60) return '30-59 años';
+            return '60+ años';
+        }
+
+        function construirModeloCasosIndividualesV2() {
+            const fuente = Array.isArray(datosModulosIndependientes.casos) ? datosModulosIndependientes.casos : [];
+            const descripciones = new Map();
+
+            const modelo = fuente.map(row => {
+                const canon = row?.__VEA_CANONICO || {};
+                const anio = enteroIndividualV2(canon.ANO ?? row?.ano);
+                const semana = enteroIndividualV2(canon.SEMANA_EPIDEMIOLOGICA ?? row?.semana);
+                const codigo = textoIndividualV2(canon.DIAGNOSTICO ?? row?.diagnostic);
+                const descripcion = textoIndividualV2(row?.Enfermedad ?? row?.['Enfermedad ']);
+                const sexo = textoIndividualV2(canon.SEXO ?? row?.sexo).toUpperCase();
+                const edad = canon.EDAD ?? row?.edad;
+                const tipoEdad = row?.tipo_edad;
+
+                if (codigo) {
+                    if (!descripciones.has(codigo)) descripciones.set(codigo, new Map());
+                    if (descripcion) {
+                        const mapa = descripciones.get(codigo);
+                        mapa.set(descripcion, (mapa.get(descripcion) || 0) + 1);
+                    }
+                }
+
+                return {
+                    anio, semana, codigo, descripcion, sexo, edad, tipoEdad,
+                    grupoEdad: clasificarEdadIndividualV2(edad, tipoEdad)
+                };
+            }).filter(item =>
+                Number.isInteger(item.anio) &&
+                Number.isInteger(item.semana) &&
+                item.semana >= 1 && item.semana <= 53 &&
+                item.codigo
+            );
+
+            estadoIndividualV2.registros = modelo;
+            estadoIndividualV2.descripcionesPorCodigo = descripciones;
+            estadoIndividualV2.aniosDisponibles = [...new Set(modelo.map(r => r.anio))].sort((a,b) => a-b);
+            estadoIndividualV2.aniosSeleccionados = estadoIndividualV2.aniosDisponibles.slice(-3);
+            estadoIndividualV2.semana = 'Todas';
+            estadoIndividualV2.diagnostico = 'Todos';
+            estadoIndividualV2.sexo = 'Todos';
+            estadoIndividualV2.grupoEdad = 'Todos';
+            estadoIndividualV2.firmaDataset = `${fuente.length}|${fuente.length ? Object.keys(fuente[0] || {}).length : 0}`;
+
+            renderSelectoresCasosIndividualesV2();
+            actualizarEstadoVisualCasosIndividualesV2();
+            if (!document.getElementById('contentCasos')?.classList.contains('hidden')) {
+                requestAnimationFrame(renderDashboardCasosIndividualesV2);
+            }
+        }
+        function etiquetaDiagnosticoIndividualV2(codigo) {
+            const limpio = textoIndividualV2(codigo);
+            const mapa = estadoIndividualV2.descripcionesPorCodigo.get(limpio);
+            if (!mapa || !mapa.size) return `${limpio} — SIN DESCRIPCIÓN EN FUENTE`;
+            const descripciones = [...mapa.entries()]
+                .sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], 'es'))
+                .map(([descripcion]) => descripcion);
+            return `${limpio} — ${descripciones.join(' / ')}`;
+        }
+
+        function etiquetaSexoIndividualV2(valor) {
+            const sexo = textoIndividualV2(valor).toUpperCase();
+            if (sexo === 'F') return 'Femenino';
+            if (sexo === 'M') return 'Masculino';
+            return sexo;
+        }
+
+        function toggleDropdownAniosIndividualV2() {
+            const menu = document.getElementById('dropdownAniosIndividualV2');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        function toggleAnioIndividualV2(anio, marcado) {
+            const valor = Number(anio);
+            const set = new Set(estadoIndividualV2.aniosSeleccionados);
+            if (marcado) set.add(valor);
+            else set.delete(valor);
+            estadoIndividualV2.aniosSeleccionados = [...set]
+                .filter(a => estadoIndividualV2.aniosDisponibles.includes(a))
+                .sort((a,b) => a-b);
+            estadoIndividualV2.semana = 'Todas';
+            renderSelectoresCasosIndividualesV2();
+            renderDashboardCasosIndividualesV2();
+        }
+
+        function aniosSeleccionadosIndividualV2() {
+            return [...estadoIndividualV2.aniosSeleccionados].sort((a,b) => a-b);
+        }
+
+        function filtrarCasosIndividualesV2(opciones = {}) {
+            const {
+                ignorarAnio = false,
+                ignorarSemana = false,
+                ignorarDiagnostico = false,
+                ignorarSexo = false,
+                ignorarGrupoEdad = false
+            } = opciones;
+            const anios = new Set(aniosSeleccionadosIndividualV2());
+
+            return estadoIndividualV2.registros.filter(r => {
+                if (!ignorarAnio && !anios.has(r.anio)) return false;
+                if (!ignorarSemana && estadoIndividualV2.semana !== 'Todas' && r.semana !== Number(estadoIndividualV2.semana)) return false;
+                if (!ignorarDiagnostico && estadoIndividualV2.diagnostico !== 'Todos' && r.codigo !== estadoIndividualV2.diagnostico) return false;
+                if (!ignorarSexo && estadoIndividualV2.sexo !== 'Todos' && r.sexo !== estadoIndividualV2.sexo) return false;
+                if (!ignorarGrupoEdad && estadoIndividualV2.grupoEdad !== 'Todos' && r.grupoEdad !== estadoIndividualV2.grupoEdad) return false;
+                return true;
+            });
+        }
+        function renderSelectoresCasosIndividualesV2() {
+            const txtAnios = document.getElementById('txtAniosIndividualV2');
+            const dropdownAnios = document.getElementById('dropdownAniosIndividualV2');
+            const selSemana = document.getElementById('selectSemanaIndividualV2');
+            const selDiag = document.getElementById('selectDiagnosticoIndividualV2');
+            const selSexo = document.getElementById('selectSexoIndividualV2');
+            const selEdad = document.getElementById('selectEdadIndividualV2');
+
+            const seleccionados = aniosSeleccionadosIndividualV2();
+            const seleccionSet = new Set(seleccionados);
+            if (txtAnios) txtAnios.textContent = seleccionados.length ? seleccionados.join(', ') : 'Ningún año';
+            if (dropdownAnios) {
+                const desc = [...estadoIndividualV2.aniosDisponibles].sort((a,b) => b-a);
+                dropdownAnios.innerHTML = desc.length
+                    ? desc.map(a => `
+                        <label class="flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-slate-900 cursor-pointer text-xs text-slate-300">
+                            <input type="checkbox" ${seleccionSet.has(a) ? 'checked' : ''} onchange="toggleAnioIndividualV2(${a}, this.checked)" class="rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500">
+                            <span class="font-bold">${a}</span>
+                        </label>`).join('')
+                    : '<p class="text-[10px] text-slate-500 px-2 py-2">Sin datos</p>';
+            }
+
+            const baseAnios = estadoIndividualV2.registros.filter(r => seleccionSet.has(r.anio));
+
+            if (selSemana) {
+                const semanas = [...new Set(baseAnios.map(r => r.semana))].sort((a,b) => b-a);
+                if (estadoIndividualV2.semana !== 'Todas' && !semanas.includes(Number(estadoIndividualV2.semana))) {
+                    estadoIndividualV2.semana = 'Todas';
+                }
+                selSemana.innerHTML = `<option value="Todas">Todas las S.E.</option>${semanas.map(s => `<option value="${s}">S.E. ${s}</option>`).join('')}`;
+                selSemana.value = String(estadoIndividualV2.semana);
+            }
+
+            if (selDiag) {
+                const codigos = [...new Set(baseAnios.map(r => r.codigo))].sort((a,b) => a.localeCompare(b,'es',{numeric:true}));
+                if (estadoIndividualV2.diagnostico !== 'Todos' && !codigos.includes(estadoIndividualV2.diagnostico)) estadoIndividualV2.diagnostico = 'Todos';
+                selDiag.innerHTML = `<option value="Todos">Todos los diagnósticos</option>${codigos.map(c => `<option value="${escaparHtmlIndividualV2(c)}">${escaparHtmlIndividualV2(etiquetaDiagnosticoIndividualV2(c))}</option>`).join('')}`;
+                selDiag.value = estadoIndividualV2.diagnostico;
+            }
+
+            if (selSexo) {
+                const sexos = [...new Set(baseAnios.map(r => r.sexo).filter(Boolean))].sort();
+                if (estadoIndividualV2.sexo !== 'Todos' && !sexos.includes(estadoIndividualV2.sexo)) estadoIndividualV2.sexo = 'Todos';
+                selSexo.innerHTML = `<option value="Todos">Todos</option>${sexos.map(s => `<option value="${escaparHtmlIndividualV2(s)}">${escaparHtmlIndividualV2(etiquetaSexoIndividualV2(s))}</option>`).join('')}`;
+                selSexo.value = estadoIndividualV2.sexo;
+            }
+
+            if (selEdad) {
+                const presentes = new Set(baseAnios.map(r => r.grupoEdad));
+                const grupos = INDIVIDUAL_GRUPOS_EDAD_V2.filter(g => presentes.has(g));
+                if (presentes.has('No especificado')) grupos.push('No especificado');
+                if (estadoIndividualV2.grupoEdad !== 'Todos' && !grupos.includes(estadoIndividualV2.grupoEdad)) estadoIndividualV2.grupoEdad = 'Todos';
+                selEdad.innerHTML = `<option value="Todos">Todos los grupos</option>${grupos.map(g => `<option value="${escaparHtmlIndividualV2(g)}">${escaparHtmlIndividualV2(g)}</option>`).join('')}`;
+                selEdad.value = estadoIndividualV2.grupoEdad;
+            }
+
+            renderResumenFiltrosCasosIndividualesV2();
+        }
+        function renderResumenFiltrosCasosIndividualesV2() {
+            const el = document.getElementById('resumenFiltrosIndividualV2');
+            if (!el) return;
+            const anios = aniosSeleccionadosIndividualV2();
+            const resumenAnios = anios.length ? anios.join(', ') : 'Ninguno';
+            const semana = estadoIndividualV2.semana === 'Todas' ? 'Todas' : `S.E. ${estadoIndividualV2.semana}`;
+            const diag = estadoIndividualV2.diagnostico === 'Todos' ? 'Todos' : estadoIndividualV2.diagnostico;
+            const sexo = estadoIndividualV2.sexo === 'Todos' ? 'Todos' : etiquetaSexoIndividualV2(estadoIndividualV2.sexo);
+            const edad = estadoIndividualV2.grupoEdad;
+            el.textContent = `Años epi: ${resumenAnios} · Semana: ${semana} · Diagnóstico: ${diag} · Sexo: ${sexo} · Edad: ${edad}`;
+        }
+        function actualizarFiltroCasosIndividualesV2(campo, valor) {
+            if (campo === 'semana') {
+                estadoIndividualV2.semana = valor === 'Todas' ? 'Todas' : Number(valor);
+            } else if (campo === 'diagnostico') {
+                estadoIndividualV2.diagnostico = valor || 'Todos';
+            } else if (campo === 'sexo') {
+                estadoIndividualV2.sexo = valor || 'Todos';
+            } else if (campo === 'grupoEdad') {
+                estadoIndividualV2.grupoEdad = valor || 'Todos';
+            }
+            renderResumenFiltrosCasosIndividualesV2();
+            renderDashboardCasosIndividualesV2();
+        }
+        function limpiarFiltrosCasosIndividualesV2() {
+            estadoIndividualV2.aniosSeleccionados = estadoIndividualV2.aniosDisponibles.slice(-3);
+            estadoIndividualV2.semana = 'Todas';
+            estadoIndividualV2.diagnostico = 'Todos';
+            estadoIndividualV2.sexo = 'Todos';
+            estadoIndividualV2.grupoEdad = 'Todos';
+            renderSelectoresCasosIndividualesV2();
+            renderDashboardCasosIndividualesV2();
+        }
+        function actualizarEstadoVisualCasosIndividualesV2() {
+            const el = document.getElementById('estadoModuloCasos');
+            if (!el) return;
+            const total = estadoIndividualV2.registros.length;
+            const texto = total > 0
+                ? `${total.toLocaleString('es-PE')} registros procesados · vista agregada activa`
+                : 'Sin datos cargados';
+            if (el.textContent !== texto) el.textContent = texto;
+        }
+
+        function renderKpisCasosIndividualesV2(registros) {
+            const kpiCasos = document.getElementById('kpiCasosIndividualV2');
+            const kpiDiags = document.getElementById('kpiDiagnosticosIndividualV2');
+            const kpiPrincipal = document.getElementById('kpiDiagnosticoPrincipalIndividualV2');
+            const kpiPrincipalDet = document.getElementById('kpiDiagnosticoPrincipalDetalleIndividualV2');
+            const kpiSemana = document.getElementById('kpiUltimaSemanaIndividualV2');
+
+            const conteos = new Map();
+            registros.forEach(r => conteos.set(r.codigo, (conteos.get(r.codigo) || 0) + 1));
+            const ranking = [...conteos.entries()].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0],'es',{numeric:true}));
+            const principal = ranking[0] || null;
+            const ultimaSemana = registros.length ? Math.max(...registros.map(r => r.semana)) : null;
+            const aniosUltima = ultimaSemana === null ? [] :
+                [...new Set(registros.filter(r => r.semana === ultimaSemana).map(r => r.anio))].sort((a,b) => a-b);
+
+            if (kpiCasos) kpiCasos.textContent = registros.length.toLocaleString('es-PE');
+            if (kpiDiags) kpiDiags.textContent = conteos.size.toLocaleString('es-PE');
+            if (kpiPrincipal) kpiPrincipal.textContent = principal ? etiquetaDiagnosticoIndividualV2(principal[0]) : '—';
+            if (kpiPrincipalDet) kpiPrincipalDet.textContent = principal ? `${principal[1].toLocaleString('es-PE')} casos` : 'Sin datos.';
+            if (kpiSemana) kpiSemana.textContent = ultimaSemana === null ? '—' :
+                `${ultimaSemana}${aniosUltima.length ? ' · '+aniosUltima.join('/') : ''}`;
+        }
+        function destruirGraficosCasosIndividualesV2() {
+            Object.keys(estadoIndividualV2.charts).forEach(k => {
+                const chart = estadoIndividualV2.charts[k];
+                if (chart && typeof chart.destroy === 'function') chart.destroy();
+                estadoIndividualV2.charts[k] = null;
+            });
+        }
+
+        function mostrarEstadoChartIndividualV2(id, mostrar, texto = '') {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (texto) el.textContent = texto;
+            el.classList.toggle('hidden', !mostrar);
+            el.classList.toggle('flex', mostrar);
+        }
+
+        function opcionesChartCasosIndividualesV2(horizontal = false) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: horizontal ? 'y' : 'x',
+                interaction: { mode: 'nearest', intersect: false },
+                plugins: {
+                    legend: { labels: { color: '#cbd5e1', boxWidth: 12, font: { size: 10, weight: 'bold' } } },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    x: { beginAtZero: true, grid: { color: 'rgba(148,163,184,0.08)' }, ticks: { color: '#94a3b8', precision: 0 } },
+                    y: { beginAtZero: true, grid: { color: 'rgba(148,163,184,0.08)' }, ticks: { color: '#94a3b8', precision: 0 } }
+                }
+            };
+        }
+
+        const pluginValoresBarrasIndividualV2 = {
+            id: 'valoresBarrasIndividualV2',
+            afterDatasetsDraw(chart) {
+                const ctx = chart.ctx;
+                ctx.save();
+                ctx.fillStyle = '#cbd5e1';
+                ctx.font = 'bold 10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                chart.data.datasets.forEach((dataset, datasetIndex) => {
+                    const meta = chart.getDatasetMeta(datasetIndex);
+                    meta.data.forEach((element, index) => {
+                        const valor = Number(dataset.data[index]);
+                        if (!Number.isFinite(valor)) return;
+                        const pos = element.tooltipPosition();
+                        ctx.fillText(valor.toLocaleString('es-PE'), pos.x, pos.y - 4);
+                    });
+                });
+                ctx.restore();
+            }
+        };
+
+        function envolverEtiquetaIndividualV2(texto, max = 42) {
+            const palabras = textoIndividualV2(texto).split(/\s+/).filter(Boolean);
+            const lineas = [];
+            let linea = '';
+            palabras.forEach(p => {
+                const propuesta = linea ? `${linea} ${p}` : p;
+                if (linea && propuesta.length > max) {
+                    lineas.push(linea);
+                    linea = p;
+                } else linea = propuesta;
+            });
+            if (linea) lineas.push(linea);
+            return lineas.length ? lineas : [''];
+        }
+
+        function registrosParaAnioIndividualV2(anio) {
+            return estadoIndividualV2.registros.filter(r => {
+                if (r.anio !== anio) return false;
+                if (estadoIndividualV2.semana !== 'Todas' && r.semana !== Number(estadoIndividualV2.semana)) return false;
+                if (estadoIndividualV2.diagnostico !== 'Todos' && r.codigo !== estadoIndividualV2.diagnostico) return false;
+                if (estadoIndividualV2.sexo !== 'Todos' && r.sexo !== estadoIndividualV2.sexo) return false;
+                if (estadoIndividualV2.grupoEdad !== 'Todos' && r.grupoEdad !== estadoIndividualV2.grupoEdad) return false;
+                return true;
+            });
+        }
+
+        function renderGraficosCasosIndividualesV2(registrosFiltrados) {
+            if (typeof Chart === 'undefined') return;
+            destruirGraficosCasosIndividualesV2();
+
+            const aniosGraficar = aniosSeleccionadosIndividualV2();
+
+            // G1 — una barra por cada año seleccionado, en orden cronológico.
+            const g1Datos = aniosGraficar.map(anio => registrosParaAnioIndividualV2(anio).length);
+            const g1Tiene = aniosGraficar.length > 0;
+            mostrarEstadoChartIndividualV2('estadoChartIndividualG1V2', !g1Tiene);
+            const g1Canvas = document.getElementById('chartIndividualG1V2');
+            if (g1Canvas && g1Tiene) {
+                const opciones = opcionesChartCasosIndividualesV2(false);
+                opciones.plugins.legend.display = false;
+                opciones.layout = { padding: { top: 22 } };
+                estadoIndividualV2.charts.g1 = new Chart(g1Canvas, {
+                    type: 'bar',
+                    data: {
+                        labels: aniosGraficar.map(String),
+                        datasets: [{
+                            label: 'Casos',
+                            data: g1Datos,
+                            backgroundColor: aniosGraficar.map((_,i) => INDIVIDUAL_PALETA_V2[i % INDIVIDUAL_PALETA_V2.length]),
+                            borderWidth: 0
+                        }]
+                    },
+                    options: opciones,
+                    plugins: [pluginValoresBarrasIndividualV2]
+                });
+            }
+
+            // G2 — una línea independiente por año seleccionado; 0 versus null.
+            let semanasMostrar = [];
+            if (estadoIndividualV2.semana !== 'Todas') {
+                semanasMostrar = [Number(estadoIndividualV2.semana)];
+            } else {
+                const maxSemana = aniosGraficar.reduce((max, anio) => {
+                    const semanas = estadoIndividualV2.registros.filter(r => r.anio === anio).map(r => r.semana);
+                    return Math.max(max, semanas.length ? Math.max(...semanas) : 0);
+                }, 0);
+                semanasMostrar = Array.from({length: maxSemana}, (_,i) => i + 1);
+            }
+            const datasetsG2 = aniosGraficar.map((anio,i) => {
+                const fuenteAnio = estadoIndividualV2.registros.filter(r => r.anio === anio);
+                const observadas = new Set(fuenteAnio.map(r => r.semana));
+                const filtradasAnio = registrosParaAnioIndividualV2(anio);
+                const conteos = new Map();
+                filtradasAnio.forEach(r => conteos.set(r.semana, (conteos.get(r.semana) || 0) + 1));
+                return {
+                    label: String(anio),
+                    data: semanasMostrar.map(s => observadas.has(s) ? (conteos.get(s) || 0) : null),
+                    borderColor: INDIVIDUAL_PALETA_V2[i % INDIVIDUAL_PALETA_V2.length],
+                    backgroundColor: INDIVIDUAL_PALETA_V2[i % INDIVIDUAL_PALETA_V2.length],
+                    tension: 0.2,
+                    spanGaps: false,
+                    pointRadius: 2.5,
+                    fill: false
+                };
+            });
+            const g2Tiene = semanasMostrar.length > 0 && datasetsG2.length > 0;
+            mostrarEstadoChartIndividualV2('estadoChartIndividualG2V2', !g2Tiene);
+            const g2Canvas = document.getElementById('chartIndividualG2V2');
+            if (g2Canvas && g2Tiene) {
+                const opciones = opcionesChartCasosIndividualesV2(false);
+                opciones.scales.x.beginAtZero = false;
+                opciones.scales.x.title = { display: true, text: 'Semana Epidemiológica', color: '#94a3b8' };
+                opciones.scales.y.title = { display: true, text: 'Casos', color: '#94a3b8' };
+                estadoIndividualV2.charts.g2 = new Chart(g2Canvas, {
+                    type: 'line',
+                    data: { labels: semanasMostrar.map(s => `S.E. ${s}`), datasets: datasetsG2 },
+                    options: opciones
+                });
+            }
+
+            // G3 — todos los diagnósticos, comparados por año.
+            const conteosDiag = new Map();
+            registrosFiltrados.forEach(r => conteosDiag.set(r.codigo, (conteosDiag.get(r.codigo) || 0) + 1));
+            const rankingDiag = [...conteosDiag.entries()].sort((a,b) => b[1]-a[1] || a[0].localeCompare(b[0],'es',{numeric:true}));
+            const codigosDiag = rankingDiag.map(([codigo]) => codigo);
+            const holderG3 = document.getElementById('contenedorChartIndividualG3V2');
+            if (holderG3) holderG3.style.height = `${Math.max(380, rankingDiag.length * Math.max(46, 18 + aniosGraficar.length * 10) + 110)}px`;
+            const g3Tiene = rankingDiag.length > 0 && aniosGraficar.length > 0;
+            mostrarEstadoChartIndividualV2('estadoChartIndividualG3V2', !g3Tiene);
+            const g3Canvas = document.getElementById('chartIndividualG3V2');
+            if (g3Canvas && g3Tiene) {
+                const opciones = opcionesChartCasosIndividualesV2(true);
+                opciones.scales.y.ticks.autoSkip = false;
+                opciones.scales.y.ticks.font = { size: 10 };
+                opciones.scales.y.ticks.callback = function(value) {
+                    return envolverEtiquetaIndividualV2(this.getLabelForValue(value), 38);
+                };
+                const datasets = aniosGraficar.map((anio,i) => {
+                    const conteos = new Map();
+                    registrosParaAnioIndividualV2(anio).forEach(r => conteos.set(r.codigo, (conteos.get(r.codigo) || 0) + 1));
+                    return {
+                        label: String(anio),
+                        data: codigosDiag.map(c => conteos.get(c) || 0),
+                        backgroundColor: INDIVIDUAL_PALETA_V2[i % INDIVIDUAL_PALETA_V2.length],
+                        borderWidth: 0
+                    };
+                });
+                estadoIndividualV2.charts.g3 = new Chart(g3Canvas, {
+                    type: 'bar',
+                    data: { labels: codigosDiag.map(c => etiquetaDiagnosticoIndividualV2(c)), datasets },
+                    options: opciones
+                });
+            }
+
+            // G4 — sexo comparativo multianual, barras agrupadas.
+            const sexosPresentes = new Set(registrosFiltrados.map(r => r.sexo).filter(s => s === 'F' || s === 'M'));
+            const sexos = ['F','M'].filter(s => sexosPresentes.has(s));
+            const g4Tiene = sexos.length > 0 && aniosGraficar.length > 0;
+            mostrarEstadoChartIndividualV2('estadoChartIndividualG4V2', !g4Tiene);
+            const resumenSexo = document.getElementById('resumenSexoIndividualV2');
+            if (resumenSexo) {
+                resumenSexo.textContent = aniosGraficar.length
+                    ? aniosGraficar.map(anio => {
+                        const regs = registrosParaAnioIndividualV2(anio);
+                        const total = regs.filter(r => r.sexo === 'F' || r.sexo === 'M').length;
+                        if (!total) return `${anio}: —`;
+                        const f = regs.filter(r => r.sexo === 'F').length;
+                        const m = regs.filter(r => r.sexo === 'M').length;
+                        return `${anio}: F ${f} (${(f*100/total).toFixed(1)}%) · M ${m} (${(m*100/total).toFixed(1)}%)`;
+                    }).join(' | ')
+                    : '—';
+            }
+            const g4Canvas = document.getElementById('chartIndividualG4V2');
+            if (g4Canvas && g4Tiene) {
+                const opciones = opcionesChartCasosIndividualesV2(false);
+                const datasets = aniosGraficar.map((anio,i) => {
+                    const conteos = new Map();
+                    registrosParaAnioIndividualV2(anio).forEach(r => {
+                        if (r.sexo === 'F' || r.sexo === 'M') conteos.set(r.sexo, (conteos.get(r.sexo) || 0) + 1);
+                    });
+                    return {
+                        label: String(anio),
+                        data: sexos.map(s => conteos.get(s) || 0),
+                        backgroundColor: INDIVIDUAL_PALETA_V2[i % INDIVIDUAL_PALETA_V2.length],
+                        borderWidth: 0
+                    };
+                });
+                estadoIndividualV2.charts.g4 = new Chart(g4Canvas, {
+                    type: 'bar',
+                    data: { labels: sexos.map(etiquetaSexoIndividualV2), datasets },
+                    options: opciones
+                });
+            }
+
+            // G5 — grupos de edad comparativos por año.
+            const presentesEdad = new Set(registrosFiltrados.map(r => r.grupoEdad));
+            const grupos = INDIVIDUAL_GRUPOS_EDAD_V2.filter(g => presentesEdad.has(g));
+            if (presentesEdad.has('No especificado')) grupos.push('No especificado');
+            const g5Tiene = grupos.length > 0 && aniosGraficar.length > 0;
+            mostrarEstadoChartIndividualV2('estadoChartIndividualG5V2', !g5Tiene);
+            const g5Canvas = document.getElementById('chartIndividualG5V2');
+            if (g5Canvas && g5Tiene) {
+                const opciones = opcionesChartCasosIndividualesV2(false);
+                const datasets = aniosGraficar.map((anio,i) => {
+                    const conteos = new Map();
+                    registrosParaAnioIndividualV2(anio).forEach(r => conteos.set(r.grupoEdad, (conteos.get(r.grupoEdad) || 0) + 1));
+                    return {
+                        label: String(anio),
+                        data: grupos.map(g => conteos.get(g) || 0),
+                        backgroundColor: INDIVIDUAL_PALETA_V2[i % INDIVIDUAL_PALETA_V2.length],
+                        borderWidth: 0
+                    };
+                });
+                estadoIndividualV2.charts.g5 = new Chart(g5Canvas, {
+                    type: 'bar',
+                    data: { labels: grupos, datasets },
+                    options: opciones
+                });
+            }
+        }
+        function renderDashboardCasosIndividualesV2() {
+            actualizarEstadoVisualCasosIndividualesV2();
+            const registros = filtrarCasosIndividualesV2();
+            renderKpisCasosIndividualesV2(registros);
+            if (!document.getElementById('contentCasos')?.classList.contains('hidden')) {
+                renderGraficosCasosIndividualesV2(registros);
+            }
+        }
+
+        function sincronizarModuloCasosIndividualesV2() {
+            const fuente = Array.isArray(datosModulosIndependientes.casos) ? datosModulosIndependientes.casos : [];
+            const firma = `${fuente.length}|${fuente.length ? Object.keys(fuente[0] || {}).length : 0}`;
+            if (firma !== estadoIndividualV2.firmaDataset) {
+                construirModeloCasosIndividualesV2();
+            } else {
+                actualizarEstadoVisualCasosIndividualesV2();
+                if (!document.getElementById('contentCasos')?.classList.contains('hidden')) {
+                    renderSelectoresCasosIndividualesV2();
+                    requestAnimationFrame(renderDashboardCasosIndividualesV2);
+                }
+            }
+        }
+
+        // Integración mínima sin modificar ETL ni navegación general:
+        // observa el estado que el ETL ya actualiza y la visibilidad de contentCasos.
+        (function instalarIntegracionCasosIndividualesV2() {
+            const estadoEl = document.getElementById('estadoModuloCasos');
+            const content = document.getElementById('contentCasos');
+            if (!estadoEl || !content || typeof MutationObserver === 'undefined') return;
+            const observer = new MutationObserver(() => sincronizarModuloCasosIndividualesV2());
+            observer.observe(estadoEl, { childList: true, characterData: true, subtree: true });
+            observer.observe(content, { attributes: true, attributeFilter: ['class'] });
+            sincronizarModuloCasosIndividualesV2();
+        })();
+
         // =====================================================================
         // SOAT — RECUPERACIÓN CONTROLADA FASE 1 (1A → 1E)
         // Capa exclusivamente de presentación/análisis. No modifica parseSOAT(),

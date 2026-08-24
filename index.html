@@ -15,6 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- SheetJS (XLSX) para procesamiento masivo de datos Excel/CSV -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Supabase: fuente remota; Excel/CSV permanece como respaldo manual -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.5s ease; }
@@ -276,7 +278,38 @@
             }
             #resumenAnualDatosAcumuladosV6B .vea-matriz-tabla { min-width: 900px; }
         }
-    </style>
+    
+        /* FASE 3.10: los paneles fuera de pantalla no consumen layout/pintado hasta ser necesarios. */
+        .tab-content.hidden { content-visibility: hidden; }
+        .tab-content:not(.hidden) { content-visibility: auto; contain-intrinsic-size: 900px; }
+
+
+        /* FASE 3.11 — aislamiento de layout por módulo para navegación uniforme */
+        [id^="content"].tab-content:not(.hidden),
+        [data-vea-dynamic-content]:not(.hidden) {
+            contain: layout style paint;
+        }
+
+
+        /* FASE 3.12 — respuesta visual inmediata del menú */
+        .menu-item,
+        .menu-item.active,
+        .tab-content {
+            transition-delay: 0s !important;
+        }
+        .menu-item.active {
+            will-change: auto;
+        }
+
+
+        /* FASE 3.13 — aislamiento de pintura para Casos Individuales */
+        #contentCasos,
+        #content-casos,
+        [data-modulo="casos"],
+        .casos-individuales {
+            contain: layout style paint;
+        }
+</style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
 
@@ -366,16 +399,16 @@
 
                 <nav id="veaMasterMenu" class="space-y-1" aria-label="Menú Maestro VEA">
                     <button onclick="cambiarTab('dashboard')" id="btnTabDashboard" data-vea-tab="dashboard" class="vea-menu-item vea-menu-item-active w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">01</span><span class="vea-menu-label truncate">Vigilancia Epidemiológica Activa VEA</span>
-                    </button>
-                    <button onclick="cambiarTab('hospitalizados')" id="btnTabHospitalizados" data-vea-tab="hospitalizados" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">02</span><span class="vea-menu-label truncate">Hospitalizados</span>
+                        <span class="w-6 text-center shrink-0">01</span><span class="vea-menu-label truncate">Dashboard de Vigilancia</span>
                     </button>
                     <button onclick="cambiarTab('datos')" id="btnTabDatos" data-vea-tab="datos" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">03</span><span class="vea-menu-label truncate">Datos Acumulados</span>
+                        <span class="w-6 text-center shrink-0">02</span><span class="vea-menu-label truncate">Datos Acumulados</span>
                     </button>
                     <button onclick="cambiarTab('casos')" id="btnTabCasos" data-vea-tab="casos" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">04</span><span class="vea-menu-label truncate">Casos Individuales</span>
+                        <span class="w-6 text-center shrink-0">03</span><span class="vea-menu-label truncate">Casos Individuales</span>
+                    </button>
+                    <button onclick="cambiarTab('hospitalizados')" id="btnTabHospitalizados" data-vea-tab="hospitalizados" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
+                        <span class="w-6 text-center shrink-0">04</span><span class="vea-menu-label truncate">Hospitalizados</span>
                     </button>
                     <button onclick="cambiarTab('soat')" id="btnTabSoat" data-vea-tab="soat" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
                         <span class="w-6 text-center shrink-0">05</span><span class="vea-menu-label truncate">SOAT</span>
@@ -390,7 +423,7 @@
                     <div id="veaDynamicModulesContainer" class="space-y-1"></div>
 
                     <button onclick="document.getElementById('excelFileInput').click(); cerrarVeaSidebarMovil();" id="btnMenuIngestar" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">⇧</span><span class="vea-menu-label truncate">Ingestar Repositorio VEA</span>
+                        <span class="w-6 text-center shrink-0">08</span><span class="vea-menu-label truncate">Ingestar Repositorio VEA</span>
                     </button>
                     <button onclick="prepararAgregarModulo()" id="btnAgregarModulo" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
                         <span class="w-6 text-center shrink-0">＋</span><span class="vea-menu-label truncate">Agregar módulo</span>
@@ -4717,8 +4750,22 @@
             });
         }
 
-        function actualizarCasosIndividualesV21() {
+        let ciV21UltimaFirmaRenderF318 = null;
+
+        function ciV21FirmaRenderF318() {
+            const e = estadoCasosIndividualesV21;
+            const dataset = ciV21Dataset();
+            const datasetId = typeof obtenerIdDatasetNavegacionVea === 'function'
+                ? obtenerIdDatasetNavegacionVea(dataset)
+                : `${dataset.length}:${dataset === e.datasetRef ? 'same' : 'new'}`;
+            return [datasetId, [...e.anios].sort((a,b)=>a-b).join(','), e.semana, e.diagnostico, e.sexo, e.grupoEdad].join('|');
+        }
+
+        function actualizarCasosIndividualesV21(forzar = false) {
             ciV21InicializarSiCorresponde();
+            const firmaF318 = ciV21FirmaRenderF318();
+            if (!forzar && ciV21UltimaFirmaRenderF318 === firmaF318) return;
+            ciV21UltimaFirmaRenderF318 = firmaF318;
             ciV21SincronizarControles();
 
             const dataset = ciV21Dataset();
@@ -4753,22 +4800,22 @@
             ciObserverInstaladoV21 = true;
 
             const content = document.getElementById('contentCasos');
-            if (content && typeof MutationObserver !== 'undefined') {
-                const observer = new MutationObserver(() => {
-                    if (!content.classList.contains('hidden')) requestAnimationFrame(actualizarCasosIndividualesV21);
-                });
-                observer.observe(content, { attributes:true, attributeFilter:['class'] });
-            }
+            // FASE 3.18: NO observar la clase de contentCasos.
+            // cambiarTab() ya controla el render diferido después del primer pintado.
+            // El observer anterior disparaba un render pesado adicional al abrir el módulo,
+            // compitiendo con el pintado y duplicando actualizarCasosIndividualesV21().
 
             const progreso = document.getElementById('textoProgreso');
             if (progreso && typeof MutationObserver !== 'undefined') {
                 const observerCarga = new MutationObserver(() => {
-                    if (content && !content.classList.contains('hidden')) requestAnimationFrame(actualizarCasosIndividualesV21);
+                    if (content && !content.classList.contains('hidden')) {
+                        requestAnimationFrame(() => actualizarCasosIndividualesV21(true));
+                    }
                 });
                 observerCarga.observe(progreso, { childList:true, subtree:true, characterData:true });
             }
 
-            if (content && !content.classList.contains('hidden')) requestAnimationFrame(actualizarCasosIndividualesV21);
+            if (content && !content.classList.contains('hidden')) requestAnimationFrame(() => actualizarCasosIndividualesV21(true));
         }
 
         if (document.readyState === 'loading') {
@@ -4927,7 +4974,140 @@
             });
         }
 
-        function cambiarTab(tab) {
+
+        // =========================================================
+        // FASE 3.9 — PRECALENTAMIENTO DE MÓDULOS
+        // Prepara modelos/cachés pesados en tiempo ocioso para que el
+        // primer acceso a cada módulo no congele la navegación.
+        // No renderiza gráficos ocultos ni altera resultados.
+        // =========================================================
+        let veaPrecalentamientoProgramado = false;
+        let veaPrecalentamientoCompleto = false;
+
+        function veaEjecutarEnIdle(tarea, timeout = 1200) {
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(() => {
+                    try { tarea(); } catch (err) { console.warn('[VEA Warmup]', err); }
+                }, { timeout });
+            } else {
+                setTimeout(() => {
+                    try { tarea(); } catch (err) { console.warn('[VEA Warmup]', err); }
+                }, 80);
+            }
+        }
+
+        function veaPrecalentarModulos() {
+            if (veaPrecalentamientoProgramado) return;
+            veaPrecalentamientoProgramado = true;
+
+            // 1) Datos Acumulados: construir el modelo una sola vez y dejarlo en su caché existente.
+            veaEjecutarEnIdle(() => {
+                try {
+                    sincronizarControlesDatosAcumuladosV6B();
+                    construirModeloDatosAcumuladosV6B();
+                } catch (err) { console.warn('[VEA Warmup] Datos Acumulados', err); }
+            }, 700);
+
+            // 2) Casos Individuales: inicializar estado y filtros sin crear Chart.js ocultos.
+            veaEjecutarEnIdle(() => {
+                try {
+                    ciV21InicializarSiCorresponde();
+                    ciV21Filtrados();
+                } catch (err) { console.warn('[VEA Warmup] Casos Individuales', err); }
+            }, 1100);
+
+            // 3) SOAT: preparar las 11k+ filas y controles antes del primer clic.
+            veaEjecutarEnIdle(() => {
+                try {
+                    soatPrepararFilasV1();
+                    soatLlenarControlesV1();
+                    soatCerrarAniosV1();
+                } catch (err) { console.warn('[VEA Warmup] SOAT', err); }
+            }, 1500);
+
+            // 4) Marcar warmup completo después de ceder varios ciclos al navegador.
+            veaEjecutarEnIdle(() => {
+                veaPrecalentamientoCompleto = true;
+                console.info('[VEA Warmup] Módulos principales preparados');
+            }, 2200);
+        }
+
+        // =========================================================
+        // FASE 3.11 — NAVEGACIÓN UNIFORME
+        // El precalentamiento NO ejecuta renders globales ni Chart.js ocultos.
+        // Solo prepara modelos/datasets para evitar competencia de CPU con los clics.
+        // =========================================================
+        let veaWarmupF311Programado = false;
+        function programarWarmupModulosF311() {
+            if (veaWarmupF311Programado) return;
+            veaWarmupF311Programado = true;
+
+            const tareas = [
+                // Casos Individuales primero: es el único módulo que aún mostraba latencia al primer clic.
+                () => {
+                    try {
+                        ciV21InicializarSiCorresponde();
+                        ciV21Filtrados();
+                        // Preparar estructura de búsqueda/paginación sin pintar el módulo.
+                        if (typeof ciV21Estado !== 'undefined') {
+                            ciV21Estado.__warm = true;
+                        }
+                    } catch(e) {}
+                },
+                () => { try { construirModeloDatosAcumuladosV6B(); } catch(e) {} },
+                () => { try { soatPrepararFilasV1(); } catch(e) {} }
+            ];
+            let i = 0;
+            const siguiente = () => {
+                if (i >= tareas.length) return;
+                try { tareas[i++](); } catch(e) {}
+                if ('requestIdleCallback' in window) requestIdleCallback(siguiente, { timeout: 900 });
+                else setTimeout(siguiente, 120);
+            };
+            setTimeout(siguiente, 40);
+        }
+
+        // Render pesado después de que el cambio de pantalla ya fue pintado.
+        const veaRenderPendienteF311 = new Map();
+        function diferirRenderNavegacionF311(tab, tarea, espera = 0) {
+            const token = Symbol(tab);
+            veaRenderPendienteF311.set(tab, token);
+
+            // Primer frame: navegador pinta inmediatamente el módulo seleccionado.
+            requestAnimationFrame(() => {
+                if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
+
+                // Segundo frame: recién comienza el trabajo específico del módulo.
+                requestAnimationFrame(() => {
+                    if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
+                    veaRenderPendienteF311.delete(tab);
+                    try { tarea(); } catch (err) { console.warn('[VEA Navegación 3.12]', tab, err); }
+                });
+            });
+        }
+
+
+
+        
+        // =========================================================
+        // FASE 3.12 — CLICK INSTANTÁNEO
+        // El estado visual del menú cambia en pointerdown (antes de click).
+        // No ejecuta cálculos, filtros ni gráficos; solo feedback visual.
+        // =========================================================
+        function veaFeedbackMenuInstantaneoF312(ev) {
+            const item = ev.target.closest('.menu-item');
+            if (!item) return;
+
+            // FASE 3.17 — feedback seguro:
+            // solo marca visualmente el botón; NO toca paneles, layout ni módulos.
+            document.querySelectorAll('.menu-item.active').forEach(el => {
+                if (el !== item) el.classList.remove('active');
+            });
+            item.classList.add('active');
+        }
+        document.addEventListener('pointerdown', veaFeedbackMenuInstantaneoF312, { passive: true });
+
+function cambiarTab(tab) {
             tabActiva = tab;
             const tabsMenuVea = ['dashboard', 'datos', 'casos', 'canal', 'tabla', 'hospitalizados', 'soat', 'vih', 'tbc', 'configuracion'];
 
@@ -4953,14 +5133,8 @@
                 btn.classList.add(btn.dataset.veaDynamicTab === tab ? 'vea-menu-item-active' : 'vea-menu-item-inactive');
             });
 
-            // El mismo panel, canvas y motor científico se presentan en el
-            // Dashboard o en el módulo Canal Endémico según la navegación.
-            ubicarCanalEndemicoCompartido(tab);
-            ubicarMatrizSECompartida(tab);
-
-            // La banda y filtros generales pertenecen a módulos de Vigilancia.
-            // Datos Acumulados posee controles propios y no debe mostrar
-            // momentáneamente los filtros del evento mientras navega.
+            // FASE 3.11: primero termina el cambio visual. Nada pesado se ejecuta
+            // dentro del mismo evento de clic.
             const tabsVigilancia = ['dashboard', 'canal', 'tabla', 'hospitalizados'];
             const mostrarControlesVigilancia = tabsVigilancia.includes(tab);
             const banda = document.getElementById('bandaSituacionCompleta');
@@ -4968,14 +5142,47 @@
             if (banda) banda.classList.toggle('hidden', !mostrarControlesVigilancia);
             if (filtros) filtros.classList.toggle('hidden', !mostrarControlesVigilancia);
 
-            // Primero se deja visible la pantalla seleccionada. Los módulos
-            // que requieren trabajo pesado se actualizan en el siguiente frame.
-            if (['dashboard', 'datos', 'canal', 'tabla', 'hospitalizados'].includes(tab)) {
-                programarRenderModuloNavegacionVea(tab);
-            }
-            if (tab === 'soat') requestAnimationFrame(actualizarSoatV1);
-
             cerrarVeaSidebarMovil();
+
+            // Reubicar paneles compartidos y renderizar después del primer pintado.
+            diferirRenderNavegacionF311(tab, () => {
+                const esCasosIndividuales = ['casos', 'casos-individuales', 'individuales', 'individual'].includes(tab);
+                if (!esCasosIndividuales) {
+                    ubicarCanalEndemicoCompartido(tab);
+                    ubicarMatrizSECompartida(tab);
+                }
+
+                if (['dashboard', 'datos', 'canal', 'tabla', 'hospitalizados'].includes(tab)) {
+                    programarRenderModuloNavegacionVea(tab);
+                } else if (['casos', 'casos-individuales', 'individuales', 'individual'].includes(tab)) {
+                    // FASE 3.14: cubrir el identificador real de Casos Individuales.
+                    // El panel se muestra primero; el render pesado nunca bloquea el clic.
+                    const tabCasosActivo = tab;
+                    const renderCasos = () => {
+                        if (tabActiva !== tabCasosActivo) return;
+                        try {
+                            ciV21InicializarSiCorresponde();
+                            if (typeof actualizarCasosIndividualesV21 === 'function') {
+                                actualizarCasosIndividualesV21();
+                            }
+                        } catch (e) {
+                            console.warn('[VEA Casos Individuales 3.13]', e);
+                        }
+                    };
+                    if ('requestIdleCallback' in window) {
+                        requestIdleCallback(renderCasos, { timeout: 450 });
+                    } else {
+                        setTimeout(renderCasos, 120);
+                    }
+                } else if (tab === 'soat') {
+                    if (soatEstadoV1.datasetRef === datosModulosIndependientes.soat && soatEstadoV1.filas.length) {
+                        soatCerrarAniosV1();
+                        soatActualizarVisualV1(false);
+                    } else {
+                        actualizarSoatV1();
+                    }
+                }
+            }, 0);
         }
 
         function aplicarTemaGraficoYBotones() {
@@ -7887,7 +8094,271 @@
             }
         });
 
-        window.onload = function() {
+        // SUPABASE VEA — FASE DE MIGRACIÓN CONTROLADA
+        // La publishable key es segura para cliente; RLS decide qué tablas puede leer cada sesión.
+        const VEA_SUPABASE_URL = 'https://qtsfkoasfoaovadilwgk.supabase.co';
+        const VEA_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_uzdpUnVRYRQY3lROvtNwiw_qa4iyJwj';
+        let veaSupabaseClient = null;
+
+        async function veaSupabaseLeerTablaCompleta(tabla) {
+            if (!veaSupabaseClient) throw new Error('Cliente Supabase no disponible.');
+            // FASE 3.5: páginas concurrentes. Supabase limita normalmente cada respuesta,
+            // pero no obliga a pedirlas una detrás de otra. Se conservan TODAS las filas.
+            const lote = 1000;
+            const concurrencia = 8;
+            const salida = [];
+            let desdeBase = 0;
+            let terminado = false;
+            while (!terminado) {
+                const paginas = await Promise.all(Array.from({ length: concurrencia }, (_, i) => {
+                    const desde = desdeBase + (i * lote);
+                    return veaSupabaseClient.from(tabla).select('*').range(desde, desde + lote - 1);
+                }));
+                for (const respuesta of paginas) {
+                    if (respuesta.error) throw respuesta.error;
+                    const filas = Array.isArray(respuesta.data) ? respuesta.data : [];
+                    salida.push(...filas);
+                    if (filas.length < lote) { terminado = true; break; }
+                }
+                desdeBase += lote * concurrencia;
+            }
+            return salida;
+        }
+
+        function veaSupabaseParsearFilas(tabla, filas) {
+            if (!Array.isArray(filas) || !filas.length) return [];
+            const nombreHoja = ({ edas:'EDAs', iras:'IRAs', febriles:'Febriles', individual:'INDIVIDUAL', soat:'SOAT', vih:'VIH', tbc:'TBC' })[tabla];
+            const destino = identificarDestinoHojaVea(nombreHoja);
+            const limpias = filas.map(({ _row_id, ...resto }) => resto);
+            const worksheet = XLSX.utils.json_to_sheet(limpias);
+            const resultado = parsearHojaVeaPorDestino(worksheet, destino, nombreHoja);
+            if (resultado.error) throw new Error(resultado.error);
+            return Array.isArray(resultado.registros) ? resultado.registros : [];
+        }
+
+        async function esperarSupabaseVea(maxMs = 4000) {
+            const inicio = Date.now();
+            while (!window.supabase?.createClient && (Date.now() - inicio) < maxMs) {
+                await new Promise(resolve => setTimeout(resolve, 150));
+            }
+            return !!window.supabase?.createClient;
+        }
+
+
+        // =========================================================
+        // FASE 3.6 — CACHÉ INTELIGENTE INDEXEDDB (stale-while-revalidate)
+        // Objetivo: mostrar el último repositorio validado casi de inmediato
+        // y actualizar Supabase en segundo plano sin alterar parsers/cálculos.
+        // =========================================================
+        const VEA_CACHE_DB = 'VEA_CACHE_DB_V1';
+        const VEA_CACHE_STORE = 'repositorio';
+        const VEA_CACHE_KEY = 'dataset_procesado';
+
+        function veaCacheAbrirDB() {
+            return new Promise((resolve, reject) => {
+                if (!('indexedDB' in window)) return reject(new Error('IndexedDB no disponible'));
+                const req = indexedDB.open(VEA_CACHE_DB, 1);
+                req.onupgradeneeded = () => {
+                    const db = req.result;
+                    if (!db.objectStoreNames.contains(VEA_CACHE_STORE)) db.createObjectStore(VEA_CACHE_STORE);
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error || new Error('No se pudo abrir IndexedDB'));
+            });
+        }
+
+        async function veaCacheGuardarProcesado(totalRemoto) {
+            try {
+                const db = await veaCacheAbrirDB();
+                const payload = {
+                    ts: Date.now(),
+                    totalRemoto,
+                    databaseActiva: {
+                        EDAs: databaseActiva.EDAs || [],
+                        IRAs: databaseActiva.IRAs || [],
+                        Febriles: databaseActiva.Febriles || []
+                    },
+                    modulos: {
+                        casos: datosModulosIndependientes.casos || [],
+                        soat: datosModulosIndependientes.soat || [],
+                        vih: datosModulosIndependientes.vih || [],
+                        tbc: datosModulosIndependientes.tbc || []
+                    }
+                };
+                await new Promise((resolve, reject) => {
+                    const tx = db.transaction(VEA_CACHE_STORE, 'readwrite');
+                    tx.objectStore(VEA_CACHE_STORE).put(payload, VEA_CACHE_KEY);
+                    tx.oncomplete = resolve;
+                    tx.onerror = () => reject(tx.error);
+                });
+                db.close();
+            } catch (err) {
+                console.warn('[VEA Cache] No se pudo guardar caché:', err);
+            }
+        }
+
+        async function veaCacheRestaurarProcesado() {
+            try {
+                const db = await veaCacheAbrirDB();
+                const payload = await new Promise((resolve, reject) => {
+                    const tx = db.transaction(VEA_CACHE_STORE, 'readonly');
+                    const req = tx.objectStore(VEA_CACHE_STORE).get(VEA_CACHE_KEY);
+                    req.onsuccess = () => resolve(req.result || null);
+                    req.onerror = () => reject(req.error);
+                });
+                db.close();
+                if (!payload?.databaseActiva || !payload?.modulos) return null;
+
+                databaseActiva.EDAs = payload.databaseActiva.EDAs || [];
+                databaseActiva.IRAs = payload.databaseActiva.IRAs || [];
+                databaseActiva.Febriles = payload.databaseActiva.Febriles || [];
+                datosModulosIndependientes.casos = payload.modulos.casos || [];
+                datosModulosIndependientes.soat = payload.modulos.soat || [];
+                datosModulosIndependientes.vih = payload.modulos.vih || [];
+                datosModulosIndependientes.tbc = payload.modulos.tbc || [];
+
+                if (databaseActiva.IRAs.length) {
+                    databaseActiva.SOBA = databaseActiva.IRAs
+                        .filter(r => r.SOBA !== null && r.SOBA !== undefined && Number.isFinite(Number(r.SOBA)))
+                        .map(r => ({ ANO:r.ANO, SEMANA:r.SEMANA, MES:r.MES, CASOS:Number(r.SOBA), EDADES_VEA:{ ...(r.SOBA_EDADES_VEA || {}) }, TO_HOS:null, __filaExcel:r.__filaExcel }));
+                }
+
+                // FASE 3.7: primer pintado inmediato.
+                // Restauramos datos primero y diferimos el trabajo pesado de UI al siguiente frame.
+                const txt = document.getElementById('textoProgresoVea');
+                const barra = document.getElementById('barraProgresoVea');
+                const total = Number(payload.totalRemoto) || (
+                    databaseActiva.EDAs.length + databaseActiva.IRAs.length + databaseActiva.Febriles.length +
+                    datosModulosIndependientes.casos.length + datosModulosIndependientes.soat.length +
+                    datosModulosIndependientes.vih.length + datosModulosIndependientes.tbc.length
+                );
+                if (txt) txt.textContent = `Datos listos desde caché · ${total.toLocaleString('es-PE')} registros · actualizando…`;
+                if (barra) barra.style.width = '90%';
+
+                // Permitir que el navegador muestre el INDEX antes de recalcular componentes pesados.
+                requestAnimationFrame(() => {
+                    // Dejar visible el estado de caché antes de cualquier cálculo pesado.
+                    setTimeout(() => {
+                        reinicializarEstadosFiltrosTrasCargaVea();
+
+                        // Dashboard en el siguiente frame para evitar un bloqueo largo de inicio.
+                        requestAnimationFrame(() => {
+                            actualizarCalculosYGraficos();
+
+                            // Componentes secundarios solo cuando el navegador tenga tiempo libre.
+                            const secundarios = () => {
+                                soatPrepararFilasV1();
+                                soatLlenarControlesV1();
+                                soatCerrarAniosV1();
+                                renderizarModulosDinamicosVea();
+                            };
+                            if ('requestIdleCallback' in window) {
+                                requestIdleCallback(secundarios, { timeout: 1800 });
+                            } else {
+                                setTimeout(secundarios, 350);
+                            }
+                        });
+                    }, 0);
+                });
+
+                console.info('[VEA Cache] Restaurado', { total, antiguedadMs: Date.now() - Number(payload.ts || 0) });
+                // Preparar módulos secundarios mientras el usuario ya puede usar el Dashboard.
+                setTimeout(veaPrecalentarModulos, 150);
+                return payload;
+            } catch (err) {
+                console.warn('[VEA Cache] No se pudo restaurar caché:', err);
+                return null;
+            }
+        }
+
+        async function cargarRepositorioVeaDesdeSupabase() {
+            const txtEstadoSupabase = document.getElementById('textoProgresoVea');
+            const barraSupabase = document.getElementById('barraProgresoVea');
+            if (txtEstadoSupabase) txtEstadoSupabase.textContent = 'Conectando con Supabase…';
+            if (barraSupabase) barraSupabase.style.width = '15%';
+
+            const libreriaLista = await esperarSupabaseVea();
+            if (!libreriaLista) {
+                const msg = 'No se pudo cargar la librería Supabase. Verifique conexión a Internet y recargue la página.';
+                if (txtEstadoSupabase) txtEstadoSupabase.textContent = msg;
+                if (barraSupabase) barraSupabase.style.width = '0%';
+                console.error('[VEA Supabase]', msg);
+                return { cargadas: [], protegidas: [], errores: [msg], totalRemoto: 0 };
+            }
+
+            veaSupabaseClient ||= window.supabase.createClient(VEA_SUPABASE_URL, VEA_SUPABASE_PUBLISHABLE_KEY);
+            if (txtEstadoSupabase) txtEstadoSupabase.textContent = 'Sincronizando automáticamente con Supabase…';
+            if (barraSupabase) barraSupabase.style.width = '35%';
+            const mapa = [
+                ['edas','EDAs','vigilancia'], ['iras','IRAs','vigilancia'], ['febriles','Febriles','vigilancia'],
+                ['individual','casos','modulo'], ['soat','soat','modulo'], ['vih','vih','modulo'], ['tbc','tbc','modulo']
+            ];
+            const cargadas = [], protegidas = [], errores = [];
+            limpiarRepositorioVeaEnMemoria();
+
+            // RENDIMIENTO: las siete tablas son independientes, por lo que se descargan en paralelo.
+            // Se conserva exactamente el mismo parser y destino de datos; solo cambia la estrategia de I/O.
+            const resultadosSupabase = await Promise.all(mapa.map(async ([tabla, destino, tipo]) => {
+                try {
+                    const filas = await veaSupabaseLeerTablaCompleta(tabla);
+                    return { tabla, destino, tipo, filas };
+                } catch (err) {
+                    return { tabla, destino, tipo, error: err };
+                }
+            }));
+
+            for (const { tabla, destino, tipo, filas = [], error } of resultadosSupabase) {
+                if (error) {
+                    const msg = String(error?.message || error || 'Error desconocido');
+                    if (/permission|policy|jwt|auth|row.level|rls/i.test(msg)) protegidas.push(tabla);
+                    else errores.push(`${tabla}: ${msg}`);
+                    continue;
+                }
+                if (!filas.length) { cargadas.push(`${tabla}:0`); continue; }
+                try {
+                    const registros = veaSupabaseParsearFilas(tabla, filas);
+                    if (tipo === 'vigilancia') {
+                        databaseActiva[destino] = registros;
+                        logsSincronizacion[destino] = { cargada:true, registros:registros.length, cabeceraEncontrada:`Supabase · ${tabla}` };
+                    } else {
+                        datosModulosIndependientes[destino] = registros;
+                    }
+                    cargadas.push(`${tabla}:${registros.length}`);
+                } catch (err) {
+                    errores.push(`${tabla}: ${String(err?.message || err || 'Error desconocido')}`);
+                }
+            }
+
+            if (databaseActiva.IRAs.length) {
+                databaseActiva.SOBA = databaseActiva.IRAs
+                    .filter(r => r.SOBA !== null && r.SOBA !== undefined && Number.isFinite(Number(r.SOBA)))
+                    .map(r => ({ ANO:r.ANO, SEMANA:r.SEMANA, MES:r.MES, CASOS:Number(r.SOBA), EDADES_VEA:{ ...(r.SOBA_EDADES_VEA || {}) }, TO_HOS:null, __filaExcel:r.__filaExcel }));
+            }
+            reinicializarEstadosFiltrosTrasCargaVea();
+            soatPrepararFilasV1();
+            soatLlenarControlesV1();
+            soatCerrarAniosV1();
+            actualizarCalculosYGraficos();
+            renderizarModulosDinamicosVea();
+            window.dispatchEvent(new CustomEvent('vea:supabase-cargado', { detail:{ cargadas, protegidas, errores } }));
+            // También precalentar después de la primera sincronización sin caché.
+            programarWarmupModulosF311();
+            const totalRemoto = databaseActiva.EDAs.length + databaseActiva.IRAs.length + databaseActiva.Febriles.length
+                + (datosModulosIndependientes.casos || []).length + (datosModulosIndependientes.soat || []).length
+                + (datosModulosIndependientes.vih || []).length + (datosModulosIndependientes.tbc || []).length;
+            if (txtEstadoSupabase) {
+                txtEstadoSupabase.textContent = errores.length
+                    ? `Supabase conectado con ${errores.length} observación(es)`
+                    : `Supabase sincronizado automáticamente · ${totalRemoto.toLocaleString('es-PE')} registros`;
+            }
+            if (barraSupabase) barraSupabase.style.width = '100%';
+            console.info('[VEA Supabase]', { cargadas, protegidas, errores, totalRemoto });
+            if (totalRemoto > 0 && errores.length === 0) veaCacheGuardarProcesado(totalRemoto);
+            return { cargadas, protegidas, errores, totalRemoto };
+        }
+        window.cargarRepositorioVeaDesdeSupabase = cargarRepositorioVeaDesdeSupabase;
+
+        window.onload = async function() {
             cargarFiltrosPersistidos();
             restaurarEstadoFiltrosEvento(selectedEvent);
             aplicarTemaGraficoYBotones();
@@ -7895,6 +8366,46 @@
             aplicarEstadoVeaSidebar();
             renderizarModulosDinamicosVea();
             cambiarTab('dashboard');
+
+            // FASE 3.6: primero presenta el último dataset validado; luego refresca desde Supabase.
+            // En la primera ejecución (sin caché) continúa con la carga remota normal.
+            const cacheVeaDisponible = await veaCacheRestaurarProcesado();
+
+            // FASE 3.8: con caché validada, la apertura termina aquí.
+            // Supabase se refresca después, en tiempo ocioso, sin bloquear el primer uso.
+            if (cacheVeaDisponible) {
+                // Precalentar todos los módulos mientras el usuario ve el Dashboard.
+                programarWarmupModulosF311();
+
+                const refrescarEnSegundoPlano = () => {
+                    cargarRepositorioVeaDesdeSupabase().catch(err =>
+                        console.warn('[VEA Supabase] Actualización en segundo plano:', err)
+                    );
+                };
+                // No competir con la navegación inicial. La caché ya contiene el último
+                // repositorio validado; el refresco remoto se difiere hasta que la sesión
+                // esté estable. Así los módulos 01–07 no compiten con 25k registros.
+                setTimeout(() => {
+                    if ('requestIdleCallback' in window) {
+                        requestIdleCallback(refrescarEnSegundoPlano, { timeout: 8000 });
+                    } else {
+                        setTimeout(refrescarEnSegundoPlano, 1000);
+                    }
+                }, 60000);
+                return;
+            }
+
+            // Primera ejecución sin caché: carga automática real desde Supabase.
+            try {
+                const resultadoSupabase = await cargarRepositorioVeaDesdeSupabase();
+                if (!resultadoSupabase.totalRemoto && resultadoSupabase.errores?.length) {
+                    console.error('[VEA Supabase] Sincronización sin datos:', resultadoSupabase.errores);
+                }
+            } catch (err) {
+                const txt = document.getElementById('textoProgresoVea');
+                if (txt) txt.textContent = 'Error de sincronización con Supabase: ' + (err?.message || err);
+                console.error('[VEA Supabase] Error de inicialización:', err);
+            }
         };
     </script>
 </body>

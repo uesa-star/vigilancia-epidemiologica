@@ -1411,7 +1411,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mt-5" aria-label="Filtros SOAT">
-                    <fieldset class="block"><legend class="text-[10px] font-black uppercase tracking-wider text-slate-500">Años</legend><div id="soatFiltroAnios" class="mt-1 min-h-28 max-h-36 overflow-y-auto bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 grid grid-cols-2 gap-1" aria-label="Años SOAT"></div></fieldset>
+                    <fieldset id="soatFiltroAniosControl" class="block relative"><legend class="text-[10px] font-black uppercase tracking-wider text-slate-500">Años</legend><button id="soatFiltroAniosBoton" type="button" onclick="soatToggleAniosV1()" aria-expanded="false" aria-controls="soatFiltroAniosPanel" class="mt-1 w-full min-h-9 bg-slate-950 border border-slate-700 hover:border-cyan-700 rounded-xl px-3 py-2 flex items-center justify-between gap-2 text-xs font-bold text-slate-200 focus:border-cyan-500 outline-none"><span id="soatFiltroAniosResumen" class="truncate">AÑOS: —</span><span id="soatFiltroAniosFlecha" class="text-cyan-400 shrink-0">▾</span></button><div id="soatFiltroAniosPanel" class="hidden absolute left-0 right-0 z-30 mt-1 bg-slate-950 border border-slate-700 rounded-xl shadow-2xl p-2"><div id="soatFiltroAnios" class="max-h-52 overflow-y-auto grid grid-cols-1 gap-1" aria-label="Años SOAT"></div></div></fieldset>
                     <label class="block"><span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Mes</span><select id="soatFiltroMes" onchange="actualizarFiltroSoatV1()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500 outline-none"><option value="Todos">Todos los meses</option></select></label>
                     <label class="block"><span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Sexo</span><select id="soatFiltroSexo" onchange="actualizarFiltroSoatV1()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500 outline-none"><option value="Todos">Todos</option></select></label>
                     <label class="block"><span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Grupo de edad</span><select id="soatFiltroEdad" onchange="actualizarFiltroSoatV1()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500 outline-none"><option value="Todos">Todos</option></select></label>
@@ -7651,7 +7651,7 @@
         const SOAT_MESES_V1 = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SET','OCT','NOV','DIC'];
         const SOAT_GRUPOS_EDAD_V1 = ['<1 año','1–5 años','6–11 años','12–17 años','18–29 años','30–59 años','60+ años','Sin dato'];
         const SOAT_RANGOS_HORA_V1 = ['00:00–05:59','06:00–11:59','12:00–17:59','18:00–23:59','Sin dato'];
-        const soatEstadoV1 = { datasetRef:null, filas:[], aniosDisponibles:[], sexosDisponibles:[], seleccionAnios:[], mes:'Todos', sexo:'Todos', edad:'Todos', firmaVisual:null, frameVisual:null };
+        const soatEstadoV1 = { datasetRef:null, filas:[], aniosDisponibles:[], sexosDisponibles:[], seleccionAnios:[], mes:'Todos', sexo:'Todos', edad:'Todos', firmaVisual:null, frameVisual:null, duplicadosExactos:0 };
         const soatChartsV1 = { anual:null, mensual:null, edad:null, sexo:null, hora:null };
         const soatAuditoriaRendimientoV1 = { preparaciones:0, renders:0, actualizacionesGraficos:0, ultimoPreparadoMs:0, ultimoRenderMs:0 };
         window.auditoriaRendimientoSoat = soatAuditoriaRendimientoV1;
@@ -7673,11 +7673,12 @@
         }
 
         function soatAnioV1(row, fecha) {
-            for (const campo of ['AÑO','ANO','ANO_ACCD']) {
+            if (fecha) return fecha.getFullYear();
+            for (const campo of ['ANO_ACCD','ANO','AÑO']) {
                 const n = soatNumeroV1(soatValorV1(row,campo));
                 if (Number.isInteger(n) && n >= 1900 && n <= 2100) return n;
             }
-            return fecha ? fecha.getFullYear() : null;
+            return null;
         }
 
         function soatMesV1(row, fecha) {
@@ -7698,6 +7699,16 @@
             d.setUTCDate(d.getUTCDate()+4-day);
             const inicio = new Date(Date.UTC(d.getUTCFullYear(),0,1));
             return Math.ceil((((d-inicio)/86400000)+1)/7);
+        }
+
+        function soatClaveSemanaV1(fecha) {
+            if (!fecha) return null;
+            const d = new Date(Date.UTC(fecha.getFullYear(),fecha.getMonth(),fecha.getDate()));
+            const day = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate()+4-day);
+            const inicio = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            const semana = Math.ceil((((d-inicio)/86400000)+1)/7);
+            return `${d.getUTCFullYear()}|${semana}`;
         }
 
         function soatGrupoEdadV1(row) {
@@ -7734,15 +7745,22 @@
             if (soatEstadoV1.datasetRef === dataset) return soatEstadoV1.filas;
             const inicio = performance.now();
             soatEstadoV1.datasetRef = dataset;
-            soatEstadoV1.filas = dataset.map((row, indice) => {
+            const clavesFirma = dataset.length ? Object.keys(dataset[0]).filter(k=>k!=='__filaExcel').sort() : [];
+            const firmasVistas = new Set();
+            soatEstadoV1.duplicadosExactos = 0;
+            soatEstadoV1.filas = dataset.reduce((salida,row,indice) => {
+                const firma = JSON.stringify(clavesFirma.map(k=>row[k] instanceof Date ? row[k].toISOString() : row[k]));
+                if (firmasVistas.has(firma)) { soatEstadoV1.duplicadosExactos++; return salida; }
+                firmasVistas.add(firma);
                 const fechaOriginal = soatValorV1(row,'FEC_ACCD');
                 const fecha = soatFechaV1(fechaOriginal);
                 const anio = soatAnioV1(row,fecha);
                 const mes = soatMesV1(row,fecha);
                 const hora = soatTextoV1(soatValorV1(row,'HOR_ACCID')) || '—';
                 const sexo = soatTextoV1(soatValorV1(row,'SEXO')) || 'Sin dato';
-                return { row, indice, anio, mes, fecha, semana:soatSemanaV1(fecha), hora, rangoHora:soatRangoHoraV1(hora), grupoEdad:soatGrupoEdadV1(row), sexo };
-            }).sort((a,b) => {
+                salida.push({ row, indice, anio, mes, fecha, semana:soatSemanaV1(fecha), semanaClave:soatClaveSemanaV1(fecha), hora, rangoHora:soatRangoHoraV1(hora), grupoEdad:soatGrupoEdadV1(row), sexo });
+                return salida;
+            },[]).sort((a,b) => {
                 const ta = a.fecha ? a.fecha.getTime() : -Infinity, tb = b.fecha ? b.fecha.getTime() : -Infinity;
                 if (tb !== ta) return tb-ta;
                 if ((b.anio || 0) !== (a.anio || 0)) return (b.anio || 0)-(a.anio || 0);
@@ -7765,10 +7783,11 @@
         }
 
         function soatLlenarControlesV1() {
-            const anios = soatEstadoV1.aniosDisponibles.slice().sort((a,b)=>a-b);
+            const anios = soatEstadoV1.aniosDisponibles.slice().sort((a,b)=>b-a);
             const sexos = soatEstadoV1.sexosDisponibles;
             const contAnios=document.getElementById('soatFiltroAnios'), selMes=document.getElementById('soatFiltroMes'), selSexo=document.getElementById('soatFiltroSexo'), selEdad=document.getElementById('soatFiltroEdad');
             if (contAnios) contAnios.innerHTML=anios.map(a=>`<label class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-slate-900 cursor-pointer text-xs text-slate-300"><input type="checkbox" value="${a}" ${soatEstadoV1.seleccionAnios.includes(a)?'checked':''} class="accent-cyan-500"> <span>${a}</span></label>`).join('');
+            soatActualizarResumenAniosV1();
             if (selMes) { selMes.innerHTML='<option value="Todos">Todos los meses</option>'+SOAT_MESES_V1.map((m,i)=>`<option value="${i+1}">${m}</option>`).join(''); selMes.value=soatEstadoV1.mes; }
             if (selSexo) { selSexo.innerHTML='<option value="Todos">Todos</option>'+sexos.map(s=>`<option value="${soatEscaparV1(s)}">${soatEscaparV1(s)}</option>`).join(''); selSexo.value=soatEstadoV1.sexo; }
             if (selEdad) { selEdad.innerHTML='<option value="Todos">Todos</option>'+SOAT_GRUPOS_EDAD_V1.map(s=>`<option value="${s}">${s}</option>`).join(''); selEdad.value=soatEstadoV1.edad; }
@@ -7789,8 +7808,9 @@
             const ultimoMes=ultimaFecha?ultimaFecha.getMonth()+1:null;
             const casosMes=ultimoMes?filasAnio.filter(f=>f.mes===ultimoMes).length:0;
             const km=document.getElementById('soatKpiMes');if(km)km.textContent=casosMes.toLocaleString(); const kmd=document.getElementById('soatKpiMesDetalle');if(kmd)kmd.textContent=ultimoMes?SOAT_MESES_V1[ultimoMes-1]:'Sin fecha válida';
-            const ultimaSemana=filasAnio.map(f=>f.semana).filter(Number.isFinite).sort((a,b)=>b-a)[0]||null;
-            const casosSemana=ultimaSemana?filasAnio.filter(f=>f.semana===ultimaSemana).length:0;
+            const ultimaSemana=ultimaFecha?soatSemanaV1(ultimaFecha):null;
+            const ultimaSemanaClave=ultimaFecha?soatClaveSemanaV1(ultimaFecha):null;
+            const casosSemana=ultimaSemanaClave?filasAnio.filter(f=>f.semanaClave===ultimaSemanaClave).length:0;
             const ks=document.getElementById('soatKpiSemana');if(ks)ks.textContent=casosSemana.toLocaleString();const ksd=document.getElementById('soatKpiSemanaDetalle');if(ksd)ksd.textContent=ultimaSemana?`S.E. ${ultimaSemana} derivada de FEC_ACCD`:'Sin fecha válida';
             [['Sexo','sexo',[]],['Edad','grupoEdad',SOAT_GRUPOS_EDAD_V1],['Hora','rangoHora',SOAT_RANGOS_HORA_V1]].forEach(([k,c,o])=>{const top=soatConteoV1(filasAnio,c,o)[0];const v=document.getElementById(`soatKpi${k}`),d=document.getElementById(`soatKpi${k}Detalle`);if(v)v.textContent=top?.[0]||'—';if(d)d.textContent=top?`${top[1].toLocaleString()} casos`:'Sin datos';});
         }
@@ -7812,18 +7832,21 @@
         function soatRenderChartsV1(filtrados) {
             const colores=['#22d3ee','#a78bfa','#f59e0b','#34d399','#fb7185','#60a5fa'];
             const anios=soatEstadoV1.seleccionAnios.slice().sort((a,b)=>a-b);
-            const resumen=new Map(anios.map(a=>[a,{total:0,mes:Array(12).fill(0),edad:new Map(),sexo:new Map(),hora:new Map()}]));
-            filtrados.forEach(f=>{const r=resumen.get(f.anio);if(!r)return;r.total++;if(f.mes>=1&&f.mes<=12)r.mes[f.mes-1]++;[['edad',f.grupoEdad],['sexo',f.sexo],['hora',f.rangoHora]].forEach(([k,v])=>r[k].set(v,(r[k].get(v)||0)+1));});
+            const resumen=new Map(anios.map(a=>[a,{total:0,mes:Array(12).fill(0),mesObservado:new Set(),edad:new Map(),sexo:new Map(),hora:new Map()}]));
+            filtrados.forEach(f=>{const r=resumen.get(f.anio);if(!r)return;r.total++;if(f.mes>=1&&f.mes<=12){r.mes[f.mes-1]++;r.mesObservado.add(f.mes);}[['edad',f.grupoEdad],['sexo',f.sexo],['hora',f.rangoHora]].forEach(([k,v])=>r[k].set(v,(r[k].get(v)||0)+1));});
             const categorias=(campo,orden=[])=>{const valores=new Set();resumen.forEach(r=>r[campo].forEach((_,k)=>valores.add(k)));return orden.length?orden.filter(v=>valores.has(v)):[...valores].sort();};
             const datasets=(campo,cats)=>anios.map((a,i)=>({label:String(a),data:cats.map(c=>resumen.get(a)[campo].get(c)||0),backgroundColor:colores[i%colores.length],borderColor:colores[i%colores.length],borderWidth:1}));
             soatChartV1('anual','soatChartAnual','soatEstadoAnual','bar',{labels:['Total de casos'],datasets:anios.map((a,i)=>({label:String(a),data:[resumen.get(a).total],backgroundColor:colores[i%colores.length],borderColor:colores[i%colores.length],borderWidth:1}))});
-            soatChartV1('mensual','soatChartMensual','soatEstadoMensual','bar',{labels:SOAT_MESES_V1,datasets:anios.map((a,i)=>({label:String(a),data:resumen.get(a).mes,backgroundColor:colores[i%colores.length]}))});
+            soatChartV1('mensual','soatChartMensual','soatEstadoMensual','bar',{labels:SOAT_MESES_V1,datasets:anios.map((a,i)=>({label:String(a),data:resumen.get(a).mes.map((v,m)=>resumen.get(a).mesObservado.has(m+1)?v:null),backgroundColor:colores[i%colores.length]}))});
             const gruposEdad=categorias('edad',SOAT_GRUPOS_EDAD_V1);soatChartV1('edad','soatChartEdad','soatEstadoEdad','bar',{labels:gruposEdad,datasets:datasets('edad',gruposEdad)});
             const categoriasSexo=categorias('sexo');soatChartV1('sexo','soatChartSexo','soatEstadoSexo','bar',{labels:categoriasSexo,datasets:datasets('sexo',categoriasSexo)});
             const rangosHora=categorias('hora',SOAT_RANGOS_HORA_V1);soatChartV1('hora','soatChartHora','soatEstadoHora','bar',{labels:rangosHora,datasets:datasets('hora',rangosHora)});
         }
 
         function soatFirmaVisualV1() { return [soatEstadoV1.seleccionAnios.slice().sort((a,b)=>a-b).join(','),soatEstadoV1.mes,soatEstadoV1.sexo,soatEstadoV1.edad].join('|'); }
+        function soatActualizarResumenAniosV1() { const r=document.getElementById('soatFiltroAniosResumen');if(r){const a=soatEstadoV1.seleccionAnios.slice().sort((x,y)=>x-y);r.textContent=`AÑOS: ${a.length?a.join(', '):'Ninguno'}`;} }
+        function soatCerrarAniosV1() { const p=document.getElementById('soatFiltroAniosPanel'),b=document.getElementById('soatFiltroAniosBoton'),f=document.getElementById('soatFiltroAniosFlecha');if(p)p.classList.add('hidden');if(b)b.setAttribute('aria-expanded','false');if(f)f.textContent='▾'; }
+        function soatToggleAniosV1() { const p=document.getElementById('soatFiltroAniosPanel'),b=document.getElementById('soatFiltroAniosBoton'),f=document.getElementById('soatFiltroAniosFlecha');if(!p||!b)return;const abrir=p.classList.contains('hidden');p.classList.toggle('hidden',!abrir);b.setAttribute('aria-expanded',String(abrir));if(f)f.textContent=abrir?'▴':'▾'; }
         function soatActualizarVisualV1(forzar=false) {
             const firma=soatFirmaVisualV1();
             if(!forzar&&soatEstadoV1.firmaVisual===firma&&Object.values(soatChartsV1).every(Boolean))return;
@@ -7835,20 +7858,24 @@
         function actualizarFiltroSoatV1() {
             const contAnios=document.getElementById('soatFiltroAnios'); soatEstadoV1.seleccionAnios=contAnios?[...contAnios.querySelectorAll('input[type="checkbox"]:checked')].map(o=>Number(o.value)).filter(Number.isFinite):[];
             soatEstadoV1.mes=document.getElementById('soatFiltroMes')?.value||'Todos'; soatEstadoV1.sexo=document.getElementById('soatFiltroSexo')?.value||'Todos'; soatEstadoV1.edad=document.getElementById('soatFiltroEdad')?.value||'Todos';
+            soatActualizarResumenAniosV1();
             soatProgramarVisualV1();
         }
 
         function limpiarFiltrosSoatV1() {
-            soatEstadoV1.seleccionAnios=soatEstadoV1.aniosDisponibles.slice(-3);soatEstadoV1.mes='Todos';soatEstadoV1.sexo='Todos';soatEstadoV1.edad='Todos';soatLlenarControlesV1();soatActualizarVisualV1(true);
+            soatEstadoV1.seleccionAnios=soatEstadoV1.aniosDisponibles.slice(-3);soatEstadoV1.mes='Todos';soatEstadoV1.sexo='Todos';soatEstadoV1.edad='Todos';soatLlenarControlesV1();soatCerrarAniosV1();soatActualizarVisualV1(true);
         }
 
         function actualizarSoatV1() {
             const anterior=soatEstadoV1.datasetRef;soatPrepararFilasV1();if(anterior!==soatEstadoV1.datasetRef)soatLlenarControlesV1();
-            const estado=document.getElementById('estadoModuloSoat');if(estado)estado.textContent=soatEstadoV1.filas.length?`${soatEstadoV1.filas.length.toLocaleString()} registros históricos cargados · fuente: hoja SOAT`:'Sin datos cargados';
+            soatCerrarAniosV1();
+            const estado=document.getElementById('estadoModuloSoat');if(estado)estado.textContent=soatEstadoV1.filas.length?`${soatEstadoV1.filas.length.toLocaleString()} registros válidos · ${soatEstadoV1.duplicadosExactos.toLocaleString()} duplicados exactos excluidos · fuente: hoja SOAT`:'Sin datos cargados';
             soatActualizarVisualV1(false);
         }
 
         document.getElementById('soatFiltroAnios')?.addEventListener('change',event=>{if(event.target.matches('input[type="checkbox"]'))actualizarFiltroSoatV1();});
+        document.addEventListener('click',event=>{const c=document.getElementById('soatFiltroAniosControl');if(c&&!c.contains(event.target))soatCerrarAniosV1();});
+        document.addEventListener('keydown',event=>{if(event.key==='Escape')soatCerrarAniosV1();});
 
         window.addEventListener('resize', () => {
             const overlay = document.getElementById('veaSidebarOverlay');

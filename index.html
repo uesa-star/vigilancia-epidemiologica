@@ -366,16 +366,16 @@
 
                 <nav id="veaMasterMenu" class="space-y-1" aria-label="Menú Maestro VEA">
                     <button onclick="cambiarTab('dashboard')" id="btnTabDashboard" data-vea-tab="dashboard" class="vea-menu-item vea-menu-item-active w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">01</span><span class="vea-menu-label truncate">Dashboard de Vigilancia</span>
-                    </button>
-                    <button onclick="cambiarTab('datos')" id="btnTabDatos" data-vea-tab="datos" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">02</span><span class="vea-menu-label truncate">Datos Acumulados</span>
-                    </button>
-                    <button onclick="cambiarTab('casos')" id="btnTabCasos" data-vea-tab="casos" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">03</span><span class="vea-menu-label truncate">Casos Individuales</span>
+                        <span class="w-6 text-center shrink-0">01</span><span class="vea-menu-label truncate">Vigilancia Epidemiológica Activa VEA</span>
                     </button>
                     <button onclick="cambiarTab('hospitalizados')" id="btnTabHospitalizados" data-vea-tab="hospitalizados" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">04</span><span class="vea-menu-label truncate">Hospitalizados</span>
+                        <span class="w-6 text-center shrink-0">02</span><span class="vea-menu-label truncate">Hospitalizados</span>
+                    </button>
+                    <button onclick="cambiarTab('datos')" id="btnTabDatos" data-vea-tab="datos" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
+                        <span class="w-6 text-center shrink-0">03</span><span class="vea-menu-label truncate">Datos Acumulados</span>
+                    </button>
+                    <button onclick="cambiarTab('casos')" id="btnTabCasos" data-vea-tab="casos" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
+                        <span class="w-6 text-center shrink-0">04</span><span class="vea-menu-label truncate">Casos Individuales</span>
                     </button>
                     <button onclick="cambiarTab('soat')" id="btnTabSoat" data-vea-tab="soat" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
                         <span class="w-6 text-center shrink-0">05</span><span class="vea-menu-label truncate">SOAT</span>
@@ -390,7 +390,7 @@
                     <div id="veaDynamicModulesContainer" class="space-y-1"></div>
 
                     <button onclick="document.getElementById('excelFileInput').click(); cerrarVeaSidebarMovil();" id="btnMenuIngestar" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
-                        <span class="w-6 text-center shrink-0">08</span><span class="vea-menu-label truncate">Ingestar Repositorio VEA</span>
+                        <span class="w-6 text-center shrink-0">⇧</span><span class="vea-menu-label truncate">Ingestar Repositorio VEA</span>
                     </button>
                     <button onclick="prepararAgregarModulo()" id="btnAgregarModulo" class="vea-menu-item vea-menu-item-inactive w-full flex items-center gap-3 px-3 py-2 rounded-xl border text-left text-xs font-bold transition-all">
                         <span class="w-6 text-center shrink-0">＋</span><span class="vea-menu-label truncate">Agregar módulo</span>

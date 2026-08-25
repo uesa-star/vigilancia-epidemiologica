@@ -349,6 +349,15 @@
             #veaSidebar:not(.vea-collapsed) { width: 15rem; }
             main { padding: 1rem !important; }
         }
+
+        /* FASE 3.25 — respuesta táctil inmediata; no modifica layout */
+        #veaMasterMenu button,
+        #veaMasterMenu [data-vea-tab],
+        #veaMasterMenu [data-vea-dynamic-tab],
+        #veaSidebar button {
+            touch-action: manipulation !important;
+            -webkit-tap-highlight-color: transparent;
+        }
 </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -4979,7 +4988,66 @@
                 : `Canal Endémico Científico - ${evento} · Sin datos cargados`;
         }
 
+        // FASE 3.23 — RENDER COOPERATIVO MÓVIL
+        // Divide los renders grandes en tareas pequeñas. Entre cada tarea el navegador
+        // recupera el hilo principal para procesar toques/clics del menú.
+        let veaRenderCoopTokenF323 = 0;
+
+        function veaCancelarRenderCooperativoF323() {
+            veaRenderCoopTokenF323++;
+        }
+
+        function veaEjecutarTareasCooperativasF323(tab, tareas) {
+            const token = ++veaRenderCoopTokenF323;
+            let i = 0;
+            const siguiente = () => {
+                if (token !== veaRenderCoopTokenF323 || tabActiva !== tab) return;
+                if (i >= tareas.length) return;
+                const tarea = tareas[i++];
+                try { tarea(); } catch (e) { console.warn('[VEA Render cooperativo 3.23]', tab, e); }
+                // Ceder SIEMPRE tras cada KPI/gráfico.
+                setTimeout(siguiente, 0);
+            };
+            requestAnimationFrame(siguiente);
+        }
+
         function ejecutarRenderModuloNavegacionVea(tab) {
+            if (veaDispositivoLimitadoF321()) {
+                if (tab === 'datos') {
+                    // El modelo se calcula una vez; cada salida visual cede el hilo.
+                    sincronizarControlesDatosAcumuladosV6B();
+                    matrizDatosAcumuladosPendienteV6B = true;
+                    tablaDatosAcumuladosPendienteV6B = true;
+                    const modelo = window.__veaModeloDatosF326 || construirModeloDatosAcumuladosV6B();
+                    const semanasEje = obtenerSemanasEjeDatosAcumuladosV6B(modelo);
+                    const tareas = [
+                        () => actualizarKpisDatosAcumuladosV6B(modelo),
+                        () => renderG1DatosAcumuladosV6B(modelo),
+                        () => renderG2DatosAcumuladosV6B(modelo),
+                        ...EVENTOS_DATOS_ACUMULADOS_V6B.map(evento => () => renderMiniMensualDatosAcumuladosV6B(evento, modelo)),
+                        ...EVENTOS_DATOS_ACUMULADOS_V6B.map(evento => () => renderMiniSemanalDatosAcumuladosV6B(evento, modelo, semanasEje)),
+                        () => renderG5DatosAcumuladosV6B()
+                    ];
+                    if (matrizDatosAcumuladosAbiertaV6B) tareas.push(() => {
+                        renderResumenAnualDatosAcumuladosV6B();
+                        matrizDatosAcumuladosPendienteV6B = false;
+                    });
+                    if (tablaDatosAcumuladosAbiertaV6B) tareas.push(() => {
+                        renderTablaDatosAcumuladosV6B(construirModeloTablaConsolidadaDatosV6B());
+                        tablaDatosAcumuladosPendienteV6B = false;
+                    });
+                    veaEjecutarTareasCooperativasF323(tab, tareas);
+                    return;
+                }
+                if (tab === 'dashboard') {
+                    veaEjecutarTareasCooperativasF323(tab, [
+                        () => renderCanalEndemicoChart(),
+                        () => actualizarTablaMatrizSemanas()
+                    ]);
+                    return;
+                }
+            }
+
             if (tab === 'datos') {
                 actualizarDatosAcumuladosV6B();
             } else if (tab === 'dashboard') {
@@ -5078,46 +5146,105 @@
         // Solo prepara modelos/datasets para evitar competencia de CPU con los clics.
         // =========================================================
         let veaWarmupF311Programado = false;
+        // FASE 4.01 — MODELOS DE DATOS LISTOS ANTES DE NAVEGAR
+        // Prepara únicamente modelos/índices en memoria; NO crea gráficos ni toca el layout.
+        async function veaPrepararModelosNavegacionF401() {
+            if (window.__veaModelosListosF401) return;
+            const ceder = typeof veaCederInterfazF321 === 'function'
+                ? veaCederInterfazF321
+                : (() => new Promise(r => setTimeout(r, 0)));
+
+            try {
+                ciV21InicializarSiCorresponde();
+                window.__veaCasosFiltradosF401 = ciV21Filtrados();
+            } catch(e) { console.warn('[VEA F4.01] Casos', e); }
+            await ceder();
+
+            try {
+                window.__veaModeloDatosF326 = construirModeloDatosAcumuladosV6B();
+            } catch(e) { console.warn('[VEA F4.01] Datos Acumulados', e); }
+            await ceder();
+
+            try {
+                soatPrepararFilasV1();
+                window.__veaSoatPreparadoF326 = true;
+            } catch(e) { console.warn('[VEA F4.01] SOAT', e); }
+            await ceder();
+
+            window.__veaModelosListosF401 = true;
+            document.documentElement.dataset.veaModelos = 'listos';
+        }
+
         function programarWarmupModulosF311() {
             if (veaWarmupF311Programado) return;
             veaWarmupF311Programado = true;
 
             const tareas = [
-                // Casos Individuales primero: es el único módulo que aún mostraba latencia al primer clic.
+                // FASE 3.26 — PRECALCULAR ANTES DEL PRIMER CLIC.
+                // Los módulos deben abrir con su modelo ya preparado; el clic no debe
+                // ser el disparador de la primera lectura/agrupación de miles de registros.
                 () => {
                     try {
                         ciV21InicializarSiCorresponde();
-                        ciV21Filtrados();
-                        // Preparar estructura de búsqueda/paginación sin pintar el módulo.
+                        const precasos = ciV21Filtrados();
                         if (typeof ciV21Estado !== 'undefined') {
                             ciV21Estado.__warm = true;
+                            ciV21Estado.__preFiltradosF326 = precasos;
                         }
                     } catch(e) {}
                 },
-                () => { try { construirModeloDatosAcumuladosV6B(); } catch(e) {} },
-                () => { try { soatPrepararFilasV1(); } catch(e) {} }
+                () => {
+                    try {
+                        window.__veaModeloDatosF326 = construirModeloDatosAcumuladosV6B();
+                    } catch(e) {}
+                },
+                () => {
+                    try {
+                        soatPrepararFilasV1();
+                        window.__veaSoatPreparadoF326 = true;
+                    } catch(e) {}
+                }
             ];
             let i = 0;
             const siguiente = () => {
                 if (i >= tareas.length) return;
                 try { tareas[i++](); } catch(e) {}
-                if ('requestIdleCallback' in window) requestIdleCallback(siguiente, { timeout: 900 });
-                else setTimeout(siguiente, 120);
+                if ('requestIdleCallback' in window) requestIdleCallback(siguiente, { timeout: 1400 });
+                else setTimeout(siguiente, veaDispositivoLimitadoF321() ? 350 : 120);
             };
-            setTimeout(siguiente, 40);
+            setTimeout(siguiente, veaDispositivoLimitadoF321() ? 250 : 40);
         }
 
         // Render pesado después de que el cambio de pantalla ya fue pintado.
         const veaRenderPendienteF311 = new Map();
+        let veaTimerRenderMovilF322 = null;
+
         function diferirRenderNavegacionF311(tab, tarea, espera = 0) {
             const token = Symbol(tab);
             veaRenderPendienteF311.set(tab, token);
 
-            // Primer frame: navegador pinta inmediatamente el módulo seleccionado.
+            // FASE 3.22: en móvil/tablet la navegación SIEMPRE gana.
+            // Primero se pinta el módulo; el render pesado solo comienza cuando
+            // el usuario deja de cambiar de opción durante un breve intervalo.
+            if (veaDispositivoLimitadoF321()) {
+                if (veaTimerRenderMovilF322) clearTimeout(veaTimerRenderMovilF322);
+
+                requestAnimationFrame(() => {
+                    if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
+
+                    veaTimerRenderMovilF322 = setTimeout(() => {
+                        veaTimerRenderMovilF322 = null;
+                        if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
+                        veaRenderPendienteF311.delete(tab);
+                        try { tarea(); } catch (err) { console.warn('[VEA Navegación 3.22]', tab, err); }
+                    }, 650);
+                });
+                return;
+            }
+
+            // PC/laptop conserva el comportamiento ya validado.
             requestAnimationFrame(() => {
                 if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
-
-                // Segundo frame: recién comienza el trabajo específico del módulo.
                 requestAnimationFrame(() => {
                     if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
                     veaRenderPendienteF311.delete(tab);
@@ -5138,6 +5265,14 @@
             const item = ev.target.closest('.vea-menu-item, .menu-item');
             if (!item) return;
 
+            // FASE 3.22: si el usuario toca el menú, cancelar cualquier render
+            // móvil que aún no haya empezado. El toque tiene prioridad absoluta.
+            if (veaTimerRenderMovilF322) {
+                clearTimeout(veaTimerRenderMovilF322);
+                veaTimerRenderMovilF322 = null;
+            }
+            veaCancelarRenderCooperativoF323();
+
             // FASE 3.17 — feedback seguro:
             // solo marca visualmente el botón; NO toca paneles, layout ni módulos.
             document.querySelectorAll('.vea-menu-item-active, .menu-item.active').forEach(el => {
@@ -5147,7 +5282,49 @@
         }
         document.addEventListener('pointerdown', veaFeedbackMenuInstantaneoF312, { passive: true });
 
+        // FASE 3.25 — TOQUE INMEDIATO MÓVIL.
+        // Navegar en pointerdown evita esperar al click sintetizado por el navegador.
+        let veaUltimoToqueNavegacionF325 = { tab: null, ts: 0 };
+
+        function veaTabDesdeBotonF325(btn) {
+            if (!btn) return null;
+            const directo = btn.dataset?.veaTab || btn.dataset?.veaDynamicTab;
+            if (directo) return directo;
+            const accion = btn.getAttribute?.('onclick') || '';
+            const m = accion.match(/cambiarTab\(['"]([^'"]+)['"]\)/);
+            return m ? m[1] : null;
+        }
+
+        document.addEventListener('pointerdown', (ev) => {
+            if (!veaDispositivoLimitadoF321()) return;
+            if (ev.pointerType && ev.pointerType !== 'touch' && ev.pointerType !== 'pen') return;
+            const btn = ev.target.closest('[data-vea-tab], [data-vea-dynamic-tab], .vea-menu-item, .menu-item');
+            const tab = veaTabDesdeBotonF325(btn);
+            if (!tab) return;
+
+            if (veaTimerRenderMovilF322) {
+                clearTimeout(veaTimerRenderMovilF322);
+                veaTimerRenderMovilF322 = null;
+            }
+            veaCancelarRenderCooperativoF323();
+            veaUltimoToqueNavegacionF325 = { tab, ts: performance.now() };
+            cambiarTab(tab);
+        }, true);
+
+        document.addEventListener('click', (ev) => {
+            if (!veaDispositivoLimitadoF321()) return;
+            const btn = ev.target.closest('[data-vea-tab], [data-vea-dynamic-tab], .vea-menu-item, .menu-item');
+            const tab = veaTabDesdeBotonF325(btn);
+            if (!tab) return;
+            if (veaUltimoToqueNavegacionF325.tab === tab &&
+                performance.now() - veaUltimoToqueNavegacionF325.ts < 1200) {
+                ev.preventDefault();
+                ev.stopImmediatePropagation();
+            }
+        }, true);
+
 function cambiarTab(tab) {
+            const veaInicioCambioF324 = performance.now();
             tabActiva = tab;
             const tabsMenuVea = ['dashboard', 'datos', 'casos', 'canal', 'tabla', 'hospitalizados', 'soat', 'vih', 'tbc', 'configuracion'];
 
@@ -5184,6 +5361,11 @@ function cambiarTab(tab) {
 
             cerrarVeaSidebarMovil();
 
+            requestAnimationFrame(() => {
+                const ms = performance.now() - veaInicioCambioF324;
+                if (ms > 150) console.warn(`[VEA Navegación 3.24] cambio visual ${tab}: ${ms.toFixed(1)} ms`);
+            });
+
             // Reubicar paneles compartidos y renderizar después del primer pintado.
             diferirRenderNavegacionF311(tab, () => {
                 const esCasosIndividuales = ['casos', 'casos-individuales', 'individuales', 'individual'].includes(tab);
@@ -5203,7 +5385,24 @@ function cambiarTab(tab) {
                         try {
                             ciV21InicializarSiCorresponde();
                             if (typeof actualizarCasosIndividualesV21 === 'function') {
-                                actualizarCasosIndividualesV21();
+                                if (veaDispositivoLimitadoF321()) {
+                                    const firmaF323 = ciV21FirmaRenderF318();
+                                    if (ciV21UltimaFirmaRenderF318 !== firmaF323) {
+                                        ciV21UltimaFirmaRenderF318 = firmaF323;
+                                        ciV21SincronizarControles();
+                                        const filtradosF323 = window.__veaCasosFiltradosF401 || ciV21Filtrados();
+                                        veaEjecutarTareasCooperativasF323(tabCasosActivo, [
+                                            () => ciV21RenderKPIs(filtradosF323),
+                                            () => ciV21RenderG1(filtradosF323),
+                                            () => ciV21RenderG2(filtradosF323),
+                                            () => ciV21RenderG3(filtradosF323),
+                                            () => ciV21RenderG4(filtradosF323),
+                                            () => ciV21RenderG5(filtradosF323)
+                                        ]);
+                                    }
+                                } else {
+                                    actualizarCasosIndividualesV21();
+                                }
                             }
                         } catch (e) {
                             console.warn('[VEA Casos Individuales 3.13]', e);
@@ -5215,7 +5414,9 @@ function cambiarTab(tab) {
                         setTimeout(renderCasos, 120);
                     }
                 } else if (tab === 'soat') {
-                    if (soatEstadoV1.datasetRef === datosModulosIndependientes.soat && soatEstadoV1.filas.length) {
+                    if (window.__veaSoatPreparadoF326 ||
+                        (soatEstadoV1.datasetRef === datosModulosIndependientes.soat && soatEstadoV1.filas.length)) {
+                        window.__veaSoatPreparadoF326 = false;
                         soatCerrarAniosV1();
                         soatActualizarVisualV1(false);
                     } else {
@@ -8299,29 +8500,53 @@ function cambiarTab(tab) {
                 if (txt) txt.textContent = `Datos listos desde caché · ${total.toLocaleString('es-PE')} registros · actualizando…`;
                 if (barra) barra.style.width = '90%';
 
-                // Permitir que el navegador muestre el INDEX antes de recalcular componentes pesados.
+                // FASE 3.24 — CAUSA RAÍZ MÓVIL CORREGIDA:
+                // La restauración desde IndexedDB seguía ejecutando actualizarCalculosYGraficos()
+                // completo + preparación SOAT inmediatamente. Ese camino antiguo ignoraba las
+                // optimizaciones F3.21–F3.23 y bloqueaba el hilo justo cuando la pantalla parecía lista.
                 requestAnimationFrame(() => {
-                    // Dejar visible el estado de caché antes de cualquier cálculo pesado.
                     setTimeout(() => {
                         reinicializarEstadosFiltrosTrasCargaVea();
 
-                        // Dashboard en el siguiente frame para evitar un bloqueo largo de inicio.
-                        requestAnimationFrame(() => {
-                            actualizarCalculosYGraficos();
-
-                            // Componentes secundarios solo cuando el navegador tenga tiempo libre.
-                            const secundarios = () => {
-                                soatPrepararFilasV1();
-                                soatLlenarControlesV1();
-                                soatCerrarAniosV1();
-                                renderizarModulosDinamicosVea();
-                            };
-                            if ('requestIdleCallback' in window) {
-                                requestIdleCallback(secundarios, { timeout: 1800 });
-                            } else {
-                                setTimeout(secundarios, 350);
+                        if (veaDispositivoLimitadoF321()) {
+                            // Móvil/tablet: estado mínimo inmediato. Nada de SOAT ni render global oculto.
+                            try { actualizarKpisVigilancia(); } catch (e) {
+                                console.warn('[VEA Cache móvil 3.24] KPI', e);
                             }
-                        });
+
+                            // El resto del Dashboard usa la misma cola cancelable de navegación.
+                            if (veaTimerRenderMovilF322) clearTimeout(veaTimerRenderMovilF322);
+                            veaTimerRenderMovilF322 = setTimeout(() => {
+                                veaTimerRenderMovilF322 = null;
+                                if (tabActiva !== 'dashboard') return;
+                                veaEjecutarTareasCooperativasF323('dashboard', [
+                                    () => actualizarBandaAlerta(),
+                                    () => renderTablaMinsaDinamica(
+                                        obtenerRegistrosFiltradosVigilancia(selectedEvent),
+                                        obtenerAnioPrincipalActivo()
+                                    ),
+                                    () => actualizarGraficosMensualesYTimelineContinuo(),
+                                    () => renderCanalEndemicoChart(),
+                                    () => actualizarTablaMatrizSemanas()
+                                ]);
+                            }, 1800);
+                        } else {
+                            // PC/laptop: conservar exactamente el flujo ya validado.
+                            requestAnimationFrame(() => {
+                                actualizarCalculosYGraficos();
+                                const secundarios = () => {
+                                    soatPrepararFilasV1();
+                                    soatLlenarControlesV1();
+                                    soatCerrarAniosV1();
+                                    renderizarModulosDinamicosVea();
+                                };
+                                if ('requestIdleCallback' in window) {
+                                    requestIdleCallback(secundarios, { timeout: 1800 });
+                                } else {
+                                    setTimeout(secundarios, 350);
+                                }
+                            });
+                        }
                     }, 0);
                 });
 
@@ -8335,7 +8560,27 @@ function cambiarTab(tab) {
             }
         }
 
+        // FASE 3.21 — PRIORIDAD ABSOLUTA A LA INTERACCIÓN
+        // En equipos móviles/tablets se cede el hilo principal entre parsers grandes.
+        const veaDispositivoLimitadoF321 = () => window.innerWidth < 1024 || (navigator.hardwareConcurrency || 8) <= 4;
+
+        // FASE 3.23: las animaciones Chart.js no aportan cálculo y consumen cuadros
+        // durante la navegación. En móvil se desactivan globalmente.
+        if (window.Chart && veaDispositivoLimitadoF321()) {
+            Chart.defaults.animation = false;
+            Chart.defaults.responsive = true;
+        }
+
+        const veaCederInterfazF321 = () => new Promise(resolve => {
+            requestAnimationFrame(() => setTimeout(resolve, 0));
+        });
+
         async function cargarRepositorioVeaDesdeSupabase() {
+            // Nueva carga: invalidar modelos anteriores y reconstruirlos una sola vez al finalizar.
+            window.__veaModelosListosF401 = false;
+            window.__veaModeloDatosF326 = null;
+            window.__veaCasosFiltradosF401 = null;
+            window.__veaSoatPreparadoF326 = false;
             const txtEstadoSupabase = document.getElementById('textoProgresoVea');
             const barraSupabase = document.getElementById('barraProgresoVea');
             if (txtEstadoSupabase) txtEstadoSupabase.textContent = 'Conectando con Supabase…';
@@ -8380,7 +8625,9 @@ function cambiarTab(tab) {
                 }
                 if (!filas.length) { cargadas.push(`${tabla}:0`); continue; }
                 try {
+                    if (veaDispositivoLimitadoF321()) await veaCederInterfazF321();
                     const registros = veaSupabaseParsearFilas(tabla, filas);
+                    if (veaDispositivoLimitadoF321()) await veaCederInterfazF321();
                     if (tipo === 'vigilancia') {
                         databaseActiva[destino] = registros;
                         logsSincronizacion[destino] = { cargada:true, registros:registros.length, cabeceraEncontrada:`Supabase · ${tabla}` };
@@ -8398,15 +8645,44 @@ function cambiarTab(tab) {
                     .filter(r => r.SOBA !== null && r.SOBA !== undefined && Number.isFinite(Number(r.SOBA)))
                     .map(r => ({ ANO:r.ANO, SEMANA:r.SEMANA, MES:r.MES, CASOS:Number(r.SOBA), EDADES_VEA:{ ...(r.SOBA_EDADES_VEA || {}) }, TO_HOS:null, __filaExcel:r.__filaExcel }));
             }
+            // FASE 3.21: después de descargar 25k+ registros, NO ejecutar todos los
+            // módulos de una vez en móvil/tablet. Eso era lo que dejaba el menú sin responder.
             reinicializarEstadosFiltrosTrasCargaVea();
-            soatPrepararFilasV1();
-            soatLlenarControlesV1();
-            soatCerrarAniosV1();
-            actualizarCalculosYGraficos();
-            renderizarModulosDinamicosVea();
+            await veaCederInterfazF321();
+
+            if (!veaDispositivoLimitadoF321()) {
+                soatPrepararFilasV1();
+                soatLlenarControlesV1();
+                soatCerrarAniosV1();
+                actualizarCalculosYGraficos();
+                renderizarModulosDinamicosVea();
+                programarWarmupModulosF311();
+            } else {
+                // FASE 3.22: NO lanzar actualizarCalculosYGraficos() inmediatamente.
+                // Aunque la descarga ya terminó, ese render completo puede ocupar el
+                // hilo principal varios segundos en teléfonos. Se agenda como trabajo
+                // cancelable y solo si el usuario permanece en Dashboard.
+                if (tabActiva === 'dashboard') {
+                    if (veaTimerRenderMovilF322) clearTimeout(veaTimerRenderMovilF322);
+                    veaTimerRenderMovilF322 = setTimeout(() => {
+                        veaTimerRenderMovilF322 = null;
+                        if (tabActiva !== 'dashboard') return;
+                        requestAnimationFrame(() => {
+                            if (tabActiva === 'dashboard') {
+                                try { actualizarCalculosYGraficos(); }
+                                catch (e) { console.warn('[VEA Dashboard móvil 3.22]', e); }
+                            }
+                        });
+                    }, 1200);
+                }
+            }
+            await veaCederInterfazF321();
+
+            // FASE 4.01: cuando el estado indique sincronizado, los modelos ya están listos.
+            // Aquí no se crean gráficos ni se modifica el diseño.
+            await veaPrepararModelosNavegacionF401();
+
             window.dispatchEvent(new CustomEvent('vea:supabase-cargado', { detail:{ cargadas, protegidas, errores } }));
-            // FASE 3.20: evitar warmup pesado en teléfonos/tablets estrechas.
-            if (window.innerWidth >= 768) programarWarmupModulosF311();
             const totalRemoto = databaseActiva.EDAs.length + databaseActiva.IRAs.length + databaseActiva.Febriles.length
                 + (datosModulosIndependientes.casos || []).length + (datosModulosIndependientes.soat || []).length
                 + (datosModulosIndependientes.vih || []).length + (datosModulosIndependientes.tbc || []).length;
@@ -8417,7 +8693,15 @@ function cambiarTab(tab) {
             }
             if (barraSupabase) barraSupabase.style.width = '100%';
             console.info('[VEA Supabase]', { cargadas, protegidas, errores, totalRemoto });
-            if (totalRemoto > 0 && errores.length === 0) veaCacheGuardarProcesado(totalRemoto);
+            if (totalRemoto > 0 && errores.length === 0) {
+                if (!veaDispositivoLimitadoF321()) {
+                    veaCacheGuardarProcesado(totalRemoto);
+                } else {
+                    // FASE 3.24: no clonar/escribir decenas de miles de objetos durante
+                    // una sesión móvil activa. La prioridad es que el menú nunca se congele.
+                    console.info('[VEA Cache móvil 3.24] Escritura diferida omitida para priorizar interacción.');
+                }
+            }
             return { cargadas, protegidas, errores, totalRemoto };
         }
         window.cargarRepositorioVeaDesdeSupabase = cargarRepositorioVeaDesdeSupabase;
@@ -8461,7 +8745,7 @@ function cambiarTab(tab) {
                     } else {
                         setTimeout(refrescarEnSegundoPlano, 1000);
                     }
-                }, 60000);
+                }, veaDispositivoLimitadoF321() ? 180000 : 60000);
                 return;
             }
 

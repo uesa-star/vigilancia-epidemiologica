@@ -309,6 +309,46 @@
         .casos-individuales {
             contain: layout style paint;
         }
+
+        /* FASE 3.19 — responsive multidispositivo y navegación táctil */
+        html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+        #veaAppShell, main { min-width: 0; max-width: 100%; }
+        canvas { max-width: 100% !important; }
+        button, select, summary, input { touch-action: manipulation; }
+
+        @media (max-width: 767px) {
+            header { position: relative !important; top: auto !important; padding: .85rem .75rem !important; }
+            header > div { align-items: stretch !important; gap: .75rem !important; }
+            header > div > div:first-child { width: 100%; align-items: flex-start; }
+            #txtHospitalBranding { font-size: 1.45rem !important; line-height: 1.05 !important; }
+            #headerIconContainer { padding: .7rem !important; }
+            #veaAppShell { display: block !important; }
+            #veaSidebar {
+                width: min(86vw, 20rem) !important;
+                max-width: 86vw;
+                height: 100dvh;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                transition: none !important; /* FASE 3.20: apertura táctil inmediata */
+            }
+            #veaSidebarOverlay { touch-action: manipulation; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+            .vea-menu-item { min-height: 3rem; font-size: .8rem; touch-action: manipulation; }
+            main { width: 100% !important; padding: .8rem !important; margin: 0 !important; }
+            #bandaSituacionCompleta, #filtrosVigilancia { border-radius: 1rem; }
+            #filtrosVigilancia { padding: 1rem !important; }
+            .tab-content, [id^="content"] { max-width: 100%; min-width: 0; }
+            .grid { min-width: 0; }
+            .grid > * { min-width: 0; }
+            canvas { width: 100% !important; }
+            #resumenAnualDatosAcumuladosV6B .vea-matriz-wrap { -webkit-overflow-scrolling: touch; }
+            #resumenAnualDatosAcumuladosV6B .vea-matriz-tabla { min-width: 760px; }
+            #contentCasos { contain: content; }
+        }
+
+        @media (min-width: 768px) and (max-width: 1180px) {
+            #veaSidebar:not(.vea-collapsed) { width: 15rem; }
+            main { padding: 1rem !important; }
+        }
 </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -5095,12 +5135,12 @@
         // No ejecuta cálculos, filtros ni gráficos; solo feedback visual.
         // =========================================================
         function veaFeedbackMenuInstantaneoF312(ev) {
-            const item = ev.target.closest('.menu-item');
+            const item = ev.target.closest('.vea-menu-item, .menu-item');
             if (!item) return;
 
             // FASE 3.17 — feedback seguro:
             // solo marca visualmente el botón; NO toca paneles, layout ni módulos.
-            document.querySelectorAll('.menu-item.active').forEach(el => {
+            document.querySelectorAll('.vea-menu-item-active, .menu-item.active').forEach(el => {
                 if (el !== item) el.classList.remove('active');
             });
             item.classList.add('active');
@@ -7775,8 +7815,10 @@ function cambiarTab(tab) {
 
             if (window.innerWidth < 768) {
                 const abrir = !sidebar.classList.contains('vea-mobile-open');
+                sidebar.classList.remove('vea-collapsed');
                 sidebar.classList.toggle('vea-mobile-open', abrir);
                 if (overlay) overlay.classList.toggle('hidden', !abrir);
+                document.body.style.overflow = abrir ? 'hidden' : '';
             } else {
                 const colapsado = !sidebar.classList.contains('vea-collapsed');
                 sidebar.classList.toggle('vea-collapsed', colapsado);
@@ -7790,7 +7832,29 @@ function cambiarTab(tab) {
             const overlay = document.getElementById('veaSidebarOverlay');
             if (sidebar) sidebar.classList.remove('vea-mobile-open');
             if (overlay) overlay.classList.add('hidden');
+            document.body.style.overflow = '';
         }
+
+        let veaResizeTimerF319 = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(veaResizeTimerF319);
+            veaResizeTimerF319 = setTimeout(() => {
+                if (window.innerWidth >= 768) {
+                    const overlay = document.getElementById('veaSidebarOverlay');
+                    const sidebar = document.getElementById('veaSidebar');
+                    if (overlay) overlay.classList.add('hidden');
+                    if (sidebar) sidebar.classList.remove('vea-mobile-open');
+                    document.body.style.overflow = '';
+                    aplicarEstadoVeaSidebar();
+                } else {
+                    const sidebar = document.getElementById('veaSidebar');
+                    if (sidebar) sidebar.classList.remove('vea-collapsed');
+                }
+                if (window.Chart && Chart.instances) {
+                    Object.values(Chart.instances).forEach(ch => { try { ch.resize(); } catch(e) {} });
+                }
+            }, 120);
+        }, { passive: true });
 
         function obtenerModulosDinamicosVea() {
             try {
@@ -8263,7 +8327,7 @@ function cambiarTab(tab) {
 
                 console.info('[VEA Cache] Restaurado', { total, antiguedadMs: Date.now() - Number(payload.ts || 0) });
                 // Preparar módulos secundarios mientras el usuario ya puede usar el Dashboard.
-                setTimeout(veaPrecalentarModulos, 150);
+                if (window.innerWidth >= 768) setTimeout(veaPrecalentarModulos, 150); // FASE 3.20: en móvil no precalentar; priorizar interacción
                 return payload;
             } catch (err) {
                 console.warn('[VEA Cache] No se pudo restaurar caché:', err);
@@ -8341,8 +8405,8 @@ function cambiarTab(tab) {
             actualizarCalculosYGraficos();
             renderizarModulosDinamicosVea();
             window.dispatchEvent(new CustomEvent('vea:supabase-cargado', { detail:{ cargadas, protegidas, errores } }));
-            // También precalentar después de la primera sincronización sin caché.
-            programarWarmupModulosF311();
+            // FASE 3.20: evitar warmup pesado en teléfonos/tablets estrechas.
+            if (window.innerWidth >= 768) programarWarmupModulosF311();
             const totalRemoto = databaseActiva.EDAs.length + databaseActiva.IRAs.length + databaseActiva.Febriles.length
                 + (datosModulosIndependientes.casos || []).length + (datosModulosIndependientes.soat || []).length
                 + (datosModulosIndependientes.vih || []).length + (datosModulosIndependientes.tbc || []).length;
@@ -8359,13 +8423,19 @@ function cambiarTab(tab) {
         window.cargarRepositorioVeaDesdeSupabase = cargarRepositorioVeaDesdeSupabase;
 
         window.onload = async function() {
+            // FASE 3.20 — arranque interactivo primero. En móvil no ejecutar cálculos
+            // pesados antes de que el botón de menú y la navegación puedan responder.
+            aplicarEstadoVeaSidebar();
+            cambiarTab('dashboard');
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
             cargarFiltrosPersistidos();
             restaurarEstadoFiltrosEvento(selectedEvent);
             aplicarTemaGraficoYBotones();
-            actualizarCalculosYGraficos();
-            aplicarEstadoVeaSidebar();
-            renderizarModulosDinamicosVea();
-            cambiarTab('dashboard');
+            if (window.innerWidth >= 768) {
+                actualizarCalculosYGraficos();
+                renderizarModulosDinamicosVea();
+            }
 
             // FASE 3.6: primero presenta el último dataset validado; luego refresca desde Supabase.
             // En la primera ejecución (sin caché) continúa con la carga remota normal.
@@ -8374,8 +8444,8 @@ function cambiarTab(tab) {
             // FASE 3.8: con caché validada, la apertura termina aquí.
             // Supabase se refresca después, en tiempo ocioso, sin bloquear el primer uso.
             if (cacheVeaDisponible) {
-                // Precalentar todos los módulos mientras el usuario ve el Dashboard.
-                programarWarmupModulosF311();
+                // FASE 3.20: el warmup simultáneo bloqueaba el hilo principal en móviles.
+                if (window.innerWidth >= 768) programarWarmupModulosF311();
 
                 const refrescarEnSegundoPlano = () => {
                     cargarRepositorioVeaDesdeSupabase().catch(err =>

@@ -463,6 +463,19 @@
             width: 1rem;
             height: 1rem;
         }
+
+        #btnTipoEdaVea[aria-expanded="true"] {
+            background: rgb(37 99 235);
+            box-shadow: 0 0 0 2px rgba(96,165,250,.22);
+        }
+        #menuTipoEdaVea button {
+            min-height: 44px;
+        }
+        @media (max-width: 640px) {
+            #menuTipoEdaVea {
+                width: min(13rem, calc(100vw - 16px));
+            }
+        }
 </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -515,10 +528,17 @@
 
             <!-- Selectores de Evento Epidemiológico -->
             <div id="selectorEventosVea" class="bg-slate-900 p-1.5 rounded-xl border border-slate-800 flex gap-1 w-full sm:w-auto overflow-x-auto">
-                <button onclick="cambiarEventoSurveillance('EDAs')" id="btnEventEDAs" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-white bg-blue-600 shadow-md" title="Enfermedades Diarreicas Agudas">
-                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19V9m5 10V5m5 14v-7m5 7V3M3 19h18M4 12l5-4 5 3 6-6"/></svg>
-                    <span>EDAs</span>
-                </button>
+                <div id="wrapEventEDAs" class="relative flex-1 sm:flex-none flex">
+                    <button onclick="seleccionarTipoEdaVea(edaTipoActivo || 'Acuosa')" id="btnEventEDAs" class="flex-1 flex items-center justify-center gap-2 px-3.5 py-2 rounded-l-lg text-xs font-extrabold transition-all text-white bg-blue-600 shadow-md" title="Enfermedades Diarreicas Agudas">
+                        <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19V9m5 10V5m5 14v-7m5 7V3M3 19h18M4 12l5-4 5 3 6-6"/></svg>
+                        <span>EDAs</span>
+                    </button>
+                    <button id="btnTipoEdaVea" type="button" onclick="toggleMenuTipoEdaVea(event)" class="px-2 py-2 rounded-r-lg border-l border-blue-400/30 bg-blue-600 text-white hover:bg-blue-500 transition-colors" aria-label="Seleccionar tipo de EDA" aria-expanded="false">▼</button>
+                    <div id="menuTipoEdaVea" class="hidden fixed w-52 rounded-xl border border-slate-700 bg-slate-950 shadow-2xl overflow-hidden" style="z-index:99999">
+                        <button type="button" onclick="seleccionarTipoEdaVea('Acuosa')" class="w-full flex items-center gap-3 px-4 py-3 text-left text-xs font-bold text-slate-200 hover:bg-blue-500/10"><span class="text-blue-400">💧</span><span>EDA Acuosa</span></button>
+                        <button type="button" onclick="seleccionarTipoEdaVea('Disenterica')" class="w-full flex items-center gap-3 px-4 py-3 text-left text-xs font-bold text-slate-200 hover:bg-red-500/10"><span class="text-red-400">🔴</span><span>EDA Disentérica</span></button>
+                    </div>
+                </div>
                 <button onclick="cambiarEventoSurveillance('IRAs')" id="btnEventIRAs" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-slate-400 hover:text-slate-200" title="Infecciones Respiratorias Agudas">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v8m0 0c-1.5-2.8-3.1-5.2-5.2-6.2C4.5 3.7 3 5.8 3 9.4V15c0 3 1.8 5 4.2 5 2.6 0 4.8-2.6 4.8-6.2V11zm0 0c1.5-2.8 3.1-5.2 5.2-6.2C19.5 3.7 21 5.8 21 9.4V15c0 3-1.8 5-4.2 5-2.6 0-4.8-2.6-4.8-6.2"/></svg>
                     <span>IRAs</span>
@@ -602,6 +622,12 @@
 
     <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 flex-grow w-full min-w-0">
         <!-- Banda de Alerta y Semáforo Clínico -->
+        <div id="edaTipoActivoBadge" class="hidden -mb-3">
+            <div class="inline-flex items-center gap-2 rounded-xl border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-xs font-extrabold text-blue-300">
+                <span id="edaTipoActivoIcono">💧</span><span>ANÁLISIS: <span id="edaTipoActivoTexto">EDA ACUOSA</span></span>
+            </div>
+        </div>
+
         <div id="bandaSituacionCompleta" class="w-full p-4 rounded-2xl border flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6 shadow-lg bg-slate-900 border-slate-800 text-slate-400 transition-all duration-300">
             <div class="flex items-center gap-3">
                 <div class="relative flex h-3 w-3 shrink-0">
@@ -1940,6 +1966,81 @@
         let chartHospComparativoAnualInstance = null;
         let chartHospDistribucionEdadesInstance = null;
 
+        // F4.29 — Subvigilancia EDAs. Por compatibilidad, EDAs inicia en Acuosa,
+        // que corresponde al CASOS/TO ACU histórico ya usado por el módulo.
+        let edaTipoActivo = 'Acuosa';
+
+        function posicionarMenuTipoEdaVea() {
+            const menu = document.getElementById('menuTipoEdaVea');
+            const btn = document.getElementById('btnTipoEdaVea');
+            if (!menu || !btn || menu.classList.contains('hidden')) return;
+            const r = btn.getBoundingClientRect();
+            const ancho = 208;
+            const margen = 8;
+            let left = Math.min(r.left, window.innerWidth - ancho - margen);
+            left = Math.max(margen, left);
+            let top = r.bottom + margen;
+            menu.style.left = left + 'px';
+            menu.style.top = top + 'px';
+        }
+
+        function toggleMenuTipoEdaVea(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const menu = document.getElementById('menuTipoEdaVea');
+            const btn = document.getElementById('btnTipoEdaVea');
+            if (!menu || !btn) return;
+            const abrir = menu.classList.contains('hidden');
+            menu.classList.toggle('hidden', !abrir);
+            btn.setAttribute('aria-expanded', String(abrir));
+            if (abrir) {
+                requestAnimationFrame(posicionarMenuTipoEdaVea);
+            }
+        }
+
+        function cerrarMenuTipoEdaVea() {
+            const menu = document.getElementById('menuTipoEdaVea');
+            const btn = document.getElementById('btnTipoEdaVea');
+            if (menu) menu.classList.add('hidden');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+
+        function actualizarIdentidadTipoEdaVea() {
+            const badge = document.getElementById('edaTipoActivoBadge');
+            const txt = document.getElementById('edaTipoActivoTexto');
+            const ico = document.getElementById('edaTipoActivoIcono');
+            if (badge) badge.classList.toggle('hidden', selectedEvent !== 'EDAs');
+            if (txt) txt.textContent = edaTipoActivo === 'Disenterica' ? 'EDA DISENTÉRICA' : 'EDA ACUOSA';
+            if (ico) ico.textContent = edaTipoActivo === 'Disenterica' ? '🔴' : '💧';
+        }
+
+        function seleccionarTipoEdaVea(tipo) {
+            if (!['Acuosa','Disenterica'].includes(tipo)) return;
+            cerrarMenuTipoEdaVea();
+            const cambioEvento = selectedEvent !== 'EDAs';
+            const cambioTipo = edaTipoActivo !== tipo;
+            edaTipoActivo = tipo;
+            if (cambioEvento) {
+                cambiarEventoSurveillance('EDAs');
+                setTimeout(actualizarIdentidadTipoEdaVea, 0);
+                return;
+            }
+            actualizarIdentidadTipoEdaVea();
+            if (cambioTipo) actualizarCalculosYGraficos();
+        }
+
+        document.addEventListener('click', (e) => {
+            const wrap = document.getElementById('wrapEventEDAs');
+            const menu = document.getElementById('menuTipoEdaVea');
+            const dentroWrap = wrap && wrap.contains(e.target);
+            const dentroMenu = menu && menu.contains(e.target);
+            if (!dentroWrap && !dentroMenu) cerrarMenuTipoEdaVea();
+        });
+        window.addEventListener('resize', posicionarMenuTipoEdaVea);
+        window.addEventListener('scroll', posicionarMenuTipoEdaVea, true);
+
         const TEMAS_EVENTO = {
             EDAs: { primario: '#ef4444' },
             IRAs: { primario: '#3b82f6' },
@@ -2563,6 +2664,7 @@
             guardarEstadoFiltrosEventoActual();
             selectedEvent = evento;
             restaurarEstadoFiltrosEvento(selectedEvent);
+            actualizarIdentidadTipoEdaVea();
             aplicarTemaGraficoYBotones();
             sincronizarIdentidadCanalEndemicoCompartido(selectedEvent);
             sincronizarIdentidadMatrizSECompartida(selectedEvent);
@@ -5624,16 +5726,39 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             if (!filtros.anios.length) return [];
 
             const semanaNumero = filtros.semana === "Todas" ? null : parseInt(filtros.semana, 10);
-            return dataset.filter(item => {
+            const filtrados = dataset.filter(item => {
                 if (!filtros.anios.includes(Number(item.ANO))) return false;
                 if (!coincideMesVigilancia(item.MES, filtros.mes)) return false;
                 if (semanaNumero !== null && Number(item.SEMANA) !== semanaNumero) return false;
                 return true;
             });
+
+            // F4.29 — no duplica ni altera databaseActiva. Para EDA Disentérica crea
+            // una vista derivada con los campos físicos TO DIS / DIS_C* / DIS_H*.
+            if (evento === 'EDAs' && edaTipoActivo === 'Disenterica') {
+                return filtrados.map(item => {
+                    const hospEdades = item.DIS_HOSP_EDADES_VEA || {};
+                    const totalHospDis = Object.values(hospEdades).reduce((s, v) => s + (Number(v) || 0), 0);
+                    return {
+                        ...item,
+                        CASOS: Number(item.TO_DIS) || 0,
+                        EDADES_VEA: item.DIS_EDADES_VEA || {},
+                        HOSP_EDADES_VEA: hospEdades,
+                        TO_HOS: totalHospDis,
+                        __EDA_TIPO: 'Disenterica'
+                    };
+                });
+            }
+            return filtrados;
         }
 
         function sumarCasosVigilancia(registros) {
-            return (registros || []).reduce((suma, item) => suma + (Number(item.CASOS) || 0), 0);
+            return (registros || []).reduce((suma, item) => {
+                if (selectedEvent === 'EDAs' && edaTipoActivo === 'Disenterica' && item.__EDA_TIPO !== 'Disenterica') {
+                    return suma + (Number(item.TO_DIS) || 0);
+                }
+                return suma + (Number(item.CASOS) || 0);
+            }, 0);
         }
 
         function agruparCasosPorAnioSemanaVigilancia(registros) {
@@ -5788,6 +5913,13 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             });
 
             actualizarBandaAlerta(registrosAnioPrincipal, anioPrincipal);
+            actualizarIdentidadTipoEdaVea();
+            if (selectedEvent === 'EDAs') {
+                const banda = document.getElementById('bandaTextSituacion');
+                if (banda && !banda.textContent.includes('ACUOSA') && !banda.textContent.includes('DISENTÉRICA')) {
+                    banda.textContent = banda.textContent.replace('· EDAs ·', `· ${edaTipoActivo === 'Disenterica' ? 'EDA DISENTÉRICA' : 'EDA ACUOSA'} ·`);
+                }
+            }
             renderTablaMinsaDinamica(registrosFiltrados, anioPrincipal);
             actualizarGraficosMensualesYTimelineContinuo();
             if (selectedEvent !== 'SOBA') actualizarGraficosHospitalizados();
@@ -6539,6 +6671,27 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                     "A >60 a": numeroRealVea(valorExactoVea(row, "A >60 a")) || 0
                 };
                 const hospitalizados = numeroRealVea(valorExactoVea(row, "TO HOS")) || 0;
+                // F4.29 — campos físicos de diarrea disentérica del Excel.
+                // DIS_C* = casos por grupo etario; DIS_H* = hospitalizados por grupo etario.
+                const edadesDisenterica = {
+                    "A < 1a": numeroRealVea(valorExactoVea(row, "DIS_C1 a")) || 0,
+                    "A 1-4 a": numeroRealVea(valorExactoVea(row, "DIS_C1_4 a")) || 0,
+                    "A 5-11 a": numeroRealVea(valorExactoVea(row, "DIS_C5_11 a")) || 0,
+                    "A 12-17 a": numeroRealVea(valorExactoVea(row, "DIS_C12_17 a")) || 0,
+                    "A 18-29 a": numeroRealVea(valorExactoVea(row, "DIS_C18_29 a")) || 0,
+                    "A 30-59 a": numeroRealVea(valorExactoVea(row, "DIS_C30_59 a")) || 0,
+                    "A >60 a": numeroRealVea(valorExactoVea(row, "DIS_C60 a")) || 0
+                };
+                const hospitalizadosDisentericaEdades = {
+                    "DAA_H1 a": numeroRealVea(valorExactoVea(row, "DIS_H1 a")) || 0,
+                    "DAA_H1_4 a": numeroRealVea(valorExactoVea(row, "DIS_H1_4 a")) || 0,
+                    "DAA_H5 a": numeroRealVea(valorExactoVea(row, "DIS_H5 a")) || 0,
+                    "DAA_H5_11 a": numeroRealVea(valorExactoVea(row, "DIS_H5_11 a")) || 0,
+                    "DAA_H12_17 a": numeroRealVea(valorExactoVea(row, "DIS_H12_17 a")) || 0,
+                    "DAA_H18_29 a": numeroRealVea(valorExactoVea(row, "DIS_H18_29 a")) || 0,
+                    "DAA_H30_59 a": numeroRealVea(valorExactoVea(row, "DIS_H30_59 a")) || 0,
+                    "DAA_H60 a": numeroRealVea(valorExactoVea(row, "DIS_H60 a")) || 0
+                };
                 // Matriz Resumen Anual: exposición directa del campo físico TO DIS de EDAS.
                 // No modifica CASOS (TO ACU), validación, filtros ni cálculos existentes.
                 const disenterica = numeroRealVea(valorExactoVea(row, "TO DIS"));
@@ -6568,6 +6721,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                     TO_DIS: disenterica,
                     EDADES_VEA: edades,
                     HOSP_EDADES_VEA: hospitalizadosEdades,
+                    DIS_EDADES_VEA: edadesDisenterica,
+                    DIS_HOSP_EDADES_VEA: hospitalizadosDisentericaEdades,
                     __filaExcel: row.__filaExcel
                 });
             });

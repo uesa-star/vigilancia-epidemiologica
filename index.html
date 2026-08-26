@@ -316,6 +316,7 @@
         canvas { max-width: 100% !important; }
         button, select, summary, input { touch-action: manipulation; }
 
+        /* F4.28 — navegación móvil real, validada contra captura 360–430 px */
         @media (max-width: 767px) {
             header { position: relative !important; top: auto !important; padding: .85rem .75rem !important; }
             header > div { align-items: stretch !important; gap: .75rem !important; }
@@ -343,6 +344,54 @@
             #resumenAnualDatosAcumuladosV6B .vea-matriz-wrap { -webkit-overflow-scrolling: touch; }
             #resumenAnualDatosAcumuladosV6B .vea-matriz-tabla { min-width: 760px; }
             #contentCasos { contain: content; }
+
+            /* El menú lateral queda fuera del flujo y se abre sobre el contenido. */
+            #veaSidebar {
+                position: fixed !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                width: min(88vw, 20rem) !important;
+                max-width: 20rem !important;
+                height: 100dvh !important;
+                transform: translate3d(-105%,0,0) !important;
+                visibility: hidden;
+                pointer-events: none;
+                z-index: 70 !important;
+                background: #020617 !important;
+                transition: transform .22s ease, visibility 0s linear .22s !important;
+            }
+            #veaSidebar.vea-mobile-open {
+                transform: translate3d(0,0,0) !important;
+                visibility: visible;
+                pointer-events: auto;
+                transition: transform .22s ease !important;
+            }
+            #veaSidebarOverlay {
+                z-index: 65 !important;
+            }
+            #btnMenuMovilVea {
+                min-height: 3rem;
+            }
+
+            /* Los 4 eventos caben en móvil; no se pierde Febriles fuera de pantalla. */
+            #selectorEventosVea {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                width: 100% !important;
+                overflow: visible !important;
+                gap: .35rem !important;
+            }
+            #selectorEventosVea > button {
+                min-width: 0 !important;
+                width: 100% !important;
+                padding: .7rem .55rem !important;
+                font-size: .72rem !important;
+            }
+            #selectorEventosVea > button span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
         }
 
         @media (min-width: 768px) and (max-width: 1180px) {
@@ -458,8 +507,14 @@
                 </div>
             </div>
 
+            <!-- F4.28 — acceso visible al Menú Maestro en móvil -->
+            <button id="btnMenuMovilVea" type="button" onclick="toggleVeaSidebar()" class="md:hidden w-full flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm font-extrabold text-slate-100 shadow-lg active:bg-slate-800" aria-label="Abrir Menú de Vigilancia Epidemiológica" aria-controls="veaSidebar" aria-expanded="false">
+                <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <span>MENÚ DE VIGILANCIA</span>
+            </button>
+
             <!-- Selectores de Evento Epidemiológico -->
-            <div class="bg-slate-900 p-1.5 rounded-xl border border-slate-800 flex gap-1 w-full sm:w-auto overflow-x-auto">
+            <div id="selectorEventosVea" class="bg-slate-900 p-1.5 rounded-xl border border-slate-800 flex gap-1 w-full sm:w-auto overflow-x-auto">
                 <button onclick="cambiarEventoSurveillance('EDAs')" id="btnEventEDAs" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-white bg-blue-600 shadow-md" title="Enfermedades Diarreicas Agudas">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19V9m5 10V5m5 14v-7m5 7V3M3 19h18M4 12l5-4 5 3 6-6"/></svg>
                     <span>EDAs</span>
@@ -1420,54 +1475,69 @@
             </div>
 
             <!-- DISTRIBUCIÓN POR CURSO DE VIDA / GRUPO DE EDAD (HOSPITALIZADOS) -->
-            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-sm font-bold text-slate-200">Distribución por Curso de Vida de Hospitalizados (MINSA)</h3>
-                    </div>
-                    <button id="btnToggleHospMinsaTable" onclick="toggleHospMinsaTable()" class="p-1.5 hover:bg-slate-900 rounded-lg text-slate-400 hover:text-slate-200 border border-slate-850">
-                        <svg id="arrowHospMinsaTable" class="h-5 w-5 transform -rotate-90 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                    </button>
-                </div>
-                
-                <div id="tableHospMinsaContent" class="hidden overflow-x-auto border border-slate-800/80 rounded-xl bg-slate-900/40 transition-all">
-                    <table class="w-full min-w-[800px] text-center text-xs">
-                        <thead>
-                            <tr id="hospMinsaTablaHeadRow" class="bg-slate-950/80 border-b border-slate-800 text-slate-300 font-bold">
-                                <th class="p-3 border-r border-slate-800/60 font-black text-indigo-400 text-left pl-4 w-[200px]">Año / S.E.</th>
-                                <th class="p-3 bg-slate-900/60 font-bold text-slate-200">TOTAL</th>
-                            </tr>
-                        </thead>
-                        <tbody id="hospMinsaTablaBody"></tbody>
-                    </table>
-                </div>
-            </div>
+            
 
             <!-- GRÁFICOS EXCLUSIVOS DE HOSPITALIZADOS -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                <!-- Comparativo Mensual Hospitalizados -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
-                    <div class="absolute top-0 left-0 right-0 h-1 flex">
-                        <div class="bg-blue-600 w-1/2"></div>
-                        <div class="bg-red-650 w-1/2"></div>
-                    </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 mb-6">
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
+                <div class="mb-4 mt-2"><h3 class="text-sm font-bold text-slate-200">Comparativo por Año</h3><p class="text-[10px] text-slate-400">Hospitalizaciones registradas por cada año seleccionado según los filtros activos.</p></div>
+                <div class="h-[320px] w-full relative"><canvas id="chartHospComparativoAnual"></canvas><div id="estadoChartHospAnual" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">Sin datos hospitalarios para la selección.</div></div>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-violet-600"></div>
+                <div class="mb-4 mt-2"><h3 class="text-sm font-bold text-slate-200">Distribución por Edades</h3><p class="text-[10px] text-slate-400">Distribución de hospitalizados por los grupos etarios disponibles en el repositorio activo.</p></div>
+                <div class="h-[320px] w-full relative"><canvas id="chartHospDistribucionEdades"></canvas><div id="estadoChartHospEdades" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">Sin datos hospitalarios por edad para la selección.</div></div>
+            </div>
+        </div>
+                <!-- F4.26 — Segunda fila de gráficos Hospitalizados -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <!-- Línea de Tiempo Hospitalizados -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                     <div class="flex justify-between items-start mb-4 mt-2">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-200">Comparativo Mensual Interanual de Hospitalizaciones</h3>
-                            <p class="text-[10px] text-slate-400">Hospitalizaciones reales consolidadas por Año + Mes</p>
+                            <h3 class="text-sm font-bold text-slate-200">Comparativo por Semana Epidemiológica (Hospitalizados)</h3>
+                            <p class="text-[10px] text-slate-400">Una línea por año seleccionado; solo se representan semanas existentes.</p>
                         </div>
                         <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
-                            <div class="font-extrabold text-slate-100 uppercase tracking-wide">AÑOS: <span id="txtHospMensualAño" class="text-red-500 font-black">--</span></div>
-                            <div class="font-extrabold text-slate-400 uppercase tracking-wide mt-0.5">TOTAL: <span id="txtHospMensualTotal" class="text-red-500 font-black">0</span></div>
+                            <div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑOS: <span id="txtHospSemanalAño" class="text-red-500 font-black">--</span></div>
+                            <div class="hidden">TOTAL: <span id="txtHospSemanalTotal">0</span></div>
                         </div>
                     </div>
-                    <div class="h-64 w-full relative mb-4">
+                    <div class="h-[320px] w-full relative mb-1">
+                        <canvas id="chartHospSemanalMultianual"></canvas>
+                        <div id="estadoChartHospSemanal" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">
+                            Sin datos hospitalarios para la selección.
+                        </div>
+                    </div>
+                    <div id="hospTimelineDivisiones" class="hidden">
+                        <!-- Divisiones internas conservadas; presentación unificada F4.24 -->
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-slate-800/80">
+                        <p class="text-[10px] text-slate-500 font-semibold">Fuente: NOTIWEB — CDC Perú / MINSA</p>
+                    </div>
+                </div>
+                <!-- Comparativo Mensual Hospitalizados -->
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-600"></div>
+                    <div class="flex justify-between items-start mb-4 mt-2">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200">Comparativo por Mes (Hospitalizados)</h3>
+                            <p class="text-[10px] text-slate-400">Enero a diciembre; una línea por año seleccionado y sin completar meses inexistentes.</p>
+                        </div>
+                        <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
+                            <div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑOS: <span id="txtHospMensualAño" class="text-red-500 font-black">--</span></div>
+                            <div class="hidden">TOTAL: <span id="txtHospMensualTotal">0</span></div>
+                        </div>
+                    </div>
+                    <div class="h-[320px] w-full relative mb-4">
                         <canvas id="chartHospComparativoMensual"></canvas>
                         <div id="estadoChartHospMensual" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">
                             Sin datos hospitalarios para la selección.
                         </div>
                     </div>
-                    <div class="overflow-x-auto border border-slate-800/80 rounded-lg">
+                    <div class="hidden">
                         <table class="w-full text-center text-[10px] bg-slate-900/30 min-w-[500px]">
                             <thead>
                                 <tr class="bg-slate-950/80 border-b border-slate-800 text-slate-400 font-bold">
@@ -1489,36 +1559,13 @@
                             <tbody id="bodyTablaHospMensual" class="text-slate-300 divide-y divide-slate-800/40"></tbody>
                         </table>
                     </div>
-                </div>
-
-                <!-- Línea de Tiempo Hospitalizados -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
-                    <div class="absolute top-0 left-0 right-0 h-1 flex">
-                        <div class="bg-blue-600 w-1/2"></div>
-                        <div class="bg-red-650 w-1/2"></div>
-                    </div>
-                    <div class="flex justify-between items-start mb-4 mt-2">
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-200">Línea de Tiempo Semanal Multianual de Hospitalizaciones</h3>
-                            <p class="text-[10px] text-slate-400 font-semibold">Hospitalizaciones reales consolidadas por Año + S.E.</p>
-                        </div>
-                        <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
-                            <div class="font-extrabold text-slate-100 uppercase tracking-wide">AÑOS: <span id="txtHospSemanalAño" class="text-red-500 font-black">--</span></div>
-                            <div class="font-extrabold text-slate-400 uppercase tracking-wide mt-0.5">TOTAL: <span id="txtHospSemanalTotal" class="text-red-500 font-black">0</span></div>
-                        </div>
-                    </div>
-                    <div class="h-64 w-full relative mb-1">
-                        <canvas id="chartHospSemanalMultianual"></canvas>
-                        <div id="estadoChartHospSemanal" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">
-                            Sin datos hospitalarios para la selección.
-                        </div>
-                    </div>
-                    <div id="hospTimelineDivisiones" class="flex justify-between text-[9px] text-slate-500 font-extrabold px-1 border-t border-slate-800/50 pt-2 font-bold">
-                        <!-- Divisiones de año de hospitalización generadas dinámicamente -->
+                    <div class="mt-3 pt-2 border-t border-slate-800/80 text-right">
+                        <p id="actualizacionGraficoHospMensualVea" class="text-[10px] text-slate-500 font-semibold">Última actualización de datos: Sin fecha de actualización registrada</p>
                     </div>
                 </div>
             </div>
-        </div>
+
+</div>
 
 
         <!-- MÓDULOS INDEPENDIENTES PREPARADOS PARA DESARROLLO POSTERIOR -->
@@ -1890,6 +1937,8 @@
         let chartSemanalMultianualMinsaInstance = null;
         let chartHospComparativoMensualInstance = null;
         let chartHospSemanalMultianualInstance = null;
+        let chartHospComparativoAnualInstance = null;
+        let chartHospDistribucionEdadesInstance = null;
 
         const TEMAS_EVENTO = {
             EDAs: { primario: '#ef4444' },
@@ -6062,7 +6111,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                             borderColor: '#38bdf8',
                             backgroundColor: '#38bdf8',
                             borderWidth: 3,
-                            pointRadius: 3.5,
+                            pointRadius: 3,
                             pointHoverRadius: 5,
                             pointBackgroundColor: '#ffffff',
                             pointBorderColor: '#0284c7',
@@ -7374,7 +7423,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const datasetEvento = databaseActiva[selectedEvent] || [];
             const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
             const colorPrimario = TEMAS_EVENTO[selectedEvent].primario;
-            const paleta = ['#38bdf8', '#f87171', '#34d399', '#fbbf24', '#a78bfa', '#fb7185'];
+            // F4.24 — misma identidad cromática por año en ambos gráficos hospitalarios.
+            const paleta = ['#1e3a8a', '#0284c7', '#06b6d4', '#0f766e', '#64748b', '#6366f1'];
+            const colorPorAnioHosp = new Map(aniosSeleccionados.map((anio, idx) => [anio, paleta[idx % paleta.length]]));
 
             limpiarGraficosHospitalVea();
 
@@ -7498,6 +7549,36 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 }
             }
 
+            // F4.26 — Comparativo por Año con hospitalizaciones reales del universo filtrado.
+            if (chartHospComparativoAnualInstance) { chartHospComparativoAnualInstance.destroy(); chartHospComparativoAnualInstance = null; }
+            const totalHospPorAnio = new Map(aniosSeleccionados.map(a => [a, 0]));
+            registrosFiltrados.forEach(item => {
+                const anio = Number(item.ANO);
+                if (totalHospPorAnio.has(anio)) totalHospPorAnio.set(anio, (totalHospPorAnio.get(anio) || 0) + (Number(item.TO_HOS) || 0));
+            });
+            const datosHospAnual = aniosSeleccionados.map(a => totalHospPorAnio.get(a) || 0);
+            const ctxHospAnual = document.getElementById('chartHospComparativoAnual');
+            setEstadoGraficoHospitalVea('estadoChartHospAnual', !datosHospAnual.some(v => v > 0), 'Sin hospitalizaciones para los años seleccionados.');
+            if (ctxHospAnual && datosHospAnual.some(v => v > 0)) {
+                chartHospComparativoAnualInstance = new Chart(ctxHospAnual.getContext('2d'), {
+                    type:'bar', data:{labels:aniosSeleccionados.map(String),datasets:[{data:datosHospAnual,backgroundColor:aniosSeleccionados.map(a=>colorPorAnioHosp.get(a)),borderRadius:5,maxBarThickness:125}]},
+                    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#94a3b8',precision:0}},x:{grid:{display:false},ticks:{color:'#94a3b8',font:{weight:'bold'}}}}}
+                });
+            }
+
+            // F4.26 — Distribución por Edades con HOSP_EDADES_VEA real ya consolidado.
+            if (chartHospDistribucionEdadesInstance) { chartHospDistribucionEdadesInstance.destroy(); chartHospDistribucionEdadesInstance = null; }
+            const etiquetasEdadHosp = configuracion.edades.map(g => g.etiqueta);
+            const valoresEdadHosp = configuracion.edades.map(g => totalesEdad.get(g.campo) || 0);
+            const ctxHospEdades = document.getElementById('chartHospDistribucionEdades');
+            setEstadoGraficoHospitalVea('estadoChartHospEdades', !valoresEdadHosp.some(v => v > 0), 'Sin hospitalizaciones por edad para los filtros activos.');
+            if (ctxHospEdades && valoresEdadHosp.some(v => v > 0)) {
+                chartHospDistribucionEdadesInstance = new Chart(ctxHospEdades.getContext('2d'), {
+                    type:'bar', data:{labels:etiquetasEdadHosp,datasets:[{data:valoresEdadHosp,backgroundColor:'#06b6d4',borderRadius:4,maxBarThickness:54}]},
+                    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#94a3b8',precision:0}},x:{grid:{display:false},ticks:{color:'#94a3b8',font:{weight:'bold'}}}}}
+                });
+            }
+
             // Tabla de curso de vida: consolidación real por Año + S.E.
             renderTablaHospMinsaDinamica(registrosFiltrados, selectedEvent);
 
@@ -7520,9 +7601,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const datasetsMensuales = aniosSeleccionados.map((anio, idx) => ({
                 label: String(anio),
                 data: matrizMensual[anio],
-                borderColor: idx === aniosSeleccionados.length - 1 ? colorPrimario : (paleta[idx % paleta.length]),
+                borderColor: colorPorAnioHosp.get(anio),
                 backgroundColor: 'transparent',
-                borderWidth: idx === aniosSeleccionados.length - 1 ? 3 : 2,
+                borderWidth: 2.5,
                 pointRadius: 3.5,
                 tension: 0.15,
                 spanGaps: false
@@ -7555,7 +7636,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 aniosSeleccionados.forEach((anio, idx) => {
                     const tr = document.createElement('tr');
                     tr.className = 'border-b border-slate-800/40 hover:bg-slate-900/20 text-slate-300 font-medium';
-                    const color = idx === aniosSeleccionados.length - 1 ? colorPrimario : paleta[idx % paleta.length];
+                    const color = colorPorAnioHosp.get(anio);
                     const celdas = matrizMensual[anio].map(v => `<td class="p-2 font-bold">${v === null ? '—' : v.toLocaleString()}</td>`).join('');
                     tr.innerHTML = `<td class="p-2 text-left pl-3 font-semibold"><span class="w-2.5 h-2.5 rounded-sm inline-block mr-1.5" style="background-color:${color}"></span>${anio}</td>${celdas}`;
                     tbodyMensual.appendChild(tr);
@@ -7572,14 +7653,19 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 return {
                     label: String(anio),
                     data,
-                    borderColor: idx === aniosSeleccionados.length - 1 ? colorPrimario : paleta[idx % paleta.length],
+                    borderColor: colorPorAnioHosp.get(anio),
                     backgroundColor: 'transparent',
-                    borderWidth: idx === aniosSeleccionados.length - 1 ? 3 : 2,
+                    borderWidth: 2.5,
                     pointRadius: 2.5,
                     tension: 0.1,
                     spanGaps: false
                 };
             });
+
+            const actualizacionHospMensual = document.getElementById('actualizacionGraficoHospMensualVea');
+            if (actualizacionHospMensual) {
+                actualizacionHospMensual.textContent = `Última actualización de datos: ${formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos)}`;
+            }
 
             const txtSemanalTotal = document.getElementById('txtHospSemanalTotal');
             if (txtSemanalTotal) txtSemanalTotal.textContent = totalHospitalizados.toLocaleString();
@@ -7589,7 +7675,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             if (ctxSemanal && haySemanal) {
                 chartHospSemanalMultianualInstance = new Chart(ctxSemanal.getContext('2d'), {
                     type: 'line',
-                    data: { labels: semanas.map(s => `S.E.${s}`), datasets: datasetsSemanales },
+                    data: { labels: semanas.map(s => `S.E. ${s}`), datasets: datasetsSemanales },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
@@ -8182,6 +8268,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 sidebar.classList.remove('vea-collapsed');
                 sidebar.classList.toggle('vea-mobile-open', abrir);
                 if (overlay) overlay.classList.toggle('hidden', !abrir);
+                const btnMovil = document.getElementById('btnMenuMovilVea');
+                if (btnMovil) btnMovil.setAttribute('aria-expanded', String(abrir));
                 document.body.style.overflow = abrir ? 'hidden' : '';
             } else {
                 const colapsado = !sidebar.classList.contains('vea-collapsed');
@@ -8196,6 +8284,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const overlay = document.getElementById('veaSidebarOverlay');
             if (sidebar) sidebar.classList.remove('vea-mobile-open');
             if (overlay) overlay.classList.add('hidden');
+            const btnMovil = document.getElementById('btnMenuMovilVea');
+            if (btnMovil) btnMovil.setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
         }
 

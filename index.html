@@ -10613,12 +10613,24 @@ function abrirAvisoBoletinSEVea(){
   };
   const dxIndPrev=conteoDxSemana(individualPrevRows);
   const dxIndActual=conteoDxSemana(individualActualRows);
-  const topIndividualActual=Object.entries(dxIndActual).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'es')).slice(0,5);
-  const comparativoIndividualTop=topIndividualActual.map(([nombre,actual])=>{
-    const previo=dxIndPrev[nombre]||0;
+  // F4.92 — TOP 5 de diagnósticos individuales más marcados del año activo.
+  // Ranking: volumen acumulado S.E. 1..S.E. activa. Comparación: S.E. anterior vs activa.
+  // Así se muestran hasta 5 diagnósticos REALES aunque en las dos semanas comparadas sólo aparezcan 1–2.
+  const dxIndAcumuladoHastaSE=conteoDxSemana(individual.filter(r=>year(r)===anio&&week(r)>=1&&week(r)<=se));
+  const universoDxComparativo=Object.keys(dxIndAcumuladoHastaSE);
+  const topIndividualActual=universoDxComparativo
+    .map(nombre=>({
+      nombre,
+      acumulado:dxIndAcumuladoHastaSE[nombre]||0,
+      actual:dxIndActual[nombre]||0,
+      previo:dxIndPrev[nombre]||0
+    }))
+    .sort((a,b)=>b.acumulado-a.acumulado||b.actual-a.actual||b.previo-a.previo||a.nombre.localeCompare(b.nombre,'es'))
+    .slice(0,5);
+  const comparativoIndividualTop=topIndividualActual.map(({nombre,actual,previo,acumulado})=>{
     const variacion=actual-previo;
-    const pct=previo?(variacion/previo*100):null;
-    return {nombre,previo,actual,variacion,pct};
+    const pct=previo?(variacion/previo*100):(actual>0?null:0);
+    return {nombre,previo,actual,variacion,pct,acumulado};
   });
   const comparativoIndividualRows=comparativoIndividualTop.length
     ? comparativoIndividualTop.map(x=>`<tr><td><b>${esc(x.nombre)}</b></td><td>${x.previo.toLocaleString('es-PE')}</td><td>${x.actual.toLocaleString('es-PE')}</td><td class="${cls(x.variacion)}">${arrow(x.variacion)} ${Math.abs(x.variacion).toLocaleString('es-PE')}</td><td class="${cls(x.pct||0)}">${x.pct===null?'—':pctTxt(x.pct)}</td></tr>`).join('')

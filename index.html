@@ -1199,6 +1199,33 @@
  #contentDatos .da-kpi-card-f460{height:154px!important;min-height:154px!important}
 }
 
+
+/* F4.65 — DATOS ACUMULADOS: SOLO AÑO + MATRIZ RESUMEN ANUAL */
+#contentDatos #filtrosDatosAcumuladosReferencia,
+#contentDatos #daTickerAlertas,
+#contentDatos #daAlertOverlay,
+#contentDatos #panelTablaDatosAcumuladosV6B{display:none!important}
+#contentDatos #daAlertOverlay + .grid{display:none!important}
+#contentDatos .grid:has(#chartDatosComparativoEvento),
+#contentDatos div:has(#chartDatosMensualEdas),
+#contentDatos div:has(#chartDatosSemanalEdas),
+#contentDatos div:has(#chartDatosIndividualDiagnostico){display:none!important}
+#contentDatos #resumenAnualDatosAcumuladosV6B{order:1!important;margin-top:0!important}
+#contentDatos #contenidoMatrizDatosV6B{display:block!important}
+#contentDatos #btnToggleMatrizDatosV6B{display:none!important}
+#contentDatos #resumenAnualDatosAcumuladosV6B .vea-matriz-selector{min-width:180px!important}
+#contentDatos #selectAnioResumenDatosV6B{
+ width:100%!important;min-height:40px!important;border-radius:8px!important;
+ padding:8px 10px!important;font-size:12px!important;font-weight:800!important
+}
+@media(max-width:767px){
+ #contentDatos #resumenAnualDatosAcumuladosV6B .vea-matriz-header{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:14px!important
+ }
+ #contentDatos #resumenAnualDatosAcumuladosV6B .vea-matriz-selector{width:100%!important;min-width:0!important}
+ #contentDatos #selectAnioResumenDatosV6B{min-height:44px!important;font-size:14px!important}
+}
+
 </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -1634,9 +1661,9 @@
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-sm">
                 <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-5">
                     <div>
-                        <div class="text-[10px] font-black uppercase tracking-[0.22em] text-red-400">Comparativo Multievento VEA</div>
+                        <div class="text-[10px] font-black uppercase tracking-[0.22em] text-red-400">Consulta Consolidada VEA</div>
                         <h3 class="text-xl font-black text-slate-100 mt-1">Datos Acumulados</h3>
-                        <p class="text-xs text-slate-400 mt-2 max-w-3xl">EDAs, IRAs y Febriles se mantienen como eventos independientes. Los resultados corresponden a CASOS oficiales consolidados; no representan personas únicas.</p>
+                        <p class="text-xs text-slate-400 mt-2 max-w-3xl">Lectura anual consolidada de las vigilancias epidemiológicas registradas en el repositorio activo.</p>
                     </div>
                     
                 </div>
@@ -1767,9 +1794,9 @@
             <div id="resumenAnualDatosAcumuladosV6B" class="bg-slate-950 border border-slate-800 rounded-2xl shadow-sm overflow-hidden" style="order: 10;">
                 <div class="flex items-center justify-between gap-4 px-4 py-4 md:px-5 border-b border-slate-800">
                     <h4 class="text-sm font-black text-slate-100">Matriz Resumen Anual</h4>
-                    <button id="btnToggleMatrizDatosV6B" type="button" onclick="alternarPanelDatosAcumuladosV6B('matriz')" aria-expanded="false" aria-controls="contenidoMatrizDatosV6B" class="shrink-0 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-[10px] font-black uppercase tracking-wide text-slate-200 hover:border-red-500/60 hover:text-white transition-colors">▼ Mostrar matriz</button>
+                    <button id="btnToggleMatrizDatosV6B" type="button" onclick="alternarPanelDatosAcumuladosV6B('matriz')" aria-expanded="true" aria-controls="contenidoMatrizDatosV6B" class="hidden" tabindex="-1">▲ Ocultar matriz</button>
                 </div>
-                <div id="contenidoMatrizDatosV6B" class="hidden">
+                <div id="contenidoMatrizDatosV6B">
                 <div class="vea-matriz-header">
                     <div class="vea-matriz-titulo">
                         <div class="vea-matriz-kicker font-black uppercase text-red-400">Lectura rápida anual</div>
@@ -4134,7 +4161,9 @@
 
         
         let anioResumenDatosAcumuladosV6B = null;
-        let matrizDatosAcumuladosAbiertaV6B = false;
+        // F4.66: Datos Acumulados es ahora una vista de matriz permanente.
+        // El estado lógico debe coincidir con el estado visual abierto.
+        let matrizDatosAcumuladosAbiertaV6B = true;
         let tablaDatosAcumuladosAbiertaV6B = false;
         let matrizDatosAcumuladosPendienteV6B = true;
         let tablaDatosAcumuladosPendienteV6B = true;
@@ -5083,7 +5112,9 @@
 
                     requestAnimationFrame(() => {
                         renderFinalPendiente = false;
+                        matrizDatosAcumuladosAbiertaV6B = true;
                         renderResumenAnualDatosAcumuladosV6B();
+                        matrizDatosAcumuladosPendienteV6B = false;
                         // Una nueva ingesta reemplaza datasets; la firma por
                         // referencia hará que el siguiente acceso al panel
                         // reconstruya G1-G4/tabla exactamente una vez.
@@ -6048,6 +6079,19 @@
                 actualizarGraficosHospitalizados();
             }
         }
+
+        // F4.66 — Datos Acumulados: la matriz es el componente principal.
+        // Siempre se sincroniza al entrar, usando el motor anual ya validado.
+        const veaRenderOriginalModuloF466 = ejecutarRenderModuloNavegacionVea;
+        ejecutarRenderModuloNavegacionVea = function(tab) {
+            if (tab === 'datos') {
+                matrizDatosAcumuladosAbiertaV6B = true;
+                matrizDatosAcumuladosPendienteV6B = false;
+                renderResumenAnualDatosAcumuladosV6B();
+                return;
+            }
+            return veaRenderOriginalModuloF466(tab);
+        };
 
         function programarRenderModuloNavegacionVea(tab) {
             if (!Object.prototype.hasOwnProperty.call(cacheRenderNavegacionVea, tab)) return;
@@ -10372,6 +10416,19 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();
  setTimeout(clean,300);
+})();
+</script>
+
+<script>
+/* F4.65 — matriz anual abierta por defecto */
+(function(){
+ function abrir(){
+  const c=document.getElementById('contenidoMatrizDatosV6B');
+  const b=document.getElementById('btnToggleMatrizDatosV6B');
+  if(c)c.classList.remove('hidden');
+  if(b){b.setAttribute('aria-expanded','true');b.classList.add('hidden')}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',abrir);else abrir();
 })();
 </script>
 </body>

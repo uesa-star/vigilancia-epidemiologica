@@ -871,6 +871,334 @@
  #contentDatos #btnLimpiarDatosAcumulados{width:100%}
 }
 
+
+/* F4.58 — Acumulados: KPIs uniformes + alerta carrusel */
+#contentDatos .da-alert-f458{display:grid;grid-template-columns:32px 58px minmax(220px,1.1fr) minmax(390px,1.7fr) 32px;gap:14px;align-items:center;position:relative;padding:18px;margin-bottom:16px;border:1px solid #ef4444;border-radius:16px;background:linear-gradient(90deg,rgba(69,10,10,.42),rgba(20,5,12,.72),rgba(69,10,10,.32))}
+#contentDatos .da-alert-f458.hidden{display:none!important}
+#contentDatos .da-alert-nav{border:0;background:transparent;color:#cbd5e1;font-size:38px;cursor:pointer}
+#contentDatos .da-alert-symbol{width:54px;height:54px;border-radius:13px;background:rgba(127,29,29,.28);color:#fb4458;display:grid;place-items:center}
+#contentDatos .da-alert-symbol svg{width:36px;height:36px}
+#contentDatos .da-alert-kicker{font-size:15px;font-weight:900;color:#fb4458;margin-bottom:7px}
+#contentDatos .da-alert-title{font-size:16px;font-weight:900;color:#f8fafc;line-height:1.25}
+#contentDatos .da-alert-text{font-size:11px;color:#cbd5e1;margin-top:7px;line-height:1.4}
+#contentDatos .da-alert-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+#contentDatos .da-alert-cols>div{border-left:1px solid rgba(239,68,68,.25);padding-left:16px}
+#contentDatos .da-alert-cols b{font-size:11px;color:#fbbf24}.da-alert-cols b.green{color:#4ade80!important}
+#contentDatos .da-alert-cols ul{padding-left:16px;margin:6px 0 0;font-size:10.5px;color:#e2e8f0;line-height:1.55}
+#contentDatos .da-alert-dots{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+#contentDatos .da-alert-dot{width:7px;height:7px;border:0;border-radius:50%;background:#64748b;padding:0}.da-alert-dot.active{background:#fb4458!important}
+#contentDatos .da-kpi-card-f458{position:relative;padding-top:16px!important;min-height:126px}
+#contentDatos .da-kpi-icon-f458{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#08204b;border:1px solid #164e8a;color:#38bdf8}
+#contentDatos .da-kpi-icon-f458 svg{width:19px;height:19px}
+#contentDatos .da-kpi-card-f458 [id$="Titulo"]{padding-right:46px;font-size:10px!important;line-height:1.3!important;min-height:27px}
+#contentDatos .da-kpi-card-f458 #kpiDatosEdas,#contentDatos .da-kpi-card-f458 #kpiDatosIras,#contentDatos .da-kpi-card-f458 #kpiDatosFebriles{font-size:24px!important;line-height:1.05!important}
+@media(max-width:1100px){#contentDatos .da-alert-f458{grid-template-columns:26px 50px 1fr 26px}.da-alert-cols{grid-column:2/4!important}}
+@media(max-width:767px){#contentDatos .da-alert-f458{grid-template-columns:24px 42px 1fr 24px;padding:14px 8px;gap:7px}#contentDatos .da-alert-symbol{width:42px;height:42px}#contentDatos .da-alert-symbol svg{width:28px;height:28px}#contentDatos .da-alert-cols{grid-column:2/4!important;grid-template-columns:1fr;gap:8px}}
+
+/* F4.59 — ticker automático y panel general */
+#contentDatos .da-ticker-wrap{
+ display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;
+ min-height:54px;padding:8px 12px;margin:0 0 16px;border:1px solid #334155;
+ border-radius:14px;background:#020617;overflow:hidden
+}
+#contentDatos .da-ticker-badge{display:flex;align-items:center;gap:8px;color:#fb7185;font-size:11px;font-weight:900;white-space:nowrap}
+#contentDatos .da-pulse{width:9px;height:9px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 0 rgba(239,68,68,.55);animation:daPulse 1.8s infinite}
+@keyframes daPulse{70%{box-shadow:0 0 0 9px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+#contentDatos .da-ticker-viewport{position:relative;overflow:hidden;cursor:pointer;min-width:0}
+#contentDatos .da-ticker-track{display:flex;width:max-content;animation:daTickerMove 32s linear infinite}
+#contentDatos .da-ticker-viewport:hover .da-ticker-track,
+#contentDatos .da-ticker-viewport:focus .da-ticker-track{animation-play-state:paused}
+#contentDatos .da-ticker-item{display:flex;align-items:center;gap:8px;padding-right:46px;white-space:nowrap;color:#e2e8f0;font-size:12px;font-weight:800}
+#contentDatos .da-ticker-item strong{color:#f8fafc}.da-ticker-item .warn{color:#fb7185}
+#contentDatos .da-ticker-hint{font-size:10px;color:#64748b;white-space:nowrap}
+@keyframes daTickerMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.da-alert-overlay{position:fixed;inset:0;z-index:99999;background:rgba(2,6,23,.76);backdrop-filter:blur(5px);display:grid;place-items:center;padding:22px}
+.da-alert-overlay.hidden{display:none!important}
+.da-alert-panel{width:min(1120px,96vw);max-height:88vh;overflow:auto;background:#07101f;border:1px solid #334155;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.6);padding:22px}
+.da-alert-panel-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #1e293b}
+.da-alert-panel-kicker{font-size:11px;font-weight:900;color:#fb7185;letter-spacing:.12em}
+.da-alert-panel h3{margin:4px 0;color:#f8fafc;font-size:22px;font-weight:900}
+.da-alert-panel-head p{margin:0;color:#94a3b8;font-size:12px}
+.da-alert-close{width:38px;height:38px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#e2e8f0;font-size:25px;cursor:pointer}
+.da-alert-panel-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:18px}
+.da-alert-card{border:1px solid #1e293b;border-radius:14px;background:#020617;padding:15px}
+.da-alert-card.priority{border-color:#ef4444;background:linear-gradient(135deg,rgba(69,10,10,.34),#020617 62%)}
+.da-alert-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.da-alert-card-title{font-size:12px;font-weight:900;color:#93c5fd;text-transform:uppercase}
+.da-alert-card-value{font-size:22px;line-height:1.1;font-weight:900;color:#f8fafc;margin-top:5px}
+.da-alert-card-sub{font-size:11px;color:#94a3b8;margin-top:4px}
+.da-alert-chip{border-radius:999px;padding:5px 8px;background:#172554;color:#60a5fa;font-size:9px;font-weight:900;white-space:nowrap}
+.da-alert-card.priority .da-alert-chip{background:#450a0a;color:#fca5a5}
+.da-alert-card ul{margin:11px 0 0;padding-left:17px;color:#cbd5e1;font-size:10.5px;line-height:1.5}
+.da-alert-panel-note{margin-top:16px;padding-top:13px;border-top:1px solid #1e293b;color:#64748b;font-size:10px}
+@media(max-width:900px){
+ #contentDatos .da-ticker-wrap{grid-template-columns:auto minmax(0,1fr)}
+ #contentDatos .da-ticker-hint{display:none}
+ .da-alert-panel-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+ #contentDatos .da-ticker-wrap{grid-template-columns:1fr;padding:10px}
+ #contentDatos .da-ticker-badge{margin-bottom:2px}
+ #contentDatos .da-ticker-item{font-size:11px;padding-right:32px}
+ .da-alert-overlay{padding:8px}
+ .da-alert-panel{width:100%;max-height:94vh;border-radius:16px;padding:15px}
+ .da-alert-panel h3{font-size:18px}
+}
+
+
+/* F4.60 — KPIs Datos Acumulados, modelo visual aprobado */
+#contentDatos .da-kpi-card-f460{
+ position:relative!important;min-height:132px!important;padding:14px 14px!important;
+ display:flex!important;flex-direction:column!important;justify-content:flex-start!important;
+ border:1px solid #24344d!important;border-radius:14px!important;background:#020817!important;
+ overflow:hidden
+}
+#contentDatos .da-kpi-card-f460 .da460-icon{
+ width:36px;height:36px;border-radius:10px;display:grid;place-items:center;margin-bottom:7px;
+ border:1px solid currentColor;background:rgba(15,23,42,.72)
+}
+#contentDatos .da-kpi-card-f460 .da460-icon svg{width:19px;height:19px}
+#contentDatos .da-kpi-card-f460 .da460-title{
+ font-size:10px!important;line-height:1.25!important;font-weight:800!important;letter-spacing:.035em!important;
+ text-transform:uppercase!important;margin:0 42px 3px 0!important;min-height:25px!important
+}
+#contentDatos .da-kpi-card-f460 .da460-subtitle{
+ font-size:9px;color:#94a3b8;min-height:12px;margin-bottom:5px
+}
+#contentDatos .da-kpi-card-f460 .da460-value{
+ font-size:24px!important;line-height:1.05!important;font-weight:900!important;color:#f8fafc!important;
+ margin:0 0 5px!important;overflow-wrap:anywhere
+}
+#contentDatos .da-kpi-card-f460 .da460-total{
+ margin-top:auto;font-size:9px;font-weight:700;color:#718096;letter-spacing:.01em
+}
+#contentDatos .da-kpi-card-f460.da460-edas{color:#38bdf8}
+#contentDatos .da-kpi-card-f460.da460-iras{color:#2dd4bf}
+#contentDatos .da-kpi-card-f460.da460-soba{color:#c084fc}
+#contentDatos .da-kpi-card-f460.da460-febriles{color:#fb4458}
+#contentDatos .da-kpi-card-f460.da460-mayor{color:#f59e0b}
+#contentDatos .da-kpi-card-f460.da460-noti{color:#4ade80}
+#contentDatos .da-kpi-card-f460 .da460-title,
+#contentDatos .da-kpi-card-f460 .da460-icon{color:inherit}
+#contentDatos .da-kpi-grid-f460{
+ display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important
+}
+@media(max-width:1250px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:460px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:1fr!important}
+ #contentDatos .da-kpi-card-f460{min-height:128px!important}
+}
+
+
+/* F4.62 — KPIs Acumulados alineados al estándar Vigilancia/Hospitalizados */
+#contentDatos .da-kpi-card-f460{
+  position:relative!important;
+  min-height:166px!important;
+  padding:16px 15px 14px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  border:1px solid #26364e!important;
+  border-radius:14px!important;
+  background:#020817!important;
+  overflow:hidden!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-icon{
+  position:absolute!important;top:15px!important;right:14px!important;
+  width:40px!important;height:40px!important;margin:0!important;
+  border-radius:10px!important;display:grid!important;place-items:center!important;
+  background:#071a3d!important;border:1px solid #164e91!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-icon svg{width:20px!important;height:20px!important}
+#contentDatos .da-kpi-card-f460 .da460-title{
+  max-width:calc(100% - 52px)!important;
+  min-height:30px!important;margin:0 0 4px!important;
+  font-size:10px!important;line-height:1.25!important;
+  font-weight:800!important;letter-spacing:.045em!important;
+  text-transform:uppercase!important;color:#8fb4e8!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-subtitle{
+  min-height:14px!important;margin:0 0 7px!important;
+  font-size:9px!important;line-height:1.3!important;color:#94a3b8!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-value{
+  margin:0!important;font-size:25px!important;line-height:1.08!important;
+  font-weight:900!important;color:#fff!important;overflow-wrap:anywhere!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-total{
+  margin-top:auto!important;padding-top:9px!important;
+  font-size:9px!important;line-height:1.2!important;font-weight:600!important;
+  color:#7890b5!important;
+}
+#contentDatos .da-kpi-card-f460.da460-mayor .da460-value,
+#contentDatos .da-kpi-card-f460.da460-noti .da460-value{
+  font-size:22px!important;
+}
+#contentDatos .da-kpi-grid-f460{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+@media(max-width:1280px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:480px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:1fr!important}
+ #contentDatos .da-kpi-card-f460{min-height:150px!important}
+}
+
+/* F4.62 — la alerta ya NO abre por hover; botón explícito */
+#contentDatos .da-ticker-viewport{cursor:default!important}
+#contentDatos .da-ticker-viewport:hover .da-ticker-track{animation-play-state:running!important}
+#contentDatos .da-alert-open-btn{
+ flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ min-height:36px;padding:8px 12px;border:1px solid #2563eb;border-radius:9px;
+ background:#0b4ca8;color:#fff;font-size:10px;font-weight:900;white-space:nowrap;cursor:pointer
+}
+#contentDatos .da-alert-open-btn:hover{background:#0d5bc8}
+@media(max-width:900px){
+ #contentDatos .da-ticker-wrap{grid-template-columns:auto minmax(0,1fr) auto!important}
+}
+@media(max-width:650px){
+ #contentDatos .da-ticker-wrap{grid-template-columns:1fr!important}
+ #contentDatos .da-alert-open-btn{width:100%}
+}
+
+
+/* F4.63 — NORMALIZACIÓN FINAL KPIs ACUMULADOS = VIGILANCIA / HOSPITALIZADOS */
+#contentDatos .da-kpi-grid-f460{
+ display:grid!important;
+ grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ gap:16px!important;
+ align-items:stretch!important;
+}
+#contentDatos .da-kpi-card-f460{
+ position:relative!important;
+ box-sizing:border-box!important;
+ min-width:0!important;
+ height:166px!important;
+ min-height:166px!important;
+ padding:17px 16px 14px!important;
+ border:1px solid #2b3b54!important;
+ border-radius:14px!important;
+ background:#020817!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:stretch!important;
+ justify-content:flex-start!important;
+ overflow:hidden!important;
+ color:#fff!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-icon{
+ position:absolute!important;
+ top:16px!important;right:15px!important;
+ width:40px!important;height:40px!important;
+ margin:0!important;padding:0!important;
+ border-radius:10px!important;
+ display:grid!important;place-items:center!important;
+ background:#06204a!important;
+ border:1px solid #174f94!important;
+ color:#55c7ff!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-icon svg{
+ width:20px!important;height:20px!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-title{
+ display:block!important;
+ width:calc(100% - 52px)!important;
+ max-width:calc(100% - 52px)!important;
+ min-height:26px!important;
+ margin:0 0 3px!important;
+ padding:0!important;
+ font-family:inherit!important;
+ font-size:10px!important;
+ line-height:1.28!important;
+ font-weight:800!important;
+ letter-spacing:.045em!important;
+ text-transform:uppercase!important;
+ color:#8eabd5!important;
+ white-space:normal!important;
+ overflow-wrap:normal!important;
+ word-break:normal!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-subtitle{
+ display:block!important;
+ width:calc(100% - 48px)!important;
+ min-height:13px!important;
+ margin:0 0 7px!important;
+ padding:0!important;
+ font-family:inherit!important;
+ font-size:9px!important;
+ line-height:1.25!important;
+ font-weight:600!important;
+ color:#7f96b9!important;
+ white-space:normal!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-value{
+ display:block!important;
+ width:100%!important;
+ margin:0!important;
+ padding:0!important;
+ font-family:inherit!important;
+ font-size:26px!important;
+ line-height:1.08!important;
+ font-weight:900!important;
+ letter-spacing:-.015em!important;
+ color:#fff!important;
+ white-space:normal!important;
+ overflow-wrap:break-word!important;
+}
+#contentDatos .da-kpi-card-f460.da460-mayor .da460-value{
+ font-size:23px!important;
+}
+#contentDatos .da-kpi-card-f460.da460-noti .da460-value{
+ font-size:20px!important;
+ line-height:1.08!important;
+}
+#contentDatos .da-kpi-card-f460 .da460-total{
+ display:block!important;
+ margin-top:auto!important;
+ padding:0!important;
+ font-family:inherit!important;
+ font-size:9px!important;
+ line-height:1.2!important;
+ font-weight:600!important;
+ letter-spacing:0!important;
+ color:#7f96b9!important;
+}
+#contentDatos .da-kpi-card-f460.da460-edas .da460-title,
+#contentDatos .da-kpi-card-f460.da460-iras .da460-title,
+#contentDatos .da-kpi-card-f460.da460-soba .da460-title,
+#contentDatos .da-kpi-card-f460.da460-febriles .da460-title,
+#contentDatos .da-kpi-card-f460.da460-mayor .da460-title,
+#contentDatos .da-kpi-card-f460.da460-noti .da460-title{
+ color:#8eabd5!important;
+}
+/* elimina cualquier apariencia secundaria que hacía parecer dos iconos */
+#contentDatos .da-kpi-card-f460 > [class*="absolute"]:not(.da460-icon),
+#contentDatos .da-kpi-card-f460 > button:not(.da460-icon){
+ display:none!important;
+}
+@media(max-width:1350px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:800px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:520px){
+ #contentDatos .da-kpi-grid-f460{grid-template-columns:1fr!important;gap:12px!important}
+ #contentDatos .da-kpi-card-f460{height:154px!important;min-height:154px!important}
+}
+
 </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -1377,7 +1705,38 @@
 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+            
+
+
+<!-- F4.59 — TICKER AUTOMÁTICO + PANEL GENERAL DE ALERTAS -->
+<section id="daTickerAlertas" class="da-ticker-wrap" aria-live="polite">
+  <div class="da-ticker-badge">
+    <span class="da-pulse"></span>
+    ALERTAS VEA
+  </div>
+  <div id="daTickerViewport" class="da-ticker-viewport" tabindex="0" aria-label="Abrir panel general de alertas">
+    <div id="daTickerTrack" class="da-ticker-track"></div>
+  </div>
+  <button id="daAlertOpenBtn" type="button" class="da-alert-open-btn">VER MENSAJE COMPLETO <span aria-hidden="true">→</span></button>
+</section>
+
+<div id="daAlertOverlay" class="da-alert-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="daAlertPanelTitle">
+  <div class="da-alert-panel">
+    <div class="da-alert-panel-head">
+      <div>
+        <div class="da-alert-panel-kicker">VIGILANCIA Y NOTIFICACIONES</div>
+        <h3 id="daAlertPanelTitle">Panel General de Alertas Epidemiológicas</h3>
+        <p id="daAlertPanelSub">Resumen dinámico según la información disponible en el módulo.</p>
+      </div>
+      <button id="daAlertPanelClose" type="button" class="da-alert-close" aria-label="Cerrar">×</button>
+    </div>
+    <div id="daAlertPanelGrid" class="da-alert-panel-grid"></div>
+    <div class="da-alert-panel-note">
+      Las alertas muestran volumen y prioridad de revisión. No sustituyen la evaluación epidemiológica ni crean umbrales clínicos no definidos en la base.
+    </div>
+  </div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm">
                     <div id="kpiDatosEdasTitulo" class="text-[10px] font-black uppercase tracking-wider text-slate-500">Casos EDAs —</div>
                     <div id="kpiDatosEdas" class="mt-2 text-2xl font-black text-slate-100">—</div>
@@ -2173,6 +2532,7 @@
             SOBA: [],
             Febriles: []
         };
+      window.databaseActiva = databaseActiva;
 
         // Estado global
         let selectedEvent = "EDAs";
@@ -9643,21 +10003,13 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 // FASE 3.20: el warmup simultáneo bloqueaba el hilo principal en móviles.
                 if (window.innerWidth >= 768) programarWarmupModulosF311();
 
-                const refrescarEnSegundoPlano = () => {
-                    cargarRepositorioVeaDesdeSupabase().catch(err =>
-                        console.warn('[VEA Supabase] Actualización en segundo plano:', err)
-                    );
-                };
-                // No competir con la navegación inicial. La caché ya contiene el último
-                // repositorio validado; el refresco remoto se difiere hasta que la sesión
-                // esté estable. Así los módulos 01–07 no compiten con 25k registros.
-                setTimeout(() => {
-                    if ('requestIdleCallback' in window) {
-                        requestIdleCallback(refrescarEnSegundoPlano, { timeout: 8000 });
-                    } else {
-                        setTimeout(refrescarEnSegundoPlano, 1000);
-                    }
-                }, veaDispositivoLimitadoF321() ? 180000 : 60000);
+                // F4.57 — PRIORIDAD ABSOLUTA A LA INTERACCIÓN.
+                // Se elimina el refresco remoto automático temporizado de 60/180 s.
+                // Ese trabajo podía arrancar justo después de un periodo sin actividad
+                // y competir con el primer clic del usuario. Con caché validada, VEA
+                // permanece completamente interactivo; la sincronización remota sigue
+                // disponible por los flujos explícitos existentes del sistema.
+                document.documentElement.dataset.veaInteraccion = 'prioritaria';
                 return;
             }
 
@@ -9697,6 +10049,25 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             });
         }
         window.addEventListener('resize', refrescarGraficosVisiblesVea);
+
+        // F4.57 — REACTIVACIÓN INMEDIATA TRAS INACTIVIDAD / BACKGROUND.
+        function veaReactivarInterfazF457() {
+            if (veaTimerRenderMovilF322) {
+                clearTimeout(veaTimerRenderMovilF322);
+                veaTimerRenderMovilF322 = null;
+            }
+            if (typeof veaCancelarRenderCooperativoF323 === 'function') {
+                veaCancelarRenderCooperativoF323();
+            }
+            requestAnimationFrame(() => {
+                try { refrescarGraficosVisiblesVea(); } catch (_) {}
+            });
+        }
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) veaReactivarInterfazF457();
+        }, { passive:true });
+        window.addEventListener('pageshow', veaReactivarInterfazF457, { passive:true });
+
 
 
         // F4.44 — ACTIVACIÓN VISUAL CONTROLADA DE GRÁFICOS DE HOSPITALIZADOS
@@ -9769,6 +10140,239 @@ document.addEventListener('click', function(event){
         dropdown.classList.add('hidden');
     }
 });
+</script>
+
+<script>
+(function(){
+const iconos={
+ kpiDatosEdas:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M3 20v-2a5 5 0 0 1 10 0v2M13 20v-2a5 5 0 0 1 8-4"/></svg>',
+ kpiDatosIras:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v7"/><path d="M11 11c-2-4-6-5-7-1-1 5 2 9 7 9z"/><path d="M13 11c2-4 6-5 7-1 1 5-2 9-7 9z"/></svg>',
+ kpiDatosFebriles:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M12 8v8"/></svg>',
+ kpiDatosPredominante:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7"/></svg>',
+ kpiDatosIndividual:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 10h6M12 7v6"/></svg>'
+};
+function n(id){const s=(document.getElementById(id)?.textContent||'').replace(/\s/g,'');const m=s.match(/[\d.,]+/);return m?Number(m[0].replace(/,/g,''))||0:0}
+function kpis(){Object.entries(iconos).forEach(([id,svg])=>{const el=document.getElementById(id);if(!el)return;const card=el.parentElement;if(!card||card.dataset.f458)return;card.dataset.f458='1';card.classList.add('da-kpi-card-f458');const d=document.createElement('div');d.className='da-kpi-icon-f458';d.innerHTML=svg;card.appendChild(d)})}
+let slides=[],a=0;
+function construir(){
+ const v=[['EDAs','kpiDatosEdas'],['IRAs','kpiDatosIras'],['Febriles','kpiDatosFebriles']].map(x=>({nombre:x[0],valor:n(x[1])})).filter(x=>x.valor>0).sort((x,y)=>y.valor-x.valor);
+ const box=document.getElementById('alertaCarruselDatosAcumulados');if(!box)return;
+ if(!v.length){box.classList.add('hidden');return}
+ const mayor=v[0];
+ slides=[{titulo:`${mayor.nombre.toUpperCase()} — MAYOR VOLUMEN OBSERVADO`,texto:`${mayor.valor.toLocaleString('es-PE')} casos en el año activo. Requiere priorizar la revisión epidemiológica del comportamiento observado.`,ind:['Verificar la tendencia por semana epidemiológica','Revisar consistencia y oportunidad de la notificación','Comparar con el comportamiento histórico y canal endémico'],acc:['Revisar el canal endémico del evento','Fortalecer vigilancia y búsqueda de conglomerados','Coordinar seguimiento según protocolos vigentes']},...v.slice(1).map(x=>({titulo:`SEGUIMIENTO — ${x.nombre.toUpperCase()}`,texto:`${x.valor.toLocaleString('es-PE')} casos en el año activo.`,ind:['Revisar evolución semanal','Verificar calidad de registros'],acc:['Mantener vigilancia epidemiológica','Escalar acciones si los indicadores lo justifican']}))];
+ box.classList.remove('hidden');a=Math.min(a,slides.length-1);pintar()
+}
+function pintar(){const s=slides[a];if(!s)return;document.getElementById('daAlertTitle').textContent=s.titulo;document.getElementById('daAlertText').textContent=s.text;document.getElementById('daAlertIndicaciones').innerHTML=s.ind.map(x=>`<li>${x}</li>`).join('');document.getElementById('daAlertAcciones').innerHTML=s.acc.map(x=>`<li>${x}</li>`).join('');document.getElementById('daAlertDots').innerHTML=slides.map((_,i)=>`<button class="da-alert-dot ${i===a?'active':''}" data-i="${i}"></button>`).join('');document.querySelectorAll('#daAlertDots button').forEach(b=>b.onclick=()=>{a=+b.dataset.i;pintar()})}
+function init(){kpis();construir();document.getElementById('daAlertPrev')?.addEventListener('click',()=>{a=(a-1+slides.length)%slides.length;pintar()});document.getElementById('daAlertNext')?.addEventListener('click',()=>{a=(a+1)%slides.length;pintar()});let q;new MutationObserver(()=>{clearTimeout(q);q=setTimeout(()=>{kpis();construir()},100)}).observe(document.getElementById('contentDatos'),{subtree:true,characterData:true,childList:true})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init()
+})();
+</script>
+
+<script>
+/* F4.59 — ticker automático + panel general de alertas */
+(function(){
+ const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
+ const numText=s=>{const m=String(s||'').replace(/\s/g,'').match(/[\d.,]+/);return m?Number(m[0].replace(/,/g,''))||0:0};
+ const kpi=id=>numText(document.getElementById(id)?.textContent);
+
+ function anioActivo(){
+   const txt=document.getElementById('kpiDatosEdasTitulo')?.textContent||'';
+   const m=txt.match(/20\d{2}/); return m?m[0]:'—';
+ }
+
+ function rows(){
+   const candidatos=[
+     window.datosVEA,window.datosVea,window.datosRepositorioVea,
+     window.repositorioVea,window.datosProcesadosVea,window.datosProcesados
+   ];
+   for(const x of candidatos){
+     if(Array.isArray(x)&&x.length)return x;
+     if(x&&typeof x==='object'){
+       const vals=Object.values(x).filter(Array.isArray).flat();
+       if(vals.length)return vals;
+     }
+   }
+   return [];
+ }
+
+ function campo(r,nombres){
+   if(!r||typeof r!=='object')return '';
+   const keys=Object.keys(r);
+   for(const n of nombres){
+     const nn=norm(n);
+     const k=keys.find(k=>norm(k)===nn || norm(k).includes(nn));
+     if(k!=null && r[k]!=null)return r[k];
+   }
+   return '';
+ }
+
+ function contarBase(){
+   const y=Number(anioActivo()); let acuosa=0,dis=0,soba=0;
+   (window.databaseActiva?.EDAs||[]).forEach(r=>{
+     if(Number(r.ANO)!==y)return;
+     const va=Number(r.CASOS),vd=Number(r.TO_DIS);
+     if(Number.isFinite(va))acuosa+=va;
+     if(Number.isFinite(vd))dis+=vd;
+   });
+   (window.databaseActiva?.SOBA||[]).forEach(r=>{
+     if(Number(r.ANO)!==y)return;
+     const v=Number(r.CASOS);if(Number.isFinite(v))soba+=v;
+   });
+   return {acuosa,dis,soba};
+ }
+ function datos(){
+   const y=anioActivo(), base=contarBase();
+   const edas=kpi('kpiDatosEdas'),iras=kpi('kpiDatosIras'),feb=kpi('kpiDatosFebriles');
+   const eventoTxt=(document.getElementById('kpiDatosPredominante')?.textContent||'—').trim();
+   const eventoDet=(document.getElementById('kpiDatosPredominanteDetalle')?.textContent||'').trim();
+   const notiTxt=(document.getElementById('kpiDatosIndividual')?.textContent||'—').trim();
+   const notiDet=(document.getElementById('kpiDatosIndividualDetalle')?.textContent||'').trim();
+   return [
+    {titulo:`Casos EDAs — ${y}`,valor:edas.toLocaleString('es-PE'),sub:`Acuosa: ${base.acuosa.toLocaleString('es-PE')} · Disentérica: ${base.dis.toLocaleString('es-PE')}`,n:edas},
+    {titulo:`Casos IRAs — ${y}`,valor:iras.toLocaleString('es-PE'),sub:'Vigilancia IRA',n:iras},
+    {titulo:`Casos SOBA — ${y}`,valor:base.soba.toLocaleString('es-PE'),sub:'SOBA / Asma identificado en la base disponible',n:base.soba},
+    {titulo:`Casos Febriles — ${y}`,valor:feb.toLocaleString('es-PE'),sub:'Vigilancia febril',n:feb},
+    {titulo:`Evento con mayor volumen — ${y}`,valor:eventoTxt,sub:eventoDet,n:Math.max(edas,iras,feb,base.soba)},
+    {titulo:`Evento con mayor NOTI-INDIVIDUAL — ${y}`,valor:notiTxt,sub:notiDet,n:numText(notiDet)}
+   ];
+ }
+
+ function render(){
+   const d=datos(), max=Math.max(...d.slice(0,4).map(x=>x.n||0));
+   const items=d.map(x=>`<span class="da-ticker-item"><strong>${x.titulo}</strong><span class="${x.n===max&&max>0?'warn':''}">${x.valor}</span><span>• ${x.sub}</span></span>`).join('');
+   const track=document.getElementById('daTickerTrack'); if(track)track.innerHTML=items+items;
+
+   const grid=document.getElementById('daAlertPanelGrid');
+   if(grid)grid.innerHTML=d.map(x=>`
+    <article class="da-alert-card ${x.n===max&&max>0?'priority':''}">
+      <div class="da-alert-card-head">
+       <div><div class="da-alert-card-title">${x.titulo}</div><div class="da-alert-card-value">${x.valor}</div><div class="da-alert-card-sub">${x.sub}</div></div>
+       <span class="da-alert-chip">${x.n===max&&max>0?'PRIORIDAD':'SEGUIMIENTO'}</span>
+      </div>
+      <ul>
+       <li>Verificar tendencia por semana epidemiológica y filtros activos.</li>
+       <li>Revisar consistencia y oportunidad de la notificación.</li>
+       <li>${x.n===max&&max>0?'Priorizar revisión epidemiológica y contrastar con el comportamiento histórico/canal endémico.':'Mantener seguimiento y escalar si los indicadores epidemiológicos lo justifican.'}</li>
+      </ul>
+    </article>`).join('');
+ }
+
+ function abrir(){render();document.getElementById('daAlertOverlay')?.classList.remove('hidden')}
+ function cerrar(){document.getElementById('daAlertOverlay')?.classList.add('hidden')}
+
+ function init(){
+   render();
+   const vp=document.getElementById('daTickerViewport');
+   // F4.62: la franja informativa no bloquea la navegación.
+   // El panel se abre únicamente mediante el botón explícito.
+   document.getElementById('daAlertOpenBtn')?.addEventListener('click',abrir);
+   document.getElementById('daAlertPanelClose')?.addEventListener('click',cerrar);
+   document.getElementById('daAlertOverlay')?.addEventListener('click',e=>{if(e.target.id==='daAlertOverlay')cerrar()});
+   document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrar()});
+   let q;
+   const root=document.getElementById('contentDatos');
+   if(root)new MutationObserver(()=>{clearTimeout(q);q=setTimeout(render,120)}).observe(root,{subtree:true,childList:true,characterData:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+<script>
+/* F4.60 — KPIs de Datos Acumulados según modelo aprobado */
+(function(){
+ const svg={
+  edas:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13Z"/></svg>',
+  iras:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v7"/><path d="M11 11c-2-4-6-5-7-1-1 5 2 9 7 9z"/><path d="M13 11c2-4 6-5 7-1 1 5-2 9-7 9z"/></svg>',
+  soba:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="3"/><path d="M7 21v-5a5 5 0 0 1 10 0v5M8 12l-3 4M16 12l3 4"/></svg>',
+  feb:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M12 8v8"/></svg>',
+  mayor:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7"/></svg>',
+  noti:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 10h6M12 7v6"/></svg>'
+ };
+ const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
+
+ function year(){
+   const all=[...document.querySelectorAll('#contentDatos [id*="Titulo"],#contentDatos')].map(x=>x.textContent||'').join(' ');
+   const m=all.match(/20\d{2}/g); return m?.length?String(Math.max(...m.map(Number))):'2026';
+ }
+ function rows(){
+   const c=[window.datosVEA,window.datosVea,window.datosRepositorioVea,window.repositorioVea,window.datosProcesadosVea,window.datosProcesados];
+   for(const x of c){
+     if(Array.isArray(x)&&x.length)return x;
+     if(x&&typeof x==='object'){const v=Object.values(x).filter(Array.isArray).flat();if(v.length)return v}
+   } return [];
+ }
+ function campo(r,nombres){
+   if(!r||typeof r!=='object')return '';
+   const ks=Object.keys(r);
+   for(const n of nombres){const nn=norm(n);const k=ks.find(k=>norm(k)===nn||norm(k).includes(nn));if(k!=null&&r[k]!=null)return r[k]}
+   return '';
+ }
+ function subEdas(){
+   const y=Number(year()); let a=0,d=0;
+   (window.databaseActiva?.EDAs||[]).forEach(r=>{
+     if(Number(r.ANO)!==y)return;
+     const ca=Number(r.CASOS),cd=Number(r.TO_DIS);
+     if(Number.isFinite(ca))a+=ca;
+     if(Number.isFinite(cd))d+=cd;
+   }); return {a,d};
+ }
+ function soba(){
+   const y=Number(year()); let n=0;
+   (window.databaseActiva?.SOBA||[]).forEach(r=>{
+     if(Number(r.ANO)!==y)return;
+     const v=Number(r.CASOS);if(Number.isFinite(v))n+=v;
+   });return n;
+ }
+ function render(){
+   const y=year(), e=subEdas(), nSoba=soba();
+   const ed=cardOf('kpiDatosEdas'); if(!ed)return;
+   const grid=ed.parentElement;grid.classList.add('da-kpi-grid-f460');
+   ensureSoba(grid);
+   decorate('kpiDatosEdas','edas',`Casos EDAs — ${y}`,'Acuosa · Disentérica');
+   decorate('kpiDatosIras','iras',`Casos IRAs — ${y}`,'');
+   decorate('kpiDatosFebriles','febriles',`Casos Febriles — ${y}`,'');
+   decorate('kpiDatosPredominante','mayor',`Evento con mayor volumen — ${y}`,'');
+   decorate('kpiDatosIndividual','noti',`Evento con mayor NOTI-INDIVIDUAL — ${y}`,'');
+   document.getElementById('kpiDatosSobaTitulo').textContent=`Casos SOBA — ${y}`;
+   document.getElementById('kpiDatosSoba').textContent=nSoba?Number(nSoba).toLocaleString('es-PE'):'—';
+   const s=document.querySelector('#daKpiSobaCard .da460-subtitle');if(s)s.textContent='';
+ }
+ function init(){
+   render();
+   let q;const root=document.getElementById('contentDatos');
+   if(root)new MutationObserver(()=>{clearTimeout(q);q=setTimeout(render,120)}).observe(root,{subtree:true,childList:true,characterData:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+<script>
+/* F4.63 — limpieza visual final de textos KPI; no altera motores de cálculo */
+(function(){
+ function clean(){
+   const map=[
+    ['kpiDatosEdas','Acuosa · Disentérica'],
+    ['kpiDatosIras',''],
+    ['kpiDatosFebriles',''],
+    ['kpiDatosPredominante',''],
+    ['kpiDatosIndividual','']
+   ];
+   map.forEach(([id,sub])=>{
+     const v=document.getElementById(id); if(!v)return;
+     let c=v.closest('.da-kpi-card-f460')||v.parentElement;
+     if(!c)return;
+     const s=c.querySelector('.da460-subtitle'); if(s)s.textContent=sub;
+     const foot=c.querySelector('.da460-total'); if(foot)foot.textContent='TOTAL registrados';
+   });
+   const soba=document.getElementById('daKpiSobaCard');
+   if(soba){
+     const s=soba.querySelector('.da460-subtitle');if(s)s.textContent='';
+     const f=soba.querySelector('.da460-total');if(f)f.textContent='TOTAL registrados';
+   }
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();
+ setTimeout(clean,300);
+})();
 </script>
 </body>
 </html>

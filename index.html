@@ -1226,6 +1226,7 @@
  #contentDatos #selectAnioResumenDatosV6B{min-height:44px!important;font-size:14px!important}
 }
 
+@media(max-width:420px){.resumenGeneralKpis{grid-template-columns:1fr}.kpi{min-height:76px}}
 </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -1300,6 +1301,11 @@
                 <button onclick="cambiarEventoSurveillance('Febriles')" id="btnEventFebriles" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-slate-400 hover:text-slate-200" title="Vigilancia de Febriles">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14.8V5a3 3 0 016 0v9.8a5 5 0 11-6 0z"/><path stroke-linecap="round" d="M13 7v9"/></svg>
                     <span>Febriles</span>
+                </button>
+                <!-- F4.68 — acceso general futuro al Boletín Epidemiológico S.E. -->
+                <button id="btnBoletinSEVea" type="button" onclick="abrirAvisoBoletinSEVea()" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all text-emerald-300 border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 hover:text-emerald-200" title="Generar Boletín Epidemiológico S.E. y guardar en PDF">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3h9l3 3v15H6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4M9 11h6M9 15h6"/></svg>
+                    <span id="textoBtnBoletinSEVea" class="whitespace-nowrap">Boletín S.E.</span>
                 </button>
             </div>
 
@@ -4516,18 +4522,16 @@
 
         function construirModeloResumenAnualDatosV6B(anio) {
             const filasIndividuales = construirFilasIndividualResumenV6B(anio);
+            const serieAcuosa = construirSerieMensualCasosResumenV6B("EDAs", anio);
             const serieDisenterica = construirSerieMensualCampoResumenV6B("EDAs", anio, "TO_DIS");
             const filas = [
-                { clave: "EDAs", etiqueta: "EDAs", grupo: "principal", serie: construirSerieMensualCasosResumenV6B("EDAs", anio), unidad: "casos oficiales · TO ACU" },
+                { clave: "EDAsAcuosa", etiqueta: "EDAs Acuosas", grupo: "principal", serie: serieAcuosa, unidad: "casos oficiales · TO ACU" },
+                { clave: "EDAsDisenterica", etiqueta: "EDAs Disentéricas", grupo: "principal", serie: serieDisenterica, unidad: "casos reales · TO DIS" },
                 { clave: "IRAs", etiqueta: "IRAs", grupo: "principal", serie: construirSerieMensualCasosResumenV6B("IRAs", anio), unidad: "casos oficiales · TOTAL IRAS" },
                 { clave: "SOBA", etiqueta: "SOBA", grupo: "principal", serie: construirSerieMensualCampoResumenV6B("IRAs", anio, "SOBA"), unidad: "casos SOBA · TOTAL SOBA" },
                 { clave: "Neumonias", etiqueta: "Neumonías", grupo: "principal", serie: construirSerieMensualCampoResumenV6B("IRAs", anio, "NEUMONIAS"), unidad: "casos de neumonía · TOTAL NEUMO" },
                 { clave: "Febriles", etiqueta: "Febriles", grupo: "principal", serie: construirSerieMensualCasosResumenV6B("Febriles", anio), unidad: "casos oficiales · feb_tot" }
             ];
-
-            if (MESES_RESUMEN_ANUAL_V6B.some(mes => serieDisenterica[mes]?.presencia)) {
-                filas.push({ clave: "Disenterica", etiqueta: "Diarrea disentérica", grupo: "principal", serie: serieDisenterica, unidad: "casos reales · TO DIS" });
-            }
 
             if (filasIndividuales.length) {
                 filas.push(...filasIndividuales.map(fila => ({ ...fila, grupo: "individual" })));
@@ -10430,6 +10434,247 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',abrir);else abrir();
 })();
+</script>
+
+<script>
+/* F4.68 — botón demostrativo. No genera todavía el boletín ni altera cálculos. */
+function obtenerSemanaBoletinVea(){
+  const candidatos=['selectSemana','filterWeek','filterWeekSurveillance','selectSemanaEpidemiologica'];
+  for(const id of candidatos){
+    const el=document.getElementById(id);
+    if(el && el.value && !/todas/i.test(String(el.value))){
+      const n=String(el.value).match(/\d{1,2}/);
+      if(n)return n[0];
+    }
+  }
+  return '';
+}
+function actualizarTextoBoletinSEVea(){
+  const el=document.getElementById('textoBtnBoletinSEVea');
+  if(!el)return;
+  const se=obtenerSemanaBoletinVea();
+  el.textContent=se ? ('Boletín S.E. '+se) : 'Boletín S.E.';
+}
+function abrirAvisoBoletinSEVea(){
+  /* F4.70 — BOLETÍN EPIDEMIOLÓGICO SEMANAL COMPLETO
+     Fuente exclusiva: repositorio VEA activo.
+     Integra Vigilancia + Hospitalizados + Casos Individuales.
+     La salida se abre como documento A4 imprimible/guardable en PDF. */
+  const db=window.databaseActiva||{};
+  const individual=(typeof datosModulosIndependientes!=='undefined' && Array.isArray(datosModulosIndependientes.casos))
+    ? datosModulosIndependientes.casos : [];
+  const eventos=['EDAs','IRAs','SOBA','Febriles'];
+
+  const num=v=>{const x=Number(v);return Number.isFinite(x)?x:0};
+  const canon=(r,k)=>r?.__VEA_CANONICO?.[k];
+  const year=r=>Number(r?.ANO??r?.ANIO??r?.AÑO??canon(r,'ANO'));
+  const week=r=>Number(r?.SEMANA??r?.SE??r?.S_E??r?.SEMANA_EPIDEMIOLOGICA??canon(r,'SEMANA_EPIDEMIOLOGICA'));
+  const cases=(ev,r)=>{
+    if(ev==='EDAs') return num(r.CASOS??r.TO_ACU);
+    if(ev==='IRAs') return num(r.CASOS??r.TOTAL_IRAS??r['TOTAL  IRAS']);
+    if(ev==='SOBA') return num(r.CASOS??r.TOTAL_SOBA??r['TOTAL SOBA']);
+    if(ev==='Febriles') return num(r.CASOS??r.feb_tot??r.FEB_TOT);
+    return 0;
+  };
+  const hosp=r=>num(r.TO_HOS??r.TOTAL_HOSPI??r['TOTAL HOSPI']??r.HOSPITALIZADOS);
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+  const all=[...eventos.flatMap(ev=>Array.isArray(db[ev])?db[ev]:[]),...individual];
+  const years=all.map(year).filter(v=>v>=1900&&v<=2100);
+  const anio=years.length?Math.max(...years):new Date().getFullYear();
+
+  let se=Number(obtenerSemanaBoletinVea());
+  if(!se){
+    const weeks=all.filter(r=>year(r)===anio).map(week).filter(v=>v>=1&&v<=53);
+    se=weeks.length?Math.max(...weeks):null;
+  }
+  if(!se){ alert('No hay una Semana Epidemiológica válida para generar el boletín.'); return; }
+  const seAnt=se>1?se-1:null;
+
+  // Vigilancia semanal actual/anterior.
+  const resumen=eventos.map(ev=>{
+    const rows=Array.isArray(db[ev])?db[ev]:[];
+    const actual=rows.filter(r=>year(r)===anio&&week(r)===se);
+    const anterior=seAnt?rows.filter(r=>year(r)===anio&&week(r)===seAnt):[];
+    const casos=actual.reduce((a,r)=>a+cases(ev,r),0);
+    const prev=anterior.reduce((a,r)=>a+cases(ev,r),0);
+    const hospitalizados=actual.reduce((a,r)=>a+hosp(r),0);
+    const variacion=casos-prev;
+    const pct=prev?((variacion/prev)*100):null;
+    return {ev,casos,prev,hospitalizados,variacion,pct};
+  });
+
+  // EDAs Disentéricas como fila independiente.
+  const edaRows=Array.isArray(db.EDAs)?db.EDAs:[];
+  const disActual=edaRows.filter(r=>year(r)===anio&&week(r)===se).reduce((a,r)=>a+num(r.TO_DIS),0);
+  const disPrev=seAnt?edaRows.filter(r=>year(r)===anio&&week(r)===seAnt).reduce((a,r)=>a+num(r.TO_DIS),0):0;
+  const disHosp=edaRows.filter(r=>year(r)===anio&&week(r)===se).reduce((a,r)=>a+num(r.HOS_DIS??r.TO_HOS_DIS),0);
+
+  const filasEvento=[
+    {nombre:'IRAs',...resumen.find(x=>x.ev==='IRAs')},
+    {nombre:'Febriles',...resumen.find(x=>x.ev==='Febriles')},
+    {nombre:'EDAs Acuosas',...resumen.find(x=>x.ev==='EDAs')},
+    {nombre:'EDAs Disentéricas',casos:disActual,prev:disPrev,hospitalizados:disHosp,variacion:disActual-disPrev,pct:disPrev?((disActual-disPrev)/disPrev*100):null},
+    {nombre:'SOBA',...resumen.find(x=>x.ev==='SOBA')}
+  ];
+  const total=filasEvento.reduce((a,x)=>a+x.casos,0);
+  const totalPrev=filasEvento.reduce((a,x)=>a+x.prev,0);
+  const totalHosp=filasEvento.reduce((a,x)=>a+x.hospitalizados,0);
+  const dominante=[...filasEvento].sort((a,b)=>b.casos-a.casos)[0]||{nombre:'Sin datos',casos:0};
+  const inds=individual.filter(r=>year(r)===anio&&week(r)===se);
+  const indsPrev=seAnt?individual.filter(r=>year(r)===anio&&week(r)===seAnt):[];
+  const hospPrev=filasEvento.reduce((a,x)=>{
+    if(x.nombre==='EDAs Disentéricas') return a+(seAnt?edaRows.filter(r=>year(r)===anio&&week(r)===seAnt).reduce((s,r)=>s+num(r.HOS_DIS??r.TO_HOS_DIS),0):0);
+    const key=x.nombre==='EDAs Acuosas'?'EDAs':x.nombre;
+    const rows=Array.isArray(db[key])?db[key]:[];
+    return a+(seAnt?rows.filter(r=>year(r)===anio&&week(r)===seAnt).reduce((s,r)=>s+hosp(r),0):0);
+  },0);
+  const totalGeneral=total+totalHosp+inds.length;
+  const totalGeneralPrev=totalPrev+hospPrev+indsPrev.length;
+  const kpiVs=(actual,previo)=>{
+    if(!previo)return 'Vs: S.E. Anterior —';
+    const p=(actual-previo)/previo*100, signo=p>0?'↑':p<0?'↓':'→';
+    return `Vs: S.E. Anterior ${signo} ${Math.abs(p).toFixed(1)}%`;
+  };
+
+  // Tendencia S.E. 1..actual.
+  const trend=filasEvento.map(f=>{
+    let vals=[];
+    for(let s=1;s<=se;s++){
+      if(f.nombre==='EDAs Disentéricas'){
+        vals.push(edaRows.filter(r=>year(r)===anio&&week(r)===s).reduce((a,r)=>a+num(r.TO_DIS),0));
+      }else{
+        const key=f.nombre==='EDAs Acuosas'?'EDAs':f.nombre;
+        const rows=Array.isArray(db[key])?db[key]:[];
+        vals.push(rows.filter(r=>year(r)===anio&&week(r)===s).reduce((a,r)=>a+cases(key,r),0));
+      }
+    }
+    return {nombre:f.nombre,vals};
+  });
+
+  // Casos individuales.
+  const dx={};
+  inds.forEach(r=>{
+    const c=r?.__VEA_CANONICO||{};
+    const cod=String(r.CODIGO??r.CÓDIGO??r.diagnostic??c.CODIGO??'').trim();
+    const nom=String(r.DIAGNOSTICO??r.DIAGNÓSTICO??r.Enfermedad??r.enfermedad??c.DIAGNOSTICO??'').trim();
+    const k=[cod,nom].filter(Boolean).join(' · ')||'Sin diagnóstico';
+    dx[k]=(dx[k]||0)+1;
+  });
+  const dxTop=Object.entries(dx).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const dxPrev={};
+  indsPrev.forEach(r=>{
+    const c=r?.__VEA_CANONICO||{};
+    const cod=String(r.CODIGO??r.CÓDIGO??r.diagnostic??c.CODIGO??'').trim();
+    const nom=String(r.DIAGNOSTICO??r.DIAGNÓSTICO??r.Enfermedad??r.enfermedad??c.DIAGNOSTICO??'').trim();
+    const k=[cod,nom].filter(Boolean).join(' · ')||'Sin diagnóstico';
+    dxPrev[k]=(dxPrev[k]||0)+1;
+  });
+  const individualPred=dxTop[0]||['Sin registros',0];
+  const individualPredPrev=dxPrev[individualPred[0]]||0;
+  const dominantePrev=filasEvento.find(x=>x.nombre===dominante.nombre)?.prev||0;
+
+  const pctTxt=v=>v===null?'—':`${v>=0?'+':''}${v.toFixed(1)}%`;
+  const arrow=v=>v>0?'↑':v<0?'↓':'→';
+  const cls=v=>v>0?'up':v<0?'down':'flat';
+
+  // SVG de tendencia construido con datos reales, sin librerías externas.
+  const W=650,H=205,padL=42,padR=12,padT=16,padB=28;
+  const maxY=Math.max(1,...trend.flatMap(s=>s.vals));
+  const colors=['#1455c0','#e32636','#65a83d','#6d45ad','#0aa5bf'];
+  const points=(vals)=>vals.map((v,i)=>{
+    const x=padL+(vals.length<=1?0:(i/(vals.length-1))*(W-padL-padR));
+    const y=padT+(H-padT-padB)-(v/maxY)*(H-padT-padB);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const lines=trend.map((s,i)=>`<polyline fill="none" stroke="${colors[i]}" stroke-width="2.2" points="${points(s.vals)}"/>`).join('');
+  const legends=trend.map((s,i)=>`<span><i style="background:${colors[i]}"></i>${esc(s.nombre)}</span>`).join('');
+
+  const comparativo=filasEvento.map(x=>`<tr><td><b>${esc(x.nombre)}</b></td><td>${x.prev.toLocaleString('es-PE')}</td><td>${x.casos.toLocaleString('es-PE')}</td><td class="${cls(x.variacion)}">${arrow(x.variacion)} ${Math.abs(x.variacion).toLocaleString('es-PE')}</td><td class="${cls(x.pct||0)}">${pctTxt(x.pct)}</td></tr>`).join('');
+  const hospRows=[...filasEvento].sort((a,b)=>b.hospitalizados-a.hospitalizados).map(x=>{
+    const p=totalHosp?x.hospitalizados/totalHosp*100:0;
+    return `<tr><td>${esc(x.nombre)}</td><td>${x.hospitalizados.toLocaleString('es-PE')}</td><td>${p.toFixed(1)}%</td></tr>`;
+  }).join('');
+  const indivRows=(dxTop.length?dxTop:[['Sin registros individuales',0]]).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v}</td><td>${inds.length?(v/inds.length*100).toFixed(1):'0.0'}%</td></tr>`).join('');
+
+  const analisisComparativo=(()=>{
+    const suben=filasEvento.filter(x=>x.variacion>0).sort((a,b)=>b.variacion-a.variacion).slice(0,2).map(x=>x.nombre);
+    const bajan=filasEvento.filter(x=>x.variacion<0).sort((a,b)=>a.variacion-b.variacion).slice(0,2).map(x=>x.nombre);
+    let s=[];
+    if(suben.length)s.push(`Incremento en ${suben.join(' y ')} respecto a la S.E. anterior.`);
+    if(bajan.length)s.push(`Disminución en ${bajan.join(' y ')}.`);
+    return s.join(' ')||'Sin variaciones relevantes calculables respecto a la semana anterior.';
+  })();
+
+  const fecha=new Date().toLocaleDateString('es-PE');
+  function rangoSemanaEpidemiologicaCDC(y,w){
+    // Semana epidemiológica CDC MINSA: domingo a sábado.
+    // La semana 1 es la que contiene el 4 de enero; se obtiene el domingo de inicio.
+    const jan4=new Date(Date.UTC(y,0,4));
+    const sunday=new Date(jan4);
+    sunday.setUTCDate(jan4.getUTCDate()-jan4.getUTCDay()+(w-1)*7);
+    const saturday=new Date(sunday);
+    saturday.setUTCDate(sunday.getUTCDate()+6);
+    const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    if(sunday.getUTCMonth()===saturday.getUTCMonth()){
+      return `${sunday.getUTCDate()} al ${saturday.getUTCDate()} de ${meses[saturday.getUTCMonth()]} del ${saturday.getUTCFullYear()}`;
+    }
+    return `${sunday.getUTCDate()} de ${meses[sunday.getUTCMonth()]} al ${saturday.getUTCDate()} de ${meses[saturday.getUTCMonth()]} del ${saturday.getUTCFullYear()}`;
+  }
+  const rangoSE=rangoSemanaEpidemiologicaCDC(anio,se);
+  const html=`<!doctype html><html><head><meta charset="utf-8"><title>Boletín Epidemiológico S.E. ${se} - ${anio}</title>
+<style>
+@page{size:A4 portrait;margin:7mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;color:#101827;background:#fff;font-size:9px}
+.hero{background:linear-gradient(90deg,#07306f,#0b438d);color:#fff;border-radius:3px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.heroText{min-width:0}.heroHospital{font-size:14px;margin:0 0 2px;font-weight:900;letter-spacing:.45px}.hero h1{font-size:22px;margin:0;font-weight:900;letter-spacing:.2px}.hero p{font-size:10px;margin:4px 0 0;font-weight:800;letter-spacing:.2px}.sebox{border:1px solid #fff;border-radius:7px;padding:7px 12px;text-align:center;min-width:130px}.sebox b{font-size:22px}.sebox small{display:block;font-size:8px;line-height:1.25;margin-top:3px;font-weight:800;text-transform:uppercase}.meta{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:14px;border-bottom:1px solid #cbd8ea;padding:11px 8px;font-size:11px;line-height:1.35;align-items:center}.meta>div{display:flex;align-items:center;gap:6px;min-width:0}.meta b{font-size:11px;white-space:nowrap}
+.sectionHeading{background:linear-gradient(90deg,#07306f,#0d4c9d);color:#fff;font-weight:900;font-size:11px;padding:7px 9px;border-radius:6px;margin:9px 0 7px}.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0 0 8px}.kpi{position:relative;border:1px solid #b8cae4;border-radius:7px;padding:8px 5px;text-align:center;min-height:94px;overflow:hidden}.kpiIcon{position:absolute;left:9px;top:8px;width:25px;height:25px;border-radius:6px;background:#edf4ff;display:flex;align-items:center;justify-content:center;font-size:15px}.kpi label{display:block;font-weight:900;font-size:6.6px;line-height:1;letter-spacing:-.12px;padding:2px 2px 2px 25px;min-height:18px;white-space:nowrap}.kpi strong{display:block;font-size:21px;margin:5px 0;color:#10233f}.kpi small{display:block;font-size:8px;color:#53647c;font-weight:700}.kpi em{display:block;margin-top:5px;padding-top:5px;border-top:1px solid #e2e8f0;font-size:7px;color:#41526b;font-style:normal;font-weight:800}.kpi strong.kpiPred{font-size:10px;line-height:1.1;min-height:24px;display:flex;align-items:center;justify-content:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.card{border:1px solid #cbd8ea;border-radius:6px;overflow:hidden;break-inside:avoid}.title{background:linear-gradient(90deg,#07306f,#0d4c9d);color:white;font-weight:900;padding:6px 8px;font-size:10px}.body{padding:8px}
+table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;text-align:left}th,td{border:1px solid #d8e2ef;padding:4px}.up{color:#dc2638;font-weight:800}.down{color:#14833b;font-weight:800}.flat{color:#59677a}
+.analysis{padding:7px 8px;font-size:8px;line-height:1.4;border-top:1px solid #e0e8f2}.analysis b{color:#073b82}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:7px;margin-bottom:4px}.legend span{display:flex;align-items:center;gap:3px}.legend i{width:10px;height:3px;display:inline-block}
+.bottom{display:grid;grid-template-columns:1.05fr .9fr 1.05fr;gap:8px;margin-top:8px}.textblock{font-size:8px;line-height:1.55}.checks div{margin:5px 0}.checks span{color:#29913c;font-weight:900;margin-right:4px}
+.footer{background:#07306f;color:#fff;margin-top:8px;padding:5px 8px;display:flex;justify-content:space-between;font-size:7px}
+.actions{position:fixed;right:12px;bottom:12px;display:flex;gap:6px;z-index:10}.actions button{border:0;border-radius:6px;padding:9px 11px;font-weight:800;cursor:pointer}.pdf{background:#d71920;color:white}.print{background:#07306f;color:white}.close{background:#e8edf4;color:#172033}
+@media print{.actions{display:none}.card{break-inside:avoid}.resumenGeneralKpis{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:5px}.resumenGeneralKpis .kpi label{font-size:6.3px!important;white-space:nowrap}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+@media(max-width:900px) and (min-width:701px){.resumenGeneralKpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.grid2,.bottom{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start}.heroHospital{font-size:11px}.hero h1{font-size:16px}.hero p{font-size:8px}.sebox{min-width:108px;padding:6px}.sebox b{font-size:18px}.sebox small{font-size:7px}.meta{grid-template-columns:1fr;font-size:10px;gap:6px;padding:9px 8px}.meta b{font-size:10px}.actions{position:sticky;bottom:4px;justify-content:center}}
+</style></head><body>
+<div class="actions"><button class="print" onclick="window.print()">IMPRIMIR</button><button class="pdf" onclick="window.print()">GUARDAR PDF</button><button class="close" onclick="window.close()">CERRAR</button></div>
+<div class="hero"><div class="heroText"><div class="heroHospital">HOSPITAL DE VENTANILLA</div><h1>BOLETÍN EPIDEMIOLÓGICO SEMANAL</h1><p>VEA · HOSPITALIZADOS · CASOS INDIVIDUALES</p></div><div class="sebox"><b>S.E. ${se}</b><small>${esc(rangoSE)}</small></div></div>
+<div class="meta"><div>📅 <b>FECHA DE EMISIÓN:</b> ${fecha}</div><div>🗂 <b>FUENTE:</b> NOTIWEB CDC MINSA</div><div>🏥 <b>ELABORADO POR:</b> UESA (UNIDAD DE EPIDEMIOLOGÍA Y SALUD AMBIENTAL)</div></div>
+
+<div class="sectionHeading">1. RESUMEN GENERAL DE LA S.E. ${se}</div>
+<div class="kpis resumenGeneralKpis">
+ <div class="kpi"><div class="kpiIcon">📊</div><label>EVENTOS GENERAL</label><strong>${totalGeneral.toLocaleString('es-PE')}</strong><small>Total Registrados</small><em>${kpiVs(totalGeneral,totalGeneralPrev)}</em></div>
+ <div class="kpi"><div class="kpiIcon">📋</div><label>CASOS VEA</label><strong>${total.toLocaleString('es-PE')}</strong><small>Total Registrados</small><em>${kpiVs(total,totalPrev)}</em></div>
+ <div class="kpi"><div class="kpiIcon">🏥</div><label>HOSPITALIZADOS</label><strong>${totalHosp.toLocaleString('es-PE')}</strong><small>Total Registrados</small><em>${kpiVs(totalHosp,hospPrev)}</em></div>
+ <div class="kpi"><div class="kpiIcon">👤</div><label>INDIVIDUALES</label><strong>${inds.length.toLocaleString('es-PE')}</strong><small>Total Registrados</small><em>${kpiVs(inds.length,indsPrev.length)}</em></div>
+ <div class="kpi"><div class="kpiIcon">📈</div><label>EVENTO PREDOMINANTE</label><strong class="kpiPred">${esc(dominante.nombre)} · ${dominante.casos.toLocaleString('es-PE')}</strong><small>Total Registrados</small><em>${kpiVs(dominante.casos,dominantePrev)}</em></div>
+ <div class="kpi"><div class="kpiIcon">🔬</div><label>INDIVIDUAL PREDOMINANTE</label><strong class="kpiPred">${esc(individualPred[0])} · ${individualPred[1]}</strong><small>Total Registrados</small><em>${kpiVs(individualPred[1],individualPredPrev)}</em></div>
+</div>
+
+<div class="grid2">
+ <section class="card"><div class="title">1. TENDENCIA DE CASOS POR EVENTO (S.E. 1 – ${se})</div><div class="body"><div class="legend">${legends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img"><line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#718096"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#718096"/>${lines}<text x="4" y="18" font-size="8">${maxY}</text><text x="${padL}" y="${H-8}" font-size="8">1</text><text x="${W-padR-15}" y="${H-8}" font-size="8">${se}</text></svg></div><div class="analysis"><b>● Análisis:</b> ${esc(dominante.nombre)} registra el mayor volumen en la S.E. ${se}, con ${dominante.casos.toLocaleString('es-PE')} casos.</div></section>
+ <section class="card"><div class="title">2. COMPARATIVO DE CASOS: S.E. ${se} vs S.E. ${seAnt??'—'}</div><div class="body"><table><thead><tr><th>Evento</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>Variación</th><th>%</th></tr></thead><tbody>${comparativo}<tr><td><b>TOTAL</b></td><td><b>${totalPrev}</b></td><td><b>${total}</b></td><td><b>${arrow(total-totalPrev)} ${Math.abs(total-totalPrev)}</b></td><td><b>${totalPrev?pctTxt((total-totalPrev)/totalPrev*100):'—'}</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> ${esc(analisisComparativo)}</div></section>
+ <section class="card"><div class="title">3. HOSPITALIZADOS POR EVENTO (S.E. ${se})</div><div class="body"><table><thead><tr><th>Evento</th><th>Hospitalizados</th><th>% del total</th></tr></thead><tbody>${hospRows}<tr><td><b>TOTAL</b></td><td><b>${totalHosp}</b></td><td><b>${totalHosp?'100.0':'0.0'}%</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> distribución calculada exclusivamente con hospitalizaciones registradas para la S.E. ${se}.</div></section>
+ <section class="card"><div class="title">4. CASOS INDIVIDUALES REGISTRADOS (S.E. ${se})</div><div class="body"><table><thead><tr><th>Diagnóstico / Código</th><th>Casos</th><th>%</th></tr></thead><tbody>${indivRows}<tr><td><b>TOTAL</b></td><td><b>${inds.length}</b></td><td><b>${inds.length?'100.0':'0.0'}%</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> diagnósticos obtenidos de la base INDIVIDUAL del repositorio activo, sin completar valores ausentes.</div></section>
+</div>
+
+<div class="bottom">
+ <section class="card"><div class="title">5. ANÁLISIS GENERAL</div><div class="body textblock">En la S.E. ${se} se registran <b>${total.toLocaleString('es-PE')} casos</b> en las vigilancias incluidas. El evento con mayor volumen es <b>${esc(dominante.nombre)}</b>. Se identifican <b>${totalHosp}</b> hospitalizaciones y <b>${inds.length}</b> registros individuales. La lectura corresponde a los datos disponibles en el repositorio VEA activo.</div></section>
+ <section class="card"><div class="title">6. HALLAZGOS DE LA SEMANA</div><div class="body checks"><div><span>●</span>${esc(analisisComparativo)}</div><div><span>●</span>Mayor volumen: ${esc(dominante.nombre)} (${dominante.casos} casos).</div><div><span>●</span>Hospitalizados registrados: ${totalHosp}.</div></div></section>
+ <section class="card"><div class="title">7. CONCLUSIONES Y RECOMENDACIONES</div><div class="body checks"><div><span>✓</span>Mantener vigilancia activa y notificación oportuna.</div><div><span>✓</span>Revisar los eventos con incremento frente a la semana anterior.</div><div><span>✓</span>Validar epidemiológicamente el boletín antes de su difusión oficial.</div></div></section>
+</div>
+<div class="footer"><b>UNIDAD DE EPIDEMIOLOGÍA — HOSPITAL DE VENTANILLA</b><span>VIGILAR · ANALIZAR · INFORMAR · ACTUAR</span></div>
+</body></html>`;
+
+  const w=window.open('','_blank');
+  if(!w){alert('El navegador bloqueó la ventana del boletín. Habilite ventanas emergentes para este sitio.');return;}
+  w.document.open(); w.document.write(html); w.document.close();
+}
+document.addEventListener('change',function(){setTimeout(actualizarTextoBoletinSEVea,0)});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',actualizarTextoBoletinSEVea);
+else actualizarTextoBoletinSEVea();
 </script>
 </body>
 </html>

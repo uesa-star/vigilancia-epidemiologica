@@ -10573,6 +10573,7 @@ function abrirAvisoBoletinSEVea(){
   const individualPred=dxTop[0]||['Sin registros',0];
   const individualPredPrev=dxPrev[individualPred[0]]||0;
   const dominantePrev=filasEvento.find(x=>x.nombre===dominante.nombre)?.prev||0;
+  
 
   const pctTxt=v=>v===null?'—':`${v>=0?'+':''}${v.toFixed(1)}%`;
   const arrow=v=>v>0?'↑':v<0?'↓':'→';
@@ -10580,21 +10581,159 @@ function abrirAvisoBoletinSEVea(){
 
   // SVG de tendencia construido con datos reales, sin librerías externas.
   const W=650,H=205,padL=42,padR=12,padT=16,padB=28;
-  const maxY=Math.max(1,...trend.flatMap(s=>s.vals));
-  const colors=['#1455c0','#e32636','#65a83d','#6d45ad','#0aa5bf'];
+  // F4.88 — tendencia semanal dinámica de Casos Individuales.
+  const claveDxIndividual=r=>{
+    const c=r?.__VEA_CANONICO||{};
+    const cod=String(r.CODIGO??r.CÓDIGO??r.diagnostic??c.CODIGO??'').trim();
+    const nom=String(r.DIAGNOSTICO??r.DIAGNÓSTICO??r.Enfermedad??r.enfermedad??c.DIAGNOSTICO??'').trim();
+    return [cod,nom].filter(Boolean).join(' · ')||'Sin diagnóstico';
+  };
+  const individualAnio=individual.filter(r=>year(r)===anio&&week(r)>=1&&week(r)<=se);
+  const totalesDxIndividual={};
+  individualAnio.forEach(r=>{const k=claveDxIndividual(r);totalesDxIndividual[k]=(totalesDxIndividual[k]||0)+1;});
+  const dxLeyenda=Object.entries(totalesDxIndividual).sort((a,b)=>b[1]-a[1]).slice(0,6).map(x=>x[0]);
+  const paletaIndividual=['#e32636','#1455c0','#65a83d','#6d45ad','#0aa5bf','#d97706'];
+  const colorIndividual=Object.fromEntries(dxLeyenda.map((k,i)=>[k,paletaIndividual[i%paletaIndividual.length]]));
+  const individualTrend=dxLeyenda.map(nombre=>({nombre,vals:Array.from({length:se},(_,i)=>individualAnio.filter(r=>week(r)===i+1&&claveDxIndividual(r)===nombre).length)}));
+  const individualTrendOrdenada=[...individualTrend].sort((a,b)=>(b.vals[se-1]||0)-(a.vals[se-1]||0));
+  const individualMaxY=Math.max(1,...individualTrendOrdenada.flatMap(s=>s.vals));
+  const individualPoints=vals=>vals.map((v,i)=>{const x=padL+(vals.length<=1?0:(i/(vals.length-1))*(W-padL-padR));const y=padT+(H-padT-padB)-(v/individualMaxY)*(H-padT-padB);return `${x.toFixed(1)},${y.toFixed(1)}`;}).join(' ');
+  const individualLines=individualTrendOrdenada.map(s=>{const color=colorIndividual[s.nombre]||'#64748b';const linea=`<polyline fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="${individualPoints(s.vals)}"/>`;const puntos=s.vals.map((v,i)=>{const x=padL+(s.vals.length<=1?0:(i/(s.vals.length-1))*(W-padL-padR));const y=padT+(H-padT-padB)-(v/individualMaxY)*(H-padT-padB);return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="${color}" stroke="#fff" stroke-width=".8"/>`;}).join('');return linea+puntos;}).join('');
+  const individualYAxis=Array.from({length:6},(_,i)=>{const val=Math.round(individualMaxY*(5-i)/5);const y=padT+(H-padT-padB)*(i/5);return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="#d9e2ef" stroke-width=".7"/><text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="7" fill="#42526a">${val}</text>`;}).join('');
+  const individualLegends=individualTrendOrdenada.length?individualTrendOrdenada.map(s=>`<span><i style="background:${colorIndividual[s.nombre]||'#64748b'}"></i>${esc(s.nombre)}</span>`).join(''):'<span>Sin diagnósticos individuales registrados</span>';
+  const individualDominanteTrend=individualTrendOrdenada[0]||{nombre:'Sin registros',vals:[]};
+  const individualActualTrend=individualDominanteTrend.vals[se-1]||0;
+  // F4.90 — comparativo TOP 5 de Casos Individuales: S.E. anterior vs activa.
+  const individualPrevRows=individual.filter(r=>year(r)===anio&&seAnt&&week(r)===seAnt);
+  const individualActualRows=individual.filter(r=>year(r)===anio&&week(r)===se);
+  const conteoDxSemana=rows=>{
+    const o={};
+    rows.forEach(r=>{const k=claveDxIndividual(r);o[k]=(o[k]||0)+1;});
+    return o;
+  };
+  const dxIndPrev=conteoDxSemana(individualPrevRows);
+  const dxIndActual=conteoDxSemana(individualActualRows);
+  const topIndividualActual=Object.entries(dxIndActual).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'es')).slice(0,5);
+  const comparativoIndividualTop=topIndividualActual.map(([nombre,actual])=>{
+    const previo=dxIndPrev[nombre]||0;
+    const variacion=actual-previo;
+    const pct=previo?(variacion/previo*100):null;
+    return {nombre,previo,actual,variacion,pct};
+  });
+  const comparativoIndividualRows=comparativoIndividualTop.length
+    ? comparativoIndividualTop.map(x=>`<tr><td><b>${esc(x.nombre)}</b></td><td>${x.previo.toLocaleString('es-PE')}</td><td>${x.actual.toLocaleString('es-PE')}</td><td class="${cls(x.variacion)}">${arrow(x.variacion)} ${Math.abs(x.variacion).toLocaleString('es-PE')}</td><td class="${cls(x.pct||0)}">${x.pct===null?'—':pctTxt(x.pct)}</td></tr>`).join('')
+    : `<tr><td colspan="5" style="text-align:center">Sin casos individuales registrados en la S.E. ${se}</td></tr>`;
+  // TOTAL representa TODOS los casos individuales de cada semana, no sólo el TOP 5.
+  const totalIndividualPrev=individualPrevRows.length;
+  const totalIndividualActual=individualActualRows.length;
+  const totalIndividualVar=totalIndividualActual-totalIndividualPrev;
+  const totalIndividualPct=totalIndividualPrev?(totalIndividualVar/totalIndividualPrev*100):null;
+  const analisisIndividualComparativo=(()=>{
+    if(!comparativoIndividualTop.length) return `No se registran casos individuales en la S.E. ${se}.`;
+    const principal=comparativoIndividualTop[0];
+    const tendencia=principal.variacion>0?'aumentó':principal.variacion<0?'disminuyó':'se mantuvo';
+    return `${principal.nombre} presenta el mayor registro en la S.E. ${se}, con ${principal.actual.toLocaleString('es-PE')} caso(s), y ${tendencia} respecto a la S.E. ${seAnt??'anterior'}.`;
+  })();
+
+  const colorEvento={'IRAs':'#1455c0','Febriles':'#e32636','EDAs Acuosas':'#65a83d','EDAs Disentéricas':'#6d45ad','SOBA':'#0aa5bf'};
+  const trendOrdenada=[...trend].sort((a,b)=>(b.vals[se-1]||0)-(a.vals[se-1]||0));
+  const maxY=Math.max(1,...trendOrdenada.flatMap(s=>s.vals));
   const points=(vals)=>vals.map((v,i)=>{
     const x=padL+(vals.length<=1?0:(i/(vals.length-1))*(W-padL-padR));
     const y=padT+(H-padT-padB)-(v/maxY)*(H-padT-padB);
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(' ');
-  const lines=trend.map((s,i)=>`<polyline fill="none" stroke="${colors[i]}" stroke-width="2.2" points="${points(s.vals)}"/>`).join('');
-  const legends=trend.map((s,i)=>`<span><i style="background:${colors[i]}"></i>${esc(s.nombre)}</span>`).join('');
+  const lines=trendOrdenada.map(s=>{
+    const color=colorEvento[s.nombre]||'#64748b';
+    const linea=`<polyline fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="${points(s.vals)}"/>`;
+    const puntos=s.vals.map((v,i)=>{
+      const x=padL+(s.vals.length<=1?0:(i/(s.vals.length-1))*(W-padL-padR));
+      const y=padT+(H-padT-padB)-(v/maxY)*(H-padT-padB);
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="${color}" stroke="#fff" stroke-width=".8"/>`;
+    }).join('');
+    return linea+puntos;
+  }).join('');
+  const yTicks=5;
+  const yAxis=Array.from({length:yTicks+1},(_,i)=>{
+    const val=Math.round(maxY*(yTicks-i)/yTicks);
+    const y=padT+(H-padT-padB)*(i/yTicks);
+    return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="#d9e2ef" stroke-width=".7"/><text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="7" fill="#42526a">${val.toLocaleString('es-PE')}</text>`;
+  }).join('');
+  const xWeeks=Array.from(new Set([1,...Array.from({length:Math.floor((se-1)/4)},(_,i)=>Math.min(se,5+i*4)),se])).sort((a,b)=>a-b);
+  const xAxis=xWeeks.map(w=>{
+    const x=padL+((w-1)/Math.max(1,se-1))*(W-padL-padR);
+    return `<line x1="${x.toFixed(1)}" y1="${H-padB}" x2="${x.toFixed(1)}" y2="${H-padB+3}" stroke="#718096"/><text x="${x.toFixed(1)}" y="${H-padB+12}" text-anchor="middle" font-size="7" fill="#42526a">${w}</text>`;
+  }).join('');
+  const legends=trendOrdenada.map(s=>`<span><i style="background:${colorEvento[s.nombre]||'#64748b'}"></i>${esc(s.nombre)}</span>`).join('');
 
   const comparativo=filasEvento.map(x=>`<tr><td><b>${esc(x.nombre)}</b></td><td>${x.prev.toLocaleString('es-PE')}</td><td>${x.casos.toLocaleString('es-PE')}</td><td class="${cls(x.variacion)}">${arrow(x.variacion)} ${Math.abs(x.variacion).toLocaleString('es-PE')}</td><td class="${cls(x.pct||0)}">${pctTxt(x.pct)}</td></tr>`).join('');
   const hospRows=[...filasEvento].sort((a,b)=>b.hospitalizados-a.hospitalizados).map(x=>{
     const p=totalHosp?x.hospitalizados/totalHosp*100:0;
     return `<tr><td>${esc(x.nombre)}</td><td>${x.hospitalizados.toLocaleString('es-PE')}</td><td>${p.toFixed(1)}%</td></tr>`;
   }).join('');
+  // F4.85 — tendencia semanal real de hospitalizados, S.E. 1..activa.
+  const hospTrend=filasEvento.map(f=>{
+    const vals=[];
+    for(let s=1;s<=se;s++){
+      if(f.nombre==='EDAs Acuosas'){
+        vals.push(edaRows.filter(r=>year(r)===anio&&week(r)===s).reduce((a,r)=>a+num(r.HOS_ACU??r.TO_HOS_ACU),0));
+      }else if(f.nombre==='EDAs Disentéricas'){
+        vals.push(edaRows.filter(r=>year(r)===anio&&week(r)===s).reduce((a,r)=>a+num(r.HOS_DIS??r.TO_HOS_DIS),0));
+      }else{
+        const rows=Array.isArray(db[f.nombre])?db[f.nombre]:[];
+        vals.push(rows.filter(r=>year(r)===anio&&week(r)===s).reduce((a,r)=>a+hosp(r),0));
+      }
+    }
+    return {nombre:f.nombre,vals};
+  });
+  const hospTrendOrdenada=[...hospTrend].sort((a,b)=>(b.vals[se-1]||0)-(a.vals[se-1]||0));
+  const hospMaxY=Math.max(1,...hospTrendOrdenada.flatMap(s=>s.vals));
+  const hospPoints=vals=>vals.map((v,i)=>{
+    const x=padL+(vals.length<=1?0:(i/(vals.length-1))*(W-padL-padR));
+    const y=padT+(H-padT-padB)-(v/hospMaxY)*(H-padT-padB);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const hospLines=hospTrendOrdenada.map(s=>{
+    const color=colorEvento[s.nombre]||'#64748b';
+    const linea=`<polyline fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="${hospPoints(s.vals)}"/>`;
+    const puntos=s.vals.map((v,i)=>{
+      const x=padL+(s.vals.length<=1?0:(i/(s.vals.length-1))*(W-padL-padR));
+      const y=padT+(H-padT-padB)-(v/hospMaxY)*(H-padT-padB);
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.2" fill="${color}" stroke="#fff" stroke-width=".8"/>`;
+    }).join('');
+    return linea+puntos;
+  }).join('');
+  const hospYAxis=Array.from({length:6},(_,i)=>{
+    const val=Math.round(hospMaxY*(5-i)/5);
+    const y=padT+(H-padT-padB)*(i/5);
+    return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="#d9e2ef" stroke-width=".7"/><text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="7" fill="#42526a">${val}</text>`;
+  }).join('');
+  const hospLegends=hospTrendOrdenada.map(s=>`<span><i style="background:${colorEvento[s.nombre]||'#64748b'}"></i>${esc(s.nombre)}</span>`).join('');
+  const hospDominante=hospTrendOrdenada[0]||{nombre:'Sin datos',vals:[]};
+  const hospActual=hospDominante.vals[se-1]||0;
+  // F4.86 — comparativo de hospitalizados S.E. anterior vs S.E. activa.
+  const hospComparativo=hospTrend.map(s=>{
+    const actual=s.vals[se-1]||0;
+    const previo=seAnt?(s.vals[seAnt-1]||0):0;
+    const variacion=actual-previo;
+    const pct=previo?(variacion/previo*100):null;
+    return {nombre:s.nombre,actual,previo,variacion,pct};
+  }).sort((a,b)=>b.actual-a.actual);
+  const hospComparativoRows=hospComparativo.map(x=>`<tr><td><b>${esc(x.nombre)}</b></td><td>${x.previo.toLocaleString('es-PE')}</td><td>${x.actual.toLocaleString('es-PE')}</td><td class="${cls(x.variacion)}">${arrow(x.variacion)} ${Math.abs(x.variacion).toLocaleString('es-PE')}</td><td class="${cls(x.pct||0)}">${x.pct===null?'—':pctTxt(x.pct)}</td></tr>`).join('');
+  const totalHospActualComp=hospComparativo.reduce((a,x)=>a+x.actual,0);
+  const totalHospPrevComp=hospComparativo.reduce((a,x)=>a+x.previo,0);
+  const totalHospVar=totalHospActualComp-totalHospPrevComp;
+  const totalHospPct=totalHospPrevComp?(totalHospVar/totalHospPrevComp*100):null;
+  const analisisHospComparativo=(()=>{
+    const suben=hospComparativo.filter(x=>x.variacion>0).sort((a,b)=>b.variacion-a.variacion).slice(0,2).map(x=>x.nombre);
+    const bajan=hospComparativo.filter(x=>x.variacion<0).sort((a,b)=>a.variacion-b.variacion).slice(0,2).map(x=>x.nombre);
+    const partes=[];
+    if(suben.length) partes.push(`Incremento de hospitalizados en ${suben.join(' y ')} respecto a la S.E. anterior.`);
+    if(bajan.length) partes.push(`Disminución en ${bajan.join(' y ')}.`);
+    if(!partes.length) partes.push('Sin variaciones relevantes en hospitalizados respecto a la S.E. anterior.');
+    return partes.join(' ');
+  })();
+
   const indivRows=(dxTop.length?dxTop:[['Sin registros individuales',0]]).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v}</td><td>${inds.length?(v/inds.length*100).toFixed(1):'0.0'}%</td></tr>`).join('');
 
   const analisisComparativo=(()=>{
@@ -10631,14 +10770,31 @@ function abrirAvisoBoletinSEVea(){
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.card{border:1px solid #cbd8ea;border-radius:6px;overflow:hidden;break-inside:avoid}.title{background:linear-gradient(90deg,#07306f,#0d4c9d);color:white;font-weight:900;padding:6px 8px;font-size:10px}.body{padding:8px}
 table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;text-align:left}th,td{border:1px solid #d8e2ef;padding:4px}.up{color:#dc2638;font-weight:800}.down{color:#14833b;font-weight:800}.flat{color:#59677a}
 .analysis{padding:7px 8px;font-size:8px;line-height:1.4;border-top:1px solid #e0e8f2}.analysis b{color:#073b82}
-.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:7px;margin-bottom:4px}.legend span{display:flex;align-items:center;gap:3px}.legend i{width:10px;height:3px;display:inline-block}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:7px;margin-bottom:4px}.legendTop{justify-content:center;align-items:center;margin:0 auto 5px;padding:4px 7px;border-bottom:1px solid #d7e0ec;gap:14px;white-space:nowrap}
+.boletinDoc{width:100%;max-width:1120px;margin:0 auto}
+.boletinDoc .card{box-sizing:border-box}
+.boletinDoc .resumenGeneralKpis{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.boletinDoc .resumenGeneralKpis .kpi{padding:6px 5px;grid-template-rows:28px minmax(30px,auto) 17px 23px}
+.boletinDoc .resumenGeneralKpis .kpiIcon{left:6px;top:6px;width:21px;height:21px;font-size:12px}
+.boletinDoc .resumenGeneralKpis .kpi label{font-size:5.7px;line-height:1;padding-left:24px;white-space:nowrap;overflow:hidden}
+.boletinDoc .resumenGeneralKpis .kpi strong{font-size:19px}
+.boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{font-size:8.7px;line-height:1.05}
+.boletinDoc .resumenGeneralKpis .kpi small{font-size:7px}
+.boletinDoc .resumenGeneralKpis .kpi em{font-size:6.2px}
+.boletinDoc .meta{grid-template-columns:.80fr .94fr 1.78fr;gap:5px;padding:7px 4px;font-size:8px}
+.boletinDoc .meta>div{gap:3px;white-space:nowrap;min-width:0}
+.boletinDoc .meta b,.boletinDoc .meta .metaText{font-size:8px;line-height:1;white-space:nowrap}
+.boletinDoc .meta .metaIcon{font-size:10px}
+.boletinDoc .tablaComparativoEvento th{font-size:7.5px}
+.boletinDoc .tablaComparativoEvento td{font-size:7.7px}
+.comparativoEventoCard .body{padding:7px 9px}.tablaComparativoEvento{width:100%;table-layout:fixed;border-collapse:collapse}.tablaComparativoEvento .colEvento{width:34%}.tablaComparativoEvento .colSemana{width:14%}.tablaComparativoEvento .colVariacion{width:19%}.tablaComparativoEvento .colPorcentaje{width:19%}.tablaComparativoEvento th,.tablaComparativoEvento td{padding:5px 6px;vertical-align:middle;line-height:1.15}.tablaComparativoEvento th{font-size:7.5px;font-weight:900;text-align:center;white-space:nowrap}.tablaComparativoEvento td{font-size:7.7px;text-align:center}.tablaComparativoEvento th:first-child,.tablaComparativoEvento td:first-child{text-align:left}.tablaComparativoEvento .filaTotalComparativo td{border-top:1.4px solid #8fa9cc;background:#f5f8fc;font-weight:900}.legend span{display:flex;align-items:center;gap:3px}.legend i{width:10px;height:3px;display:inline-block}
 .bottom{display:grid;grid-template-columns:1.05fr .9fr 1.05fr;gap:8px;margin-top:8px}.textblock{font-size:8px;line-height:1.55}.checks div{margin:5px 0}.checks span{color:#29913c;font-weight:900;margin-right:4px}
 .footer{background:#07306f;color:#fff;margin-top:8px;padding:5px 8px;display:flex;justify-content:space-between;font-size:7px}
 .actions{position:fixed;right:12px;bottom:12px;display:flex;gap:6px;z-index:10}.actions button{border:0;border-radius:6px;padding:9px 11px;font-weight:800;cursor:pointer}.pdf{background:#d71920;color:white}.print{background:#07306f;color:white}.close{background:#e8edf4;color:#172033}
-@media print{.actions{display:none}.card{break-inside:avoid}.meta{grid-template-columns:.80fr .94fr 1.78fr!important;gap:5px!important;padding:7px 4px!important;font-size:8px!important}.meta>div{gap:3px!important;white-space:nowrap!important;min-width:0}.meta b,.meta .metaText{font-size:8px!important;line-height:1!important;white-space:nowrap!important}.meta .metaIcon{font-size:10px!important}.resumenGeneralKpis{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:5px!important}.resumenGeneralKpis .kpi{padding:6px 5px!important;grid-template-rows:28px minmax(30px,auto) 17px 23px!important}.resumenGeneralKpis .kpiIcon{left:6px!important;top:6px!important;width:21px!important;height:21px!important;font-size:12px!important}.resumenGeneralKpis .kpi label{font-size:5.7px!important;line-height:1!important;padding-left:24px!important;white-space:nowrap!important;overflow:hidden!important}.resumenGeneralKpis .kpi strong{font-size:19px!important}.resumenGeneralKpis .kpi strong.kpiPred{font-size:8.7px!important;line-height:1.05!important}.resumenGeneralKpis .kpi small{font-size:7px!important}.resumenGeneralKpis .kpi em{font-size:6.2px!important}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+@media print{.actions{display:none}.card{break-inside:avoid}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.boletinDoc{width:100%;max-width:1120px;margin:0 auto}}
 @media(max-width:900px) and (min-width:701px){.resumenGeneralKpis{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.grid2,.bottom{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start}.heroHospital{font-size:11px}.hero h1{font-size:16px}.hero p{font-size:8px}.sebox{min-width:108px;padding:6px}.sebox b{font-size:18px}.sebox small{font-size:7px}.meta{grid-template-columns:1fr;font-size:10px;gap:6px;padding:9px 8px}.meta b{font-size:10px}.actions{position:sticky;bottom:4px;justify-content:center}}
-</style></head><body>
+</style></head><body class="boletinDoc">
 <div class="actions"><button class="print" onclick="window.print()">IMPRIMIR</button><button class="pdf" onclick="window.print()">GUARDAR PDF</button><button class="close" onclick="window.close()">CERRAR</button></div>
 <div class="hero"><div class="heroText"><div class="heroHospital">HOSPITAL DE VENTANILLA</div><h1>BOLETÍN EPIDEMIOLÓGICO SEMANAL</h1><p>VEA · HOSPITALIZADOS · CASOS INDIVIDUALES</p></div><div class="sebox"><b>S.E. ${se}</b><small>${esc(rangoSE)}</small></div></div>
 <div class="meta"><div><span class="metaIcon">📅</span><b>FECHA DE EMISIÓN:</b><span class="metaText">${fecha}</span></div><div><span class="metaIcon">🏛️</span><b>FUENTE:</b><span class="metaText">NOTIWEB CDC MINSA</span></div><div><span class="metaIcon">🏥</span><b>ELABORADO POR:</b><span class="metaText">UESA – UNIDAD DE EPIDEMIOLOGÍA Y SALUD AMBIENTAL</span></div></div>
@@ -10654,10 +10810,10 @@ table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;te
 </div>
 
 <div class="grid2">
- <section class="card"><div class="title">1. TENDENCIA DE CASOS POR EVENTO (S.E. 1 – ${se})</div><div class="body"><div class="legend">${legends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img"><line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#718096"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#718096"/>${lines}<text x="4" y="18" font-size="8">${maxY}</text><text x="${padL}" y="${H-8}" font-size="8">1</text><text x="${W-padR-15}" y="${H-8}" font-size="8">${se}</text></svg></div><div class="analysis"><b>● Análisis:</b> ${esc(dominante.nombre)} registra el mayor volumen en la S.E. ${se}, con ${dominante.casos.toLocaleString('es-PE')} casos.</div></section>
- <section class="card"><div class="title">2. COMPARATIVO DE CASOS: S.E. ${se} vs S.E. ${seAnt??'—'}</div><div class="body"><table><thead><tr><th>Evento</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>Variación</th><th>%</th></tr></thead><tbody>${comparativo}<tr><td><b>TOTAL</b></td><td><b>${totalPrev}</b></td><td><b>${total}</b></td><td><b>${arrow(total-totalPrev)} ${Math.abs(total-totalPrev)}</b></td><td><b>${totalPrev?pctTxt((total-totalPrev)/totalPrev*100):'—'}</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> ${esc(analisisComparativo)}</div></section>
- <section class="card"><div class="title">3. HOSPITALIZADOS POR EVENTO (S.E. ${se})</div><div class="body"><table><thead><tr><th>Evento</th><th>Hospitalizados</th><th>% del total</th></tr></thead><tbody>${hospRows}<tr><td><b>TOTAL</b></td><td><b>${totalHosp}</b></td><td><b>${totalHosp?'100.0':'0.0'}%</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> distribución calculada exclusivamente con hospitalizaciones registradas para la S.E. ${se}.</div></section>
- <section class="card"><div class="title">4. CASOS INDIVIDUALES REGISTRADOS (S.E. ${se})</div><div class="body"><table><thead><tr><th>Diagnóstico / Código</th><th>Casos</th><th>%</th></tr></thead><tbody>${indivRows}<tr><td><b>TOTAL</b></td><td><b>${inds.length}</b></td><td><b>${inds.length?'100.0':'0.0'}%</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> diagnósticos obtenidos de la base INDIVIDUAL del repositorio activo, sin completar valores ausentes.</div></section>
+ <section class="card"><div class="title">2. TENDENCIA DE CASOS POR EVENTO (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${legends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia de casos por evento desde la semana epidemiológica 1 hasta la ${se}">${yAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${lines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>● Análisis:</b> ${esc(dominante.nombre)} registra el mayor volumen en la S.E. ${se}, con ${dominante.casos.toLocaleString('es-PE')} casos.</div></section>
+ <section class="card comparativoEventoCard"><div class="title">3. COMPARATIVO DE EVENTO: S.E. ${seAnt??'—'} vs S.E. ${se}</div><div class="body"><table class="tablaComparativoEvento"><colgroup><col class="colEvento"><col class="colSemana"><col class="colSemana"><col class="colVariacion"><col class="colPorcentaje"></colgroup><thead><tr><th>EVENTO</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>VARIACIÓN</th><th>% VARIACIÓN</th></tr></thead><tbody>${comparativo}<tr class="filaTotalComparativo"><td><b>TOTAL</b></td><td><b>${totalPrev}</b></td><td><b>${total}</b></td><td><b>${arrow(total-totalPrev)} ${Math.abs(total-totalPrev)}</b></td><td><b>${totalPrev?pctTxt((total-totalPrev)/totalPrev*100):'—'}</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> ${esc(analisisComparativo)}</div></section>
+ <section class="card"><div class="title">4. TENDENCIA SEMANAL DE CASOS HOSPITALIZADOS (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${hospLegends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia semanal de casos hospitalizados desde la semana epidemiológica 1 hasta la ${se}">${hospYAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${hospLines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS HOSPITALIZADOS</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>● Análisis:</b> ${esc(hospDominante.nombre)} presenta el mayor número de casos hospitalizados en la S.E. ${se}, con ${hospActual.toLocaleString('es-PE')} registros.</div></section><section class="card comparativoEventoCard"><div class="title">5. COMPARATIVO DE HOSPITALIZADOS: S.E. ${seAnt??'—'} vs S.E. ${se}</div><div class="body"><table class="tablaComparativoEvento"><colgroup><col class="colEvento"><col class="colSemana"><col class="colSemana"><col class="colVariacion"><col class="colPorcentaje"></colgroup><thead><tr><th>EVENTO</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>VARIACIÓN</th><th>% VARIACIÓN</th></tr></thead><tbody>${hospComparativoRows}<tr class="filaTotalComparativo"><td><b>TOTAL</b></td><td><b>${totalHospPrevComp.toLocaleString('es-PE')}</b></td><td><b>${totalHospActualComp.toLocaleString('es-PE')}</b></td><td><b>${arrow(totalHospVar)} ${Math.abs(totalHospVar).toLocaleString('es-PE')}</b></td><td><b>${totalHospPct===null?'—':pctTxt(totalHospPct)}</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> ${esc(analisisHospComparativo)}</div></section>
+ <section class="card"><div class="title">6. TENDENCIA SEMANAL DE CASOS INDIVIDUALES (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${individualLegends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia semanal de casos individuales desde la semana epidemiológica 1 hasta la ${se}">${individualYAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${individualLines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS INDIVIDUALES</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>● Análisis:</b> ${esc(individualDominanteTrend.nombre)} presenta ${individualActualTrend.toLocaleString('es-PE')} caso(s) en la S.E. ${se}. Tendencia calculada exclusivamente con diagnósticos reales de INDIVIDUAL del año ${anio}.</div></section><section class="card comparativoEventoCard"><div class="title">7. COMPARATIVO DE CASOS INDIVIDUALES: S.E. ${seAnt??'—'} vs S.E. ${se}</div><div class="body"><table class="tablaComparativoEvento"><colgroup><col class="colEvento"><col class="colSemana"><col class="colSemana"><col class="colVariacion"><col class="colPorcentaje"></colgroup><thead><tr><th>DIAGNÓSTICO / EVENTO</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>VARIACIÓN</th><th>% VARIACIÓN</th></tr></thead><tbody>${comparativoIndividualRows}<tr class="filaTotalComparativo"><td><b>TOTAL GENERAL</b></td><td><b>${totalIndividualPrev.toLocaleString('es-PE')}</b></td><td><b>${totalIndividualActual.toLocaleString('es-PE')}</b></td><td><b>${arrow(totalIndividualVar)} ${Math.abs(totalIndividualVar).toLocaleString('es-PE')}</b></td><td><b>${totalIndividualPct===null?'—':pctTxt(totalIndividualPct)}</b></td></tr></tbody></table></div><div class="analysis"><b>● Análisis:</b> ${esc(analisisIndividualComparativo)}</div></section>
 </div>
 
 <div class="bottom">

@@ -476,6 +476,401 @@
                 width: min(13rem, calc(100vw - 16px));
             }
         }
+
+        /* F4.38 — protección física del lienzo Chart.js */
+        canvas { max-width: 100%; }
+
+
+
+
+/* F4.49 — DATOS ACUMULADOS: FILTROS SEGÚN REFERENCIA VISUAL */
+#filtrosDatosAcumuladosReferencia{
+  background:#020617;border:1px solid #1e293b;border-radius:16px;
+  padding:18px 20px 20px;margin-bottom:20px;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-head{
+  display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-icon{color:#7567ff;font-size:22px;line-height:1}
+#filtrosDatosAcumuladosReferencia .da-filter-title{margin:0;color:#f8fafc;font-size:18px;font-weight:800}
+#filtrosDatosAcumuladosReferencia .da-filter-sub{margin:2px 0 0;color:#93c5fd;font-size:12px}
+#filtrosDatosAcumuladosReferencia .da-filter-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:16px;align-items:end;
+}
+#filtrosDatosAcumuladosReferencia .da-field label{
+  display:block;margin:0 0 6px;color:#94a3b8;font-size:12px;font-weight:700;
+}
+#filtrosDatosAcumuladosReferencia select,
+#filtrosDatosAcumuladosReferencia #aniosDatosAcumulados{
+  width:100%;height:40px;min-height:40px;background:#0f172a;color:#cbd5e1;
+  border:1px solid #26344b;border-radius:8px;padding:0 12px;font-weight:700;
+}
+#filtrosDatosAcumuladosReferencia #btnLimpiarDatosAcumulados{
+  height:40px;min-height:40px;padding:0 18px;white-space:nowrap;
+  background:#020617;color:#e2e8f0;border:1px solid #334155;border-radius:8px;font-weight:700;
+}
+@media(max-width:900px){
+ #filtrosDatosAcumuladosReferencia .da-filter-grid{grid-template-columns:1fr}
+ #filtrosDatosAcumuladosReferencia #btnLimpiarDatosAcumulados{width:100%}
+}
+
+
+/* F4.50 — ACUMULADOS: FILTROS REPARADOS Y FUNCIONALES */
+#filtrosDatosAcumuladosReferencia{
+  background:#020617;border:1px solid #1e293b;border-radius:16px;
+  padding:18px 20px 16px;margin-top:20px;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-head{
+  display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-icon{
+  color:#7567ff;font-size:22px;line-height:1;margin-top:1px;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-title{
+  margin:0;color:#f8fafc;font-size:18px;line-height:1.15;font-weight:800;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-sub{
+  margin:3px 0 0;color:#93c5fd;font-size:12px;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:16px;align-items:end;
+}
+#filtrosDatosAcumuladosReferencia .da-field>label{
+  display:block;color:#94a3b8;font-size:12px;font-weight:700;margin:0 0 6px;
+}
+#filtrosDatosAcumuladosReferencia select{
+  width:100%;height:40px;background:#0f172a;color:#cbd5e1;
+  border:1px solid #26344b;border-radius:8px;padding:0 12px;font-weight:700;
+}
+#filtrosDatosAcumuladosReferencia #btnLimpiarDatosAcumulados{
+  height:40px;min-width:137px;background:#020617;color:#e2e8f0;
+  border:1px solid #334155;border-radius:8px;padding:0 16px;font-weight:700;
+}
+#filtrosDatosAcumuladosReferencia #btnLimpiarDatosAcumulados:hover{
+  border-color:#ef4444;color:#fff;
+}
+@media(max-width:900px){
+  #filtrosDatosAcumuladosReferencia .da-filter-grid{grid-template-columns:1fr;}
+  #filtrosDatosAcumuladosReferencia #btnLimpiarDatosAcumulados{width:100%;}
+}
+
+
+/* F4.51 — Datos Acumulados: cabecera sin Exportar CSV + responsive */
+#contentDatos .da-export-slot:empty,
+#contentDatos [data-export-comparativo]:empty { display:none !important; }
+
+@media (max-width: 1024px){
+  #contentDatos { min-width:0; }
+  #contentDatos .grid { min-width:0; }
+}
+@media (max-width: 767px){
+  #filtrosDatosAcumuladosReferencia { padding:16px 14px; }
+  #filtrosDatosAcumuladosReferencia .da-filter-head { gap:10px; }
+  #filtrosDatosAcumuladosReferencia .da-filter-title { font-size:17px; }
+  #filtrosDatosAcumuladosReferencia .da-filter-sub { font-size:11px; line-height:1.35; }
+  #filtrosDatosAcumuladosReferencia .da-filter-grid { grid-template-columns:minmax(0,1fr); gap:13px; }
+  #filtrosDatosAcumuladosReferencia select,
+  #filtrosDatosAcumuladosReferencia details,
+  #filtrosDatosAcumuladosReferencia #btnLimpiarDatosAcumulados { width:100%; max-width:100%; }
+}
+
+
+/* F4.52 — DATOS ACUMULADOS: FILTROS IDÉNTICOS A REFERENCIA */
+#filtrosDatosAcumuladosReferencia{
+  position:relative;
+  overflow:visible !important;
+  background:#020617 !important;
+  border:1px solid #1e293b !important;
+  border-radius:16px !important;
+  padding:20px !important;
+  margin:20px 0 !important;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-head{
+  display:flex !important;align-items:flex-start !important;gap:12px !important;
+  margin:0 0 18px !important;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-icon{
+  width:18px;flex:0 0 18px;color:#7567ff !important;font-size:22px !important;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-title{
+  color:#f8fafc !important;font-size:18px !important;font-weight:800 !important;
+  line-height:1.15 !important;margin:0 !important;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-sub{
+  color:#93c5fd !important;font-size:12px !important;line-height:1.35 !important;
+  margin:3px 0 0 !important;
+}
+#filtrosDatosAcumuladosReferencia .da-filter-grid{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) auto !important;
+  gap:16px !important;align-items:end !important;
+}
+#filtrosDatosAcumuladosReferencia .da-field{min-width:0 !important;}
+#filtrosDatosAcumuladosReferencia .da-field>label{
+  display:block !important;color:#94a3b8 !important;font-size:12px !important;
+  font-weight:700 !important;margin:0 0 7px !important;
+}
+#detailsAniosDatosAcumulados{position:relative !important;width:100% !important;}
+#detailsAniosDatosAcumulados>summary,
+#selectMesDatosAcumulados,
+#selectSemanaDatosAcumulados{
+  box-sizing:border-box !important;width:100% !important;height:40px !important;
+  min-height:40px !important;background:#0f172a !important;color:#cbd5e1 !important;
+  border:1px solid #26344b !important;border-radius:8px !important;
+  padding:0 12px !important;font-size:12px !important;font-weight:700 !important;
+}
+#detailsAniosDatosAcumulados[open]>summary{border-color:#ef4444 !important;}
+#aniosDatosAcumulados{
+  position:absolute !important;left:0 !important;right:0 !important;top:44px !important;
+  z-index:9999 !important;max-height:300px !important;overflow-y:auto !important;
+  background:#071126 !important;border:1px solid #1e293b !important;
+  border-radius:0 0 10px 10px !important;padding:8px !important;
+  box-shadow:0 18px 36px rgba(0,0,0,.45) !important;
+}
+#btnLimpiarDatosAcumulados{
+  box-sizing:border-box !important;height:40px !important;min-height:40px !important;
+  min-width:142px !important;white-space:nowrap !important;
+  background:#020617 !important;color:#e2e8f0 !important;
+  border:1px solid #334155 !important;border-radius:8px !important;
+  padding:0 16px !important;font-size:12px !important;font-weight:700 !important;
+}
+#btnLimpiarDatosAcumulados:hover{border-color:#ef4444 !important;}
+#resumenFiltrosDatosAcumulados{margin-top:10px !important;}
+
+@media (min-width:768px) and (max-width:1100px){
+ #filtrosDatosAcumuladosReferencia .da-filter-grid{
+   grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+ }
+ #filtrosDatosAcumuladosReferencia .da-clear-field{grid-column:2 !important;}
+ #btnLimpiarDatosAcumulados{width:100% !important;}
+}
+@media (max-width:767px){
+ #filtrosDatosAcumuladosReferencia{padding:16px !important;border-radius:14px !important;}
+ #filtrosDatosAcumuladosReferencia .da-filter-grid{grid-template-columns:minmax(0,1fr) !important;gap:13px !important;}
+ #btnLimpiarDatosAcumulados{width:100% !important;}
+ #aniosDatosAcumulados{max-height:260px !important;}
+}
+
+
+/* F4.53 — ACUMULADOS / CLON VISUAL DE FILTROS DE REFERENCIA */
+#contentDatos #filtrosDatosAcumuladosReferencia{
+    position:relative !important;
+    overflow:visible !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+    background:#020617 !important;
+    border:1px solid #1e293b !important;
+    border-radius:16px !important;
+    padding:20px !important;
+    margin:20px 0 24px !important;
+}
+#contentDatos #filtrosDatosAcumuladosReferencia .da-filter-head{
+    display:flex !important;
+    align-items:flex-start !important;
+    gap:12px !important;
+    margin:0 0 18px !important;
+}
+#contentDatos #filtrosDatosAcumuladosReferencia .da-filter-icon{
+    display:flex !important;align-items:center !important;justify-content:center !important;
+    width:18px !important;height:22px !important;flex:0 0 18px !important;
+    color:#6d5dfc !important;font-size:22px !important;line-height:1 !important;
+}
+#contentDatos #filtrosDatosAcumuladosReferencia .da-filter-title{
+    margin:0 !important;color:#f8fafc !important;
+    font-size:18px !important;font-weight:800 !important;line-height:1.15 !important;
+}
+#contentDatos #filtrosDatosAcumuladosReferencia .da-filter-sub{
+    margin:3px 0 0 !important;color:#93c5fd !important;
+    font-size:12px !important;font-weight:400 !important;line-height:1.3 !important;
+}
+#contentDatos #filtrosDatosAcumuladosReferencia .da-filter-grid{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 142px !important;
+    gap:16px !important;
+    align-items:end !important;
+    width:100% !important;
+}
+#contentDatos #filtrosDatosAcumuladosReferencia .da-field{
+    min-width:0 !important;width:100% !important;
+}
+#contentDatos #filtrosDatosAcumuladosReferencia .da-field>label{
+    display:block !important;
+    margin:0 0 7px !important;
+    color:#94a3b8 !important;
+    font-size:12px !important;
+    line-height:1 !important;
+    font-weight:700 !important;
+}
+#contentDatos #detailsAniosDatosAcumulados{
+    position:relative !important;width:100% !important;margin:0 !important;
+}
+#contentDatos #detailsAniosDatosAcumulados>summary,
+#contentDatos #selectMesDatosAcumulados,
+#contentDatos #selectSemanaDatosAcumulados{
+    appearance:auto;
+    box-sizing:border-box !important;
+    width:100% !important;height:40px !important;min-height:40px !important;
+    margin:0 !important;
+    background:#0f172a !important;color:#cbd5e1 !important;
+    border:1px solid #26344b !important;border-radius:8px !important;
+    padding:0 12px !important;
+    font-size:12px !important;font-weight:700 !important;
+    line-height:40px !important;
+}
+#contentDatos #detailsAniosDatosAcumulados>summary{
+    display:flex !important;align-items:center !important;justify-content:space-between !important;
+    list-style:none !important;cursor:pointer !important;
+}
+#contentDatos #detailsAniosDatosAcumulados>summary::-webkit-details-marker{display:none !important;}
+#contentDatos #detailsAniosDatosAcumulados[open]>summary{
+    border-color:#ef4444 !important;
+}
+#contentDatos #aniosDatosAcumulados{
+    position:absolute !important;
+    top:44px !important;left:0 !important;right:0 !important;
+    z-index:10000 !important;
+    width:100% !important;max-height:300px !important;
+    overflow-y:auto !important;overscroll-behavior:contain !important;
+    background:#071126 !important;
+    border:1px solid #1e293b !important;
+    border-radius:8px !important;
+    padding:8px !important;
+    box-shadow:0 18px 40px rgba(0,0,0,.50) !important;
+}
+#contentDatos #btnLimpiarDatosAcumulados{
+    display:flex !important;align-items:center !important;justify-content:center !important;
+    box-sizing:border-box !important;
+    width:142px !important;height:40px !important;min-height:40px !important;
+    margin:0 !important;padding:0 14px !important;
+    white-space:nowrap !important;
+    background:#020617 !important;color:#e2e8f0 !important;
+    border:1px solid #334155 !important;border-radius:8px !important;
+    font-size:12px !important;font-weight:700 !important;line-height:1 !important;
+    cursor:pointer !important;
+}
+#contentDatos #btnLimpiarDatosAcumulados:hover{
+    border-color:#ef4444 !important;color:#fff !important;
+}
+#contentDatos #resumenFiltrosDatosAcumulados{
+    margin:10px 0 0 !important;color:#64748b !important;font-size:10px !important;
+}
+
+/* TABLET */
+@media (min-width:768px) and (max-width:1100px){
+    #contentDatos #filtrosDatosAcumuladosReferencia .da-filter-grid{
+        grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    }
+    #contentDatos #btnLimpiarDatosAcumulados{width:100% !important;}
+}
+
+/* ANDROID / iOS */
+@media (max-width:767px){
+    #contentDatos #filtrosDatosAcumuladosReferencia{
+        padding:16px !important;border-radius:14px !important;
+    }
+    #contentDatos #filtrosDatosAcumuladosReferencia .da-filter-head{
+        gap:10px !important;margin-bottom:16px !important;
+    }
+    #contentDatos #filtrosDatosAcumuladosReferencia .da-filter-title{
+        font-size:17px !important;
+    }
+    #contentDatos #filtrosDatosAcumuladosReferencia .da-filter-sub{
+        font-size:11px !important;
+    }
+    #contentDatos #filtrosDatosAcumuladosReferencia .da-filter-grid{
+        grid-template-columns:minmax(0,1fr) !important;gap:14px !important;
+    }
+    #contentDatos #btnLimpiarDatosAcumulados{width:100% !important;}
+    #contentDatos #aniosDatosAcumulados{max-height:260px !important;}
+}
+
+
+/* F4.54 — DATOS ACUMULADOS / FILTROS DE REFERENCIA REAL */
+#contentDatos #filtrosDatosAcumuladosReferencia.da-ref-card{
+  position:relative; overflow:visible; box-sizing:border-box; width:100%;
+  margin:20px 0 24px; padding:20px;
+  background:#020617; border:1px solid #1e293b; border-radius:16px;
+}
+#contentDatos .da-ref-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}
+#contentDatos .da-ref-funnel{flex:0 0 18px;width:18px;color:#6d5dfc;margin-top:1px}
+#contentDatos .da-ref-head h3{margin:0;color:#f8fafc;font-size:18px;font-weight:800;line-height:1.15}
+#contentDatos .da-ref-head p{margin:3px 0 0;color:#93c5fd;font-size:12px;line-height:1.3}
+#contentDatos .da-ref-grid{
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 142px;
+  gap:16px; align-items:end; width:100%;
+}
+#contentDatos .da-ref-field{min-width:0}
+#contentDatos .da-ref-field>label{
+  display:block;margin:0 0 7px;color:#94a3b8;font-size:12px;font-weight:700;line-height:1
+}
+#contentDatos .da-control,
+#contentDatos .da-clear-button{
+  box-sizing:border-box;width:100%;height:40px;min-height:40px;margin:0;
+  border-radius:8px;font-size:12px;font-weight:700;
+}
+#contentDatos .da-control{
+  background:#0f172a;color:#cbd5e1;border:1px solid #26344b;padding:0 12px;
+}
+#contentDatos select.da-control{appearance:auto}
+#contentDatos .da-years-control{position:relative}
+#contentDatos .da-years-button{
+  display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;
+}
+#contentDatos .da-years-button.is-open{border-color:#ef4444}
+#contentDatos .da-chevron{font-size:18px;color:#94a3b8;line-height:1}
+#contentDatos .da-years-menu{
+  position:absolute;left:0;right:0;top:44px;z-index:10000;
+  max-height:300px;overflow-y:auto;overscroll-behavior:contain;
+  padding:8px;background:#071126;border:1px solid #1e293b;border-radius:8px;
+  box-shadow:0 18px 40px rgba(0,0,0,.5)
+}
+#contentDatos .da-years-menu[hidden]{display:none!important}
+#contentDatos .da-years-menu label{
+  display:flex;align-items:center;gap:10px;min-height:38px;padding:7px 9px;
+  color:#e2e8f0;font-size:12px;font-weight:700;border-bottom:1px solid rgba(30,41,59,.55);
+  cursor:pointer
+}
+#contentDatos .da-years-menu label:last-child{border-bottom:0}
+#contentDatos .da-years-menu input[type="checkbox"]{
+  width:16px;height:16px;accent-color:#ef4d5a;flex:0 0 16px
+}
+#contentDatos .da-clear-button{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:0 14px;white-space:nowrap;cursor:pointer;
+  background:#020617;color:#e2e8f0;border:1px solid #334155
+}
+#contentDatos .da-clear-button:hover{border-color:#ef4444}
+#contentDatos .da-trash{color:#ef4444;font-size:14px}
+#contentDatos .da-ref-summary{margin-top:10px;color:#64748b;font-size:10px}
+
+/* Tablet */
+@media (min-width:768px) and (max-width:1100px){
+ #contentDatos .da-ref-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ #contentDatos .da-ref-clear{grid-column:2}
+}
+/* Android / iOS */
+@media (max-width:767px){
+ #contentDatos #filtrosDatosAcumuladosReferencia.da-ref-card{padding:16px;border-radius:14px}
+ #contentDatos .da-ref-head{gap:10px;margin-bottom:16px}
+ #contentDatos .da-ref-head h3{font-size:17px}
+ #contentDatos .da-ref-head p{font-size:11px}
+ #contentDatos .da-ref-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+ #contentDatos .da-years-menu{max-height:260px}
+}
+
+\n/* F4.55 — Selector multiaño de Acumulados igual a referencia */\n#contentDatos #btnAniosDatosAcumulados{\n  height:42px!important;min-height:42px!important;border-radius:8px!important;\n  padding:0 12px!important;background:#0f172a!important;color:#cbd5e1!important;\n  border:1px solid #26344b!important;font-size:12px!important;font-weight:700!important;\n}\n#contentDatos #btnAniosDatosAcumulados.is-open{border-color:#ef4444!important;}\n#contentDatos #aniosDatosAcumulados{\n  top:46px!important;padding:0 8px!important;background:#020817!important;\n  border:1px solid #172036!important;border-radius:8px!important;\n  max-height:274px!important;overflow-y:auto!important;scrollbar-width:thin;\n  scrollbar-color:#475569 #111827;\n}\n#contentDatos #aniosDatosAcumulados label{\n  box-sizing:border-box!important;display:flex!important;align-items:center!important;gap:12px!important;\n  min-height:37px!important;margin:0!important;padding:8px 10px!important;\n  background:transparent!important;border:0!important;border-bottom:1px solid #111c31!important;\n  border-radius:0!important;color:#f8fafc!important;font-size:12px!important;font-weight:800!important;\n}\n#contentDatos #aniosDatosAcumulados label:last-child{border-bottom:0!important;}\n#contentDatos #aniosDatosAcumulados input[type=checkbox]{\n  appearance:auto!important;width:16px!important;height:16px!important;min-width:16px!important;\n  margin:0!important;accent-color:#ff4d5a!important;cursor:pointer!important;\n}\n#contentDatos #aniosDatosAcumulados::-webkit-scrollbar{width:7px;}\n#contentDatos #aniosDatosAcumulados::-webkit-scrollbar-track{background:#111827;}\n#contentDatos #aniosDatosAcumulados::-webkit-scrollbar-thumb{background:#475569;border-radius:8px;}\n@media(max-width:767px){\n #contentDatos #aniosDatosAcumulados{position:absolute!important;left:0!important;right:0!important;width:100%!important;max-height:245px!important;}\n #contentDatos #aniosDatosAcumulados label{min-height:42px!important;font-size:13px!important;}\n}\n
+/* F4.56 — Acumulados usa el componente visual REAL de Vigilancia */
+#contentDatos #filtrosDatosAcumuladosReferencia{overflow:visible!important}
+#contentDatos #dropdownAniosDatosAcumulados{scrollbar-width:thin;scrollbar-color:#475569 #111827}
+#contentDatos #dropdownAniosDatosAcumulados::-webkit-scrollbar{width:7px}
+#contentDatos #dropdownAniosDatosAcumulados::-webkit-scrollbar-track{background:#111827}
+#contentDatos #dropdownAniosDatosAcumulados::-webkit-scrollbar-thumb{background:#475569;border-radius:8px}
+@media(max-width:767px){
+ #contentDatos #dropdownAniosDatosAcumulados{max-height:245px}
+ #contentDatos #dropdownAniosDatosAcumulados label{min-height:42px;font-size:13px}
+ #contentDatos #btnLimpiarDatosAcumulados{width:100%}
+}
+
 </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -837,12 +1232,17 @@
                 <!-- GRÁFICO 2: DISTRIBUCIÓN POR EDADES -->
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 left-0 right-0 h-1 bg-indigo-600"></div>
-                    <div class="mb-4 mt-2">
-                        <h3 class="text-sm font-bold text-slate-200">Distribución por Edades</h3>
-                        <p class="text-[10px] text-slate-400">Distribución por los grupos etarios disponibles en el repositorio activo.</p>
+                    <div class="mb-4 mt-2 flex items-start justify-between gap-4">
+                        <div class="min-w-0">
+                            <h3 class="text-sm font-bold text-slate-200">Distribución por Edades</h3>
+                            <p class="text-[10px] text-slate-400">Distribución por los grupos etarios disponibles en el repositorio activo.</p>
+                        </div>
+                        <div class="text-right text-xs leading-normal select-none font-sans shrink-0 pt-0.5">
+                            <span class="font-extrabold text-slate-400 uppercase">AÑO: </span><span id="txtVeaEdadAnioActivo" class="text-red-500 font-black">—</span>
+                        </div>
                     </div>
                     <div class="h-64 w-full relative">
-                        <canvas id="chartDistribucionEdadesVea"></canvas>
+                <canvas id="chartDistribucionEdadesVea"></canvas>
                         <div id="estadoChartDistribucionEdadesVea" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">
                             Sin datos — Ingesta el repositorio VEA para visualizar información.
                         </div>
@@ -910,49 +1310,71 @@
                         <h3 class="text-xl font-black text-slate-100 mt-1">Datos Acumulados</h3>
                         <p class="text-xs text-slate-400 mt-2 max-w-3xl">EDAs, IRAs y Febriles se mantienen como eventos independientes. Los resultados corresponden a CASOS oficiales consolidados; no representan personas únicas.</p>
                     </div>
-                    <button id="btnExportarDatosAcumulados" type="button" onclick="exportarDatosAcumuladosV6B()" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-xs font-extrabold text-slate-200 hover:border-red-500/60 hover:text-white transition-colors">
-                        Exportar comparativo CSV
-                    </button>
+                    
                 </div>
 
-                <div class="mt-5">
-                    <div class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500 mb-2">Filtros del módulo</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Año(s)</label>
-                            <details class="relative group">
-                                <summary class="min-h-[42px] w-full list-none cursor-pointer rounded-xl border border-slate-800 bg-[#0b1329] px-3 py-2.5 text-xs font-bold text-slate-200 flex items-center justify-between gap-2 hover:border-slate-700">
-                                    <span id="txtAniosDatosAcumulados">Seleccionar años</span>
-                                    <span class="text-slate-500 group-open:rotate-180 transition-transform">▾</span>
-                                </summary>
-                                <div id="aniosDatosAcumulados" class="absolute left-0 right-0 z-30 mt-2 max-h-64 overflow-y-auto rounded-xl border border-slate-700 bg-[#0b1329] p-2.5 shadow-2xl">
-                                    <span class="text-xs text-slate-500">Sin años disponibles.</span>
-                                </div>
-                            </details>
-                        </div>
-                        <div>
-                            <label for="selectMesDatosAcumulados" class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Mes</label>
-                            <select id="selectMesDatosAcumulados" onchange="actualizarFiltroDatosAcumuladosV6B('mes', this.value)" class="w-full bg-[#0b1329] border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-red-500">
-                                <option value="Todos">Todos los Meses</option>
-                                <option value="Ene">Enero</option><option value="Feb">Febrero</option><option value="Mar">Marzo</option>
-                                <option value="Abr">Abril</option><option value="May">Mayo</option><option value="Jun">Junio</option>
-                                <option value="Jul">Julio</option><option value="Ago">Agosto</option><option value="Sep">Septiembre</option>
-                                <option value="Oct">Octubre</option><option value="Nov">Noviembre</option><option value="Dic">Diciembre</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="selectSemanaDatosAcumulados" class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Semana Epidemiológica</label>
-                            <select id="selectSemanaDatosAcumulados" onchange="actualizarFiltroDatosAcumuladosV6B('semana', this.value)" class="w-full bg-[#0b1329] border border-slate-800 rounded-xl py-2.5 px-3 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-red-500">
-                                <option value="Todas">Todas las Semanas</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="btnLimpiarDatosAcumulados" class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Limpiar filtros</label>
-                            <button id="btnLimpiarDatosAcumulados" type="button" onclick="limpiarFiltrosDatosAcumuladosV6B()" class="w-full min-h-[42px] rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-[10px] font-black uppercase tracking-wide text-slate-300 hover:border-red-500/60 hover:text-white transition-colors">Limpiar filtros</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="resumenFiltrosDatosAcumulados" class="mt-3 text-[10px] text-slate-500">Estado independiente de filtros.</div>
+                <div id="filtrosDatosAcumuladosReferencia" class="bg-slate-950 border border-slate-800 rounded-2xl p-5 overflow-visible">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        <div class="flex items-center gap-2.5">
+            <svg class="h-5 w-5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+            </svg>
+            <div>
+                <h2 class="text-base font-bold text-slate-200 tracking-wide">Filtros de Segmentación</h2>
+                <p class="text-xs text-slate-400">Seleccione los parámetros para el recálculo automático del análisis epidemiológico.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] gap-4 lg:items-end">
+        <div class="relative">
+            <label class="block text-xs font-bold text-slate-400 mb-1.5">Años de Análisis / Comparar</label>
+            <button id="btnDropdownAniosDatosAcumulados" type="button" onclick="toggleAniosDropdownDatosAcumuladosV656(event)"
+                    class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 flex justify-between items-center transition-all font-semibold">
+                <span id="txtAniosDatosAcumulados" class="truncate">Seleccionar años</span>
+                <svg class="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div id="dropdownAniosDatosAcumulados"
+                 class="absolute left-0 right-0 mt-1.5 bg-slate-950 border border-slate-800 rounded-xl shadow-2xl z-[100] p-2.5 hidden max-h-52 overflow-y-auto divide-y divide-slate-900">
+            </div>
+        </div>
+
+        <div class="relative">
+            <label class="block text-xs font-bold text-slate-400 mb-1.5">Mes de Análisis</label>
+            <select id="selectMesDatosAcumulados" onchange="actualizarFiltroDatosAcumuladosV6B('mes',this.value)"
+                    class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 appearance-none cursor-pointer font-semibold">
+                <option value="Todos">Todos los Meses</option>
+                <option value="Ene">Enero</option><option value="Feb">Febrero</option><option value="Mar">Marzo</option>
+                <option value="Abr">Abril</option><option value="May">Mayo</option><option value="Jun">Junio</option>
+                <option value="Jul">Julio</option><option value="Ago">Agosto</option><option value="Sep">Septiembre</option>
+                <option value="Oct">Octubre</option><option value="Nov">Noviembre</option><option value="Dic">Diciembre</option>
+            </select>
+        </div>
+
+        <div class="relative">
+            <label class="block text-xs font-bold text-slate-400 mb-1.5">Semana Epidemiológica</label>
+            <select id="selectSemanaDatosAcumulados" onchange="actualizarFiltroDatosAcumuladosV6B('semana',this.value)"
+                    class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 appearance-none cursor-pointer font-semibold">
+                <option value="Todas">Todas las Semanas</option>
+            </select>
+        </div>
+
+        <div class="relative">
+            <label class="block text-xs font-bold text-transparent mb-1.5 select-none" aria-hidden="true">Acción</label>
+            <button id="btnLimpiarDatosAcumulados" type="button" onclick="limpiarFiltrosDatosAcumuladosV6B()"
+                    class="h-[38px] whitespace-nowrap flex items-center justify-center gap-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-700 text-slate-200 px-4 rounded-lg text-xs font-bold transition-colors duration-200"
+                    title="Borrar filtros y recalcular indicadores">
+                <svg class="h-3.5 w-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Limpiar Filtros
+            </button>
+        </div>
+    </div>
+    <div id="resumenFiltrosDatosAcumulados" class="mt-3 text-[10px] text-slate-500">Estado independiente de filtros.</div>
+</div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
@@ -1424,82 +1846,87 @@
 
         <!-- TAB 4: MONITOREO DE HOSPITALIZADOS -->
         <div id="contentHospitalizados" class="hidden space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                
-                <!-- KPI H1: TOTAL ADMISIONES HOSPITALARIAS -->
-                <div class="bg-slate-950 border border-slate-855 rounded-xl p-5 shadow-xl flex flex-col justify-between hover:scale-[1.01] transition-all duration-200 relative overflow-hidden group min-h-[140px]">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">TOTAL ADMISIONES HOSP.</p>
-                            <h3 id="kpiHospTotalPeriodo" class="text-3xl font-black text-white mt-1.5 leading-none">0</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <!-- F4.32 — Hospitalizados: KPIs uniformes con Vigilancia -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[166px]">
+                    <div>
+                        <div class="flex items-start justify-between gap-3">
+                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider">TOTAL HISTÓRICO INGRESADOS</p>
+                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 0 0-4-4h-1M9 20H2v-2a4 4 0 0 1 4-4h3m6-4a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+                            </div>
                         </div>
-                        <div class="p-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg shadow-inner">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                        </div>
+                        <p id="kpiHospPeriodoHistorico" class="text-[11px] leading-4 text-indigo-300 font-black mt-1">—</p>
+                        <h3 id="kpiHospHistoricoIngresados" class="text-2xl font-black text-white mt-2">0</h3>
                     </div>
-                    <div class="mt-4 text-[10px] text-slate-500 font-bold leading-normal">
-                        Casos internados consolidados.
-                    </div>
+                    <div class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Todos los años</div>
                 </div>
 
-                <!-- KPI H2: TASA DE SEVERIDAD CLÍNICA -->
-                <div class="bg-slate-950 border border-slate-855 rounded-xl p-5 shadow-xl flex flex-col justify-between hover:scale-[1.01] transition-all duration-200 relative overflow-hidden group min-h-[140px]">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">TASA DE SEVERIDAD CLÍNICA</p>
-                            <h3 id="kpiHospTasaSeveridad" class="text-3xl font-black text-white mt-1.5 leading-none">0.0%</h3>
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[166px]">
+                    <div>
+                        <div class="flex items-start justify-between gap-3">
+                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider">HOSPITALIZADOS SEGÚN FILTROS</p>
+                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18l-7 8v6l-4 2v-8L3 4z"/></svg>
+                            </div>
                         </div>
-                        <div class="p-2 bg-amber-500/10 border border-amber-500/20 text-amber-455 rounded-lg shadow-inner">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                        </div>
+                        <p id="kpiHospAniosFiltros" class="text-[11px] leading-4 text-emerald-300 font-black mt-1">—</p>
+                        <h3 id="kpiHospCasosFiltros" class="text-2xl font-black text-white mt-2">0</h3>
                     </div>
-                    <div class="mt-4 text-[10px] text-amber-500/90 font-extrabold leading-normal">
-                        % de ingresos sobre casos totales.
-                    </div>
+                    <div class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Años seleccionados</div>
                 </div>
 
-                <!-- KPI H3: PICO ADMISIÓN EN S.E. -->
-                <div class="bg-slate-950 border border-slate-855 rounded-xl p-5 shadow-xl flex flex-col justify-between hover:scale-[1.01] transition-all duration-200 relative overflow-hidden group min-h-[140px]">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">PICO DE ADMISIÓN (S.E.)</p>
-                            <h3 id="kpiHospMaxSemana" class="text-xl md:text-2xl font-black text-white mt-1.5 leading-none">--</h3>
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[166px]">
+                    <div>
+                        <div class="flex items-start justify-between gap-3">
+                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider">HOSPITALIZADOS REGISTRADOS</p>
+                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M8 2v3m8-3v3M4 9h16M5 4h14a1 1 0 0 1 1 1v15H4V5a1 1 0 0 1 1-1Z"/></svg>
+                            </div>
                         </div>
-                        <div class="p-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg shadow-inner">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
+                        <p id="kpiHospAnioActivoCasos" class="text-[11px] leading-4 text-rose-300 font-black mt-1">—</p>
+                        <h3 id="kpiHospCasosAnioActivo" class="text-2xl font-black text-white mt-2">0</h3>
                     </div>
-                    <div class="mt-4 text-[10px] text-slate-500 font-bold leading-normal">
-                        Demanda máxima detectada.
-                    </div>
+                    <div class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Mayor admisión hospitalaria del año activo</div>
                 </div>
 
-                <!-- KPI H4: GRUPO ETARIO PREVALENTE EN HOSPITALIZADOS -->
-                <div class="bg-slate-950 border border-slate-855 rounded-xl p-5 shadow-xl flex flex-col justify-between hover:scale-[1.01] transition-all duration-200 relative overflow-hidden group min-h-[140px]">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider font-bold">GRUPO ETARIO PREVALENTE</p>
-                            <h3 id="kpiHospGrupoPrevalente" class="text-3xl font-black text-white mt-1.5 leading-none">--</h3>
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[166px]">
+                    <div>
+                        <div class="flex items-start justify-between gap-3">
+                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap">GRUPO ETARIO</p>
+                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 20v-3a5 5 0 0 1 10 0v3m1-1v-2a4 4 0 0 1 8 0v2"/></svg>
+                            </div>
                         </div>
-                        <div class="p-2 bg-pink-500/10 border border-pink-500/20 text-pink-400 rounded-lg shadow-inner">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857" />
-                            </svg>
-                        </div>
+                        <p id="kpiHospGrupoAnios" class="text-[11px] leading-4 text-amber-300 font-black mt-1">—</p>
+                        <h3 id="kpiHospGrupoPrevalente" class="text-2xl leading-8 font-black text-white mt-2 whitespace-nowrap">—</h3>
                     </div>
-                    <div id="kpiHospGrupoDetalle" class="mt-4 text-[10px] text-pink-400/90 font-extrabold leading-normal">
-                        Prevalencia de internamiento clínico.
-                    </div>
+                    <div id="kpiHospGrupoDetalle" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Mayor concentración</div>
                 </div>
 
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[166px]">
+                    <div>
+                        <div class="flex items-start justify-between gap-3">
+                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider">PICO DE ADMISIÓN (S.E.)</p>
+                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5v15m0-5h18v5m-18-8h18v3M7 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm2 3V9h6a4 4 0 0 1 4 3"/></svg>
+                            </div>
+                        </div>
+                        <p id="kpiHospPicoAnio" class="text-[11px] leading-4 text-pink-300 font-black mt-1">—</p>
+                        <h3 id="kpiHospPicoActivo" class="text-lg font-black text-white mt-2">—</h3>
+                    </div>
+                    <div class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Año activo</div>
+                </div>
             </div>
 
+                        <!-- Compatibilidad interna Hospitalizados: IDs heredados no visibles -->
+            <div class="hidden" aria-hidden="true">
+                <span id="kpiHospTotalAnios"></span>
+                <span id="kpiHospSeveridadAnios"></span>
+                <span id="kpiHospPicoAnios"></span>
+                <span id="kpiHospTasaSeveridad"></span>
+                <span id="kpiHospMaxSemana"></span>
+            </div>
             <!-- DISTRIBUCIÓN POR CURSO DE VIDA / GRUPO DE EDAD (HOSPITALIZADOS) -->
             
 
@@ -1507,12 +1934,18 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 mb-6">
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
                 <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
-                <div class="mb-4 mt-2"><h3 class="text-sm font-bold text-slate-200">Comparativo por Año</h3><p class="text-[10px] text-slate-400">Hospitalizaciones registradas por cada año seleccionado según los filtros activos.</p></div>
+                <div class="flex justify-between items-start gap-3 mb-4 mt-2">
+                    <div><h3 class="text-sm font-bold text-slate-200">Comparativo por Año</h3><p class="text-[10px] text-slate-400">Hospitalizaciones registradas por cada año seleccionado según los filtros activos.</p></div>
+                    <div class="text-right text-xs leading-normal select-none shrink-0 font-sans"><div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑOS: <span id="txtHospGrafAnualAnios" class="text-red-500 font-black">--</span></div></div>
+                </div>
                 <div class="h-[320px] w-full relative"><canvas id="chartHospComparativoAnual"></canvas><div id="estadoChartHospAnual" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">Sin datos hospitalarios para la selección.</div></div>
             </div>
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
                 <div class="absolute top-0 left-0 right-0 h-1 bg-violet-600"></div>
-                <div class="mb-4 mt-2"><h3 class="text-sm font-bold text-slate-200">Distribución por Edades</h3><p class="text-[10px] text-slate-400">Distribución de hospitalizados por los grupos etarios disponibles en el repositorio activo.</p></div>
+                <div class="flex justify-between items-start gap-3 mb-4 mt-2">
+                    <div><h3 class="text-sm font-bold text-slate-200">Distribución por Edades</h3><p class="text-[10px] text-slate-400">Distribución de hospitalizados por los grupos etarios disponibles en el repositorio activo.</p></div>
+                    <div class="text-right text-xs leading-normal select-none shrink-0 font-sans"><div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑO: <span id="txtHospGrafEdadesAnios" class="text-red-500 font-black">--</span></div></div>
+                </div>
                 <div class="h-[320px] w-full relative"><canvas id="chartHospDistribucionEdades"></canvas><div id="estadoChartHospEdades" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">Sin datos hospitalarios por edad para la selección.</div></div>
             </div>
         </div>
@@ -1527,7 +1960,7 @@
                             <p class="text-[10px] text-slate-400">Una línea por año seleccionado; solo se representan semanas existentes.</p>
                         </div>
                         <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
-                            <div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑOS: <span id="txtHospSemanalAño" class="text-red-500 font-black">--</span></div>
+                            <div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑOS: <span id="txtHospGrafSemanalAnios" class="text-red-500 font-black">--</span></div>
                             <div class="hidden">TOTAL: <span id="txtHospSemanalTotal">0</span></div>
                         </div>
                     </div>
@@ -1553,7 +1986,7 @@
                             <p class="text-[10px] text-slate-400">Enero a diciembre; una línea por año seleccionado y sin completar meses inexistentes.</p>
                         </div>
                         <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
-                            <div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑOS: <span id="txtHospMensualAño" class="text-red-500 font-black">--</span></div>
+                            <div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑOS: <span id="txtHospGrafMensualAnios" class="text-red-500 font-black">--</span></div>
                             <div class="hidden">TOTAL: <span id="txtHospMensualTotal">0</span></div>
                         </div>
                     </div>
@@ -2755,7 +3188,7 @@
         function sincronizarControlesDatosAcumuladosV6B() {
             const estado = obtenerEstadoDatosAcumuladosV6B();
             const comunes = obtenerAniosComunesVigilanciaVea();
-            const contenedor = document.getElementById('aniosDatosAcumulados');
+            const contenedor = document.getElementById('dropdownAniosDatosAcumulados');
             if (contenedor) {
                 const firmaActual = comunes.join('|');
                 if (firmaActual !== firmaAniosSelectorDatosV6B) {
@@ -2763,10 +3196,12 @@
                     if (!comunes.length) {
                         contenedor.innerHTML = '<span class="text-xs text-slate-500">Sin años comunes disponibles.</span>';
                     } else {
-                        contenedor.innerHTML = comunes.map(anio => `
-                            <label class="inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-2 text-xs font-bold text-slate-300 cursor-pointer hover:border-slate-700">
-                                <input type="checkbox" id="daAnio${anio}" value="${anio}" onchange="cambiarAnioDatosAcumuladosV6B(${anio}, this.checked)" class="rounded border-slate-700 bg-slate-900 text-red-500 focus:ring-red-500">
-                                <span>${anio}</span>
+                        contenedor.innerHTML = comunes.slice().sort((a,b)=>b-a).map(anio => `
+                            <label class="flex items-center gap-3 p-2.5 hover:bg-slate-900 rounded-lg cursor-pointer text-xs font-semibold text-slate-300 transition-colors w-full select-none">
+                                <input type="checkbox" id="daAnio${anio}" value="${anio}"
+                                       onchange="cambiarAnioDatosAcumuladosV6B(${anio}, this.checked)"
+                                       class="w-4 h-4 rounded text-red-500 bg-slate-950 border-slate-800 focus:ring-0 accent-red-500">
+                                <span>AÑO ${anio}</span>
                             </label>`).join('');
                     }
                 }
@@ -2781,7 +3216,7 @@
             const txtAnios = document.getElementById('txtAniosDatosAcumulados');
             if (txtAnios) {
                 txtAnios.textContent = aniosSeleccionados.length
-                    ? `Años: ${aniosSeleccionados.join(' · ')}`
+                    ? aniosSeleccionados.join(', ')
                     : 'Seleccionar años';
             }
 
@@ -2813,7 +3248,7 @@
             const txtAnios = document.getElementById('txtAniosDatosAcumulados');
             if (txtAnios) {
                 txtAnios.textContent = aniosSeleccionados.length
-                    ? `Años: ${aniosSeleccionados.join(' · ')}`
+                    ? aniosSeleccionados.join(', ')
                     : 'Seleccionar años';
             }
             const resumen = document.getElementById('resumenFiltrosDatosAcumulados');
@@ -2881,7 +3316,7 @@
             paginaTablaDatosV6B = 1;
             matrizDatosAcumuladosPendienteV6B = true;
             tablaDatosAcumuladosPendienteV6B = true;
-            document.querySelectorAll('#aniosDatosAcumulados input[type="checkbox"]').forEach(checkbox => {
+            document.querySelectorAll('#dropdownAniosDatosAcumulados input[type="checkbox"]').forEach(checkbox => {
                 checkbox.checked = false;
             });
             sincronizarResumenAniosDatosAcumuladosV6B();
@@ -4470,7 +4905,7 @@
                         const checked = estadoCasosIndividualesV21.anios.includes(anio) ? 'checked' : '';
                         return `<label class="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-2 text-xs font-bold text-slate-300 cursor-pointer hover:border-slate-700 mb-1 last:mb-0">
                             <input type="checkbox" value="${anio}" ${checked} onchange="cambiarAnioCasosIndividualesV21(${anio}, this.checked)" class="rounded border-slate-700 bg-slate-900 text-red-500 focus:ring-red-500">
-                            <span>${anio}</span>
+                            <span>AÑO ${anio}</span>
                         </label>`;
                     }).join('');
                 }
@@ -5195,17 +5630,11 @@
         }
 
         function veaEjecutarTareasCooperativasF323(tab, tareas) {
-            const token = ++veaRenderCoopTokenF323;
-            let i = 0;
-            const siguiente = () => {
-                if (token !== veaRenderCoopTokenF323 || tabActiva !== tab) return;
-                if (i >= tareas.length) return;
-                const tarea = tareas[i++];
-                try { tarea(); } catch (e) { console.warn('[VEA Render cooperativo 3.23]', tab, e); }
-                // Ceder SIEMPRE tras cada KPI/gráfico.
-                setTimeout(siguiente, 0);
-            };
-            requestAnimationFrame(siguiente);
+            if (tabActiva !== tab) return;
+            tareas.forEach(tarea => {
+                if (tabActiva !== tab) return;
+                try { tarea(); } catch (e) { console.warn('[VEA Render F4.48]', tab, e); }
+            });
         }
 
         function ejecutarRenderModuloNavegacionVea(tab) {
@@ -5262,22 +5691,12 @@
 
         function programarRenderModuloNavegacionVea(tab) {
             if (!Object.prototype.hasOwnProperty.call(cacheRenderNavegacionVea, tab)) return;
-
             const firma = obtenerFirmaModuloNavegacionVea(tab);
             if (cacheRenderNavegacionVea[tab] === firma) return;
-
-            if (framesRenderNavegacionVea[tab] !== null) {
-                cancelAnimationFrame(framesRenderNavegacionVea[tab]);
-            }
-
-            framesRenderNavegacionVea[tab] = requestAnimationFrame(() => {
-                framesRenderNavegacionVea[tab] = null;
-                if (tabActiva !== tab) return;
-
-                const firmaActual = obtenerFirmaModuloNavegacionVea(tab);
-                ejecutarRenderModuloNavegacionVea(tab);
-                cacheRenderNavegacionVea[tab] = firmaActual;
-            });
+            if (tabActiva !== tab) return;
+            ejecutarRenderModuloNavegacionVea(tab);
+            sincronizarVisualModuloInmediatoVea();
+            cacheRenderNavegacionVea[tab] = obtenerFirmaModuloNavegacionVea(tab);
         }
 
 
@@ -5420,34 +5839,9 @@
         function diferirRenderNavegacionF311(tab, tarea, espera = 0) {
             const token = Symbol(tab);
             veaRenderPendienteF311.set(tab, token);
-
-            // FASE 4.02: móvil/tablet sin espera artificial.
-            // El panel se pinta primero y el trabajo comienza en el frame siguiente.
-            if (veaDispositivoLimitadoF321()) {
-                if (veaTimerRenderMovilF322) {
-                    clearTimeout(veaTimerRenderMovilF322);
-                    veaTimerRenderMovilF322 = null;
-                }
-                requestAnimationFrame(() => {
-                    if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
-                    requestAnimationFrame(() => {
-                        if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
-                        veaRenderPendienteF311.delete(tab);
-                        try { tarea(); } catch (err) { console.warn('[VEA Navegación 4.03]', tab, err); }
-                    });
-                });
-                return;
-            }
-
-            // PC/laptop conserva el comportamiento ya validado.
-            requestAnimationFrame(() => {
-                if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
-                requestAnimationFrame(() => {
-                    if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
-                    veaRenderPendienteF311.delete(tab);
-                    try { tarea(); } catch (err) { console.warn('[VEA Navegación 3.12]', tab, err); }
-                });
-            });
+            if (tabActiva !== tab) return;
+            veaRenderPendienteF311.delete(tab);
+            try { tarea(); } catch (err) { console.warn('[VEA Navegación F4.48]', tab, err); }
         }
 
 
@@ -5617,11 +6011,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                             console.warn('[VEA Casos Individuales 3.13]', e);
                         }
                     };
-                    if ('requestIdleCallback' in window) {
-                        requestIdleCallback(renderCasos, { timeout: 450 });
-                    } else {
-                        setTimeout(renderCasos, 120);
-                    }
+                    renderCasos();
                 } else if (tab === 'soat') {
                     if (veaDispositivoLimitadoF321() &&
                         (window.__veaSoatPreparadoF326 ||
@@ -5631,11 +6021,10 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                         const firmaSoatF402 = soatFirmaVisualV1();
                         const filtradosSoatF402 = soatFiltrarV1();
                         soatRenderKpisV1(filtradosSoatF402);
-                        requestAnimationFrame(() => {
-                            if (tabActiva !== 'soat') return;
+                        if (tabActiva === 'soat') {
                             soatRenderChartsV1(filtradosSoatF402);
                             soatEstadoV1.firmaVisual = firmaSoatF402;
-                        });
+                        }
                     } else if (window.__veaSoatPreparadoF326 ||
                         (soatEstadoV1.datasetRef === datosModulosIndependientes.soat && soatEstadoV1.filas.length)) {
                         window.__veaSoatPreparadoF326 = false;
@@ -7415,6 +7804,11 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             }
 
             // G2 — DISTRIBUCIÓN POR GRUPO ETARIO (barras).
+            const anioEdadVigilancia = (datos.anios && datos.anios.length)
+                ? Math.max(...datos.anios.map(Number))
+                : '—';
+            const txtVeaEdadAnioActivo = document.getElementById('txtVeaEdadAnioActivo');
+            if (txtVeaEdadAnioActivo) txtVeaEdadAnioActivo.textContent = String(anioEdadVigilancia);
             const ctxEdades = document.getElementById('chartDistribucionEdadesVea');
             if (ctxEdades) {
                 chartDistribucionEdadesVeaInstance = new Chart(ctxEdades.getContext('2d'), {
@@ -7476,7 +7870,22 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                     options: opcionesBase
                 });
             }
-        }
+        
+            // F4.37 — estabilización de render Chart.js en Vigilancia.
+            // Los canvas pueden venir de un panel previamente oculto; resize/update
+            // se ejecuta después de que el navegador haya calculado su tamaño real.
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                [
+                    chartComparativoAnualVeaInstance,
+                    chartDistribucionEdadesVeaInstance,
+                    chartSemanalMultianualMinsaInstance,
+                    chartComparativoMensualMinsaInstance
+                ].forEach(chart => {
+                    if (!chart) return;
+                    try { chart.resize(); chart.update('none'); } catch (e) {}
+                });
+            }));
+}
 
         
         // --- FASE 5B: motor hospitalario real, derivado del motor central de filtros ---
@@ -7584,11 +7993,18 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
 
             limpiarGraficosHospitalVea();
 
-            const txtMensualAnio = document.getElementById('txtHospMensualAño');
-            const txtSemanalAnio = document.getElementById('txtHospSemanalAño');
+            const txtMensualAnio = document.getElementById('txtHospGrafMensualAnios');
+            const txtSemanalAnio = document.getElementById('txtHospGrafSemanalAnios');
+            const txtAnualAnios = document.getElementById('txtHospGrafAnualAnios');
+            const txtEdadesAnios = document.getElementById('txtHospGrafEdadesAnios');
             const textoAnios = aniosSeleccionados.length ? aniosSeleccionados.join(', ') : '—';
             if (txtMensualAnio) txtMensualAnio.textContent = textoAnios;
             if (txtSemanalAnio) txtSemanalAnio.textContent = textoAnios;
+            if (txtAnualAnios) txtAnualAnios.textContent = textoAnios;
+            if (txtEdadesAnios) {
+                const anioEdadHosp = aniosSeleccionados.length ? Math.max(...aniosSeleccionados.map(Number)) : '—';
+                txtEdadesAnios.textContent = anioEdadHosp;
+            }
 
             if (!datasetEvento.length || !aniosSeleccionados.length) {
                 const neutros = {
@@ -7645,9 +8061,38 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
 
             const totalHospitalizados = sumarHospitalizadosVea(registrosFiltrados);
             const totalCasos = sumarCasosVigilancia(registrosFiltrados);
+            // F4.32 — KPIs Hospitalizados alineados al Dashboard de Vigilancia.
+            // Mantiene el mismo universo de filtros y no altera cálculos epidemiológicos.
+            const aniosDatasetHosp = [...new Set(datasetEvento.map(r => Number(r.ANO)).filter(Number.isFinite))].sort((a,b)=>a-b);
+            const minAnioHosp = aniosDatasetHosp.length ? aniosDatasetHosp[0] : null;
+            const maxAnioHosp = aniosDatasetHosp.length ? aniosDatasetHosp[aniosDatasetHosp.length - 1] : null;
+            const anioActivoHosp = aniosSeleccionados.length ? Math.max(...aniosSeleccionados) : maxAnioHosp;
+            const regsAnioActivoHosp = registrosFiltrados.filter(r => Number(r.ANO) === Number(anioActivoHosp));
+            const hospitalizadosAnioActivo = sumarHospitalizadosVea(regsAnioActivoHosp);
+            // F4.33 — TODOS estos KPIs se alimentan exclusivamente de TO_HOS/HOSP_EDADES_VEA.
+            // Ya no se reutiliza CASOS de EDAs, IRAs, SOBA o Febriles para las tarjetas de Hospitalizados.
+            const totalHistoricoHospitalizados = sumarHospitalizadosVea(datasetEvento);
+
+            const setHospKpi = (id, valor) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = valor;
+            };
+            setHospKpi('kpiHospPeriodoHistorico', minAnioHosp !== null && maxAnioHosp !== null ? `${minAnioHosp} – ${maxAnioHosp}` : '—');
+            setHospKpi('kpiHospHistoricoIngresados', totalHistoricoHospitalizados.toLocaleString('es-PE'));
+            setHospKpi('kpiHospAniosFiltros', aniosSeleccionados.join(' · ') || '—');
+            setHospKpi('kpiHospCasosFiltros', totalHospitalizados.toLocaleString('es-PE'));
+            setHospKpi('kpiHospAnioActivoCasos', anioActivoHosp ?? '—');
+            setHospKpi('kpiHospCasosAnioActivo', hospitalizadosAnioActivo.toLocaleString('es-PE'));
+            setHospKpi('kpiHospGrupoAnios', anioActivoHosp ?? '—');
+            setHospKpi('kpiHospPicoAnio', anioActivoHosp ?? '—');
+            const etiquetaAniosHosp = (aniosSeleccionados || []).slice().sort((a,b)=>a-b).join(' · ') || '—';
+            ['kpiHospTotalAnios','kpiHospSeveridadAnios','kpiHospPicoAnios','kpiHospGrupoAnios'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.textContent = etiquetaAniosHosp;
+            });
             const kpiTotal = document.getElementById('kpiHospTotalPeriodo');
             const kpiSeveridad = document.getElementById('kpiHospTasaSeveridad');
-            if (kpiTotal) kpiTotal.textContent = totalHospitalizados.toLocaleString();
+            // F4.33: los KPIs visibles se sincronizan arriba exclusivamente con datos hospitalarios.
+            if (kpiTotal) kpiTotal.textContent = hospitalizadosAnioActivo.toLocaleString('es-PE');
             if (kpiSeveridad) {
                 kpiSeveridad.textContent = totalCasos > 0
                     ? `${((totalHospitalizados / totalCasos) * 100).toFixed(1)}%`
@@ -7655,9 +8100,10 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             }
 
             // Pico: primero consolida obligatoriamente Año + S.E. mediante SUMA.
-            const mapaSemanalFiltrado = agruparHospitalizadosPorAnioSemanaVea(registrosFiltrados);
+            const mapaSemanalFiltrado = agruparHospitalizadosPorAnioSemanaVea(regsAnioActivoHosp);
             const observacionesSemanales = [...mapaSemanalFiltrado.values()];
             const kpiPico = document.getElementById('kpiHospMaxSemana');
+            const kpiPicoActivo = document.getElementById('kpiHospPicoActivo');
             if (kpiPico) {
                 if (!observacionesSemanales.length) {
                     kpiPico.textContent = '—';
@@ -7675,10 +8121,24 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                     }
                 }
             }
+            if (kpiPicoActivo) {
+                if (!observacionesSemanales.length) {
+                    kpiPicoActivo.textContent = '—';
+                } else {
+                    const maximoActivo = Math.max(...observacionesSemanales.map(d => d.hospitalizados));
+                    const picoActivo = observacionesSemanales
+                        .filter(d => d.hospitalizados === maximoActivo)
+                        .sort((a,b) => a.semana - b.semana)[0];
+                    kpiPicoActivo.textContent = picoActivo
+                        ? `S.E. ${picoActivo.semana} · ${maximoActivo.toLocaleString('es-PE')} hosp.`
+                        : '—';
+                }
+            }
 
             // Grupo etario prevalente: solo columnas hospitalarias REALES expuestas por los parsers.
             const totalesEdad = new Map(configuracion.edades.map(g => [g.campo, 0]));
-            registrosFiltrados.forEach(item => {
+            // F4.33 — KPI Grupo Etario corresponde al año activo mostrado en la tarjeta.
+            regsAnioActivoHosp.forEach(item => {
                 configuracion.edades.forEach(g => {
                     const valor = Number(item.HOSP_EDADES_VEA?.[g.campo]) || 0;
                     totalesEdad.set(g.campo, (totalesEdad.get(g.campo) || 0) + valor);
@@ -7694,11 +8154,11 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             });
             if (kpiGrupo) {
                 kpiGrupo.className = 'text-lg font-black text-white mt-1';
-                kpiGrupo.textContent = totalHospitalizados > 0 && grupoMax?.valor > 0 ? grupoMax.etiqueta : '—';
+                kpiGrupo.textContent = hospitalizadosAnioActivo > 0 && grupoMax?.valor > 0 ? grupoMax.etiqueta : '—';
             }
             if (detalleGrupo) {
-                if (totalHospitalizados > 0 && grupoMax?.valor > 0) {
-                    detalleGrupo.textContent = `${grupoMax.valor.toLocaleString()} hospitalizados (${((grupoMax.valor / totalHospitalizados) * 100).toFixed(1)}%).`;
+                if (hospitalizadosAnioActivo > 0 && grupoMax?.valor > 0) {
+                    detalleGrupo.textContent = `${grupoMax.valor.toLocaleString('es-PE')} hospitalizados (${((grupoMax.valor / hospitalizadosAnioActivo) * 100).toFixed(1)}%).`;
                 } else {
                     detalleGrupo.textContent = registrosFiltrados.length ? 'Sin hospitalizaciones registradas en el universo filtrado.' : 'Sin datos en la selección.';
                 }
@@ -7724,7 +8184,14 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             // F4.26 — Distribución por Edades con HOSP_EDADES_VEA real ya consolidado.
             if (chartHospDistribucionEdadesInstance) { chartHospDistribucionEdadesInstance.destroy(); chartHospDistribucionEdadesInstance = null; }
             const etiquetasEdadHosp = configuracion.edades.map(g => g.etiqueta);
-            const valoresEdadHosp = configuracion.edades.map(g => totalesEdad.get(g.campo) || 0);
+            const totalesEdadGrafico = new Map(configuracion.edades.map(g => [g.campo, 0]));
+            registrosFiltrados.forEach(item => {
+                configuracion.edades.forEach(g => {
+                    const valor = Number(item.HOSP_EDADES_VEA?.[g.campo]) || 0;
+                    totalesEdadGrafico.set(g.campo, (totalesEdadGrafico.get(g.campo) || 0) + valor);
+                });
+            });
+            const valoresEdadHosp = configuracion.edades.map(g => totalesEdadGrafico.get(g.campo) || 0);
             const ctxHospEdades = document.getElementById('chartHospDistribucionEdades');
             setEstadoGraficoHospitalVea('estadoChartHospEdades', !valoresEdadHosp.some(v => v > 0), 'Sin hospitalizaciones por edad para los filtros activos.');
             if (ctxHospEdades && valoresEdadHosp.some(v => v > 0)) {
@@ -9160,15 +9627,11 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             // pesados antes de que el botón de menú y la navegación puedan responder.
             aplicarEstadoVeaSidebar();
             cambiarTab('dashboard');
-            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
             cargarFiltrosPersistidos();
             restaurarEstadoFiltrosEvento(selectedEvent);
             aplicarTemaGraficoYBotones();
-            if (window.innerWidth >= 768) {
-                actualizarCalculosYGraficos();
-                renderizarModulosDinamicosVea();
-            }
+            actualizarCalculosYGraficos();
+            renderizarModulosDinamicosVea();
 
             // FASE 3.6: primero presenta el último dataset validado; luego refresca desde Supabase.
             // En la primera ejecución (sin caché) continúa con la carga remota normal.
@@ -9210,6 +9673,102 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 console.error('[VEA Supabase] Error de inicialización:', err);
             }
         };
-    </script>
+    
+        
+        // F4.43 — REFRESCO VISUAL SEGURO DE GRÁFICOS ACTIVOS
+        function refrescarGraficosVisiblesVea() {
+            requestAnimationFrame(() => {
+                try {
+                    if (typeof Chart === 'undefined' || !Chart.instances) return;
+                    const charts = Chart.instances instanceof Map
+                        ? Array.from(Chart.instances.values())
+                        : Object.values(Chart.instances);
+                    charts.forEach(chart => {
+                        try {
+                            if (!chart || !chart.canvas) return;
+                            const rect = chart.canvas.getBoundingClientRect();
+                            if (rect.width > 0 && rect.height > 0) {
+                                chart.resize();
+                                chart.update('none');
+                            }
+                        } catch (_) {}
+                    });
+                } catch (_) {}
+            });
+        }
+        window.addEventListener('resize', refrescarGraficosVisiblesVea);
+
+
+        // F4.44 — ACTIVACIÓN VISUAL CONTROLADA DE GRÁFICOS DE HOSPITALIZADOS
+        function activarGraficosHospitalizadosVea() {
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                try {
+                    if (typeof Chart === 'undefined') return;
+                    const idsHospitalizados = [
+                        'chartHospComparativoAnual',
+                        'chartHospDistribucionEdades',
+                        'chartHospSemanalMultianual',
+                        'chartHospComparativoMensual'
+                    ];
+                    idsHospitalizados.forEach(id => {
+                        const canvas = document.getElementById(id);
+                        if (!canvas) return;
+                        const rect = canvas.getBoundingClientRect();
+                        if (rect.width <= 0 || rect.height <= 0) return;
+
+                        let chart = null;
+                        try {
+                            if (typeof Chart.getChart === 'function') chart = Chart.getChart(canvas);
+                        } catch (_) {}
+
+                        if (!chart && Chart.instances) {
+                            const instancias = Chart.instances instanceof Map
+                                ? Array.from(Chart.instances.values())
+                                : Object.values(Chart.instances);
+                            chart = instancias.find(c => c && c.canvas === canvas) || null;
+                        }
+
+                        if (chart) {
+                            try {
+                                chart.resize();
+                                chart.update('none');
+                            } catch (_) {}
+                        }
+                    });
+                } catch (_) {}
+            }));
+        }
+
+        // Se ejecuta después de navegación/cambio de filtros, únicamente si
+        // Hospitalizados ya está visible. No crea ni altera datos.
+        function activarHospitalizadosSiVisible() {
+            const c = document.getElementById('chartHospComparativoAnual');
+            if (!c) return;
+            const r = c.getBoundingClientRect();
+            if (r.width > 0 && r.height > 0) activarGraficosHospitalizadosVea();
+        }
+        window.addEventListener('resize', activarHospitalizadosSiVisible);
+
+</script>
+
+
+
+
+
+
+<script>
+function toggleAniosDropdownDatosAcumuladosV656(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    const dropdown=document.getElementById('dropdownAniosDatosAcumulados');
+    if(dropdown) dropdown.classList.toggle('hidden');
+}
+document.addEventListener('click', function(event){
+    const dropdown=document.getElementById('dropdownAniosDatosAcumulados');
+    const btn=document.getElementById('btnDropdownAniosDatosAcumulados');
+    if(dropdown && btn && !btn.contains(event.target) && !dropdown.contains(event.target)){
+        dropdown.classList.add('hidden');
+    }
+});
+</script>
 </body>
 </html>

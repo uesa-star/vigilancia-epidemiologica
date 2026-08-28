@@ -1227,6 +1227,9 @@
 }
 
 @media(max-width:420px){.resumenGeneralKpis{grid-template-columns:1fr}.kpi{min-height:76px}}
+
+/* F4.95 reemplazado por F4.96 dentro del CSS real del boletín. */
+
 </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -10803,7 +10806,222 @@ table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;te
 .bottom{display:grid;grid-template-columns:1.05fr .9fr 1.05fr;gap:8px;margin-top:8px}.textblock{font-size:8px;line-height:1.55}.checks div{margin:5px 0}.checks span{color:#29913c;font-weight:900;margin-right:4px}
 .footer{background:#07306f;color:#fff;margin-top:8px;padding:5px 8px;display:flex;justify-content:space-between;font-size:7px}
 .actions{position:fixed;right:12px;bottom:12px;display:flex;gap:6px;z-index:10}.actions button{border:0;border-radius:6px;padding:9px 11px;font-weight:800;cursor:pointer}.pdf{background:#d71920;color:white}.print{background:#07306f;color:white}.close{background:#e8edf4;color:#172033}
-@media print{.actions{display:none}.card{break-inside:avoid}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.boletinDoc{width:100%;max-width:1120px;margin:0 auto}}
+/* F4.93 — MODO A4 COMPACTO: misma información, menor altura y proporción estable */
+.boletinDoc{max-width:1120px}
+.boletinDoc .hero{padding:7px 11px;min-height:58px}
+.boletinDoc .heroHospital{font-size:11px;margin-bottom:1px}
+.boletinDoc .hero h1{font-size:18px;line-height:1}
+.boletinDoc .hero p{font-size:8px;margin-top:3px}
+.boletinDoc .sebox{padding:5px 9px;min-width:118px}
+.boletinDoc .sebox b{font-size:18px}
+.boletinDoc .sebox small{font-size:6.7px;margin-top:2px}
+.boletinDoc .meta{padding:5px 4px}
+.boletinDoc .sectionHeading{font-size:9px;padding:5px 8px;margin:6px 0 5px}
+.boletinDoc .kpis{gap:4px;margin-bottom:5px}
+.boletinDoc .resumenGeneralKpis .kpi{min-height:72px;padding:4px;grid-template-rows:20px minmax(22px,auto) 13px 17px}
+.boletinDoc .resumenGeneralKpis .kpiIcon{left:4px;top:4px;width:17px;height:17px;font-size:9px}
+.boletinDoc .resumenGeneralKpis .kpi label{font-size:5.2px;padding-left:19px;min-height:17px}
+.boletinDoc .resumenGeneralKpis .kpi strong{font-size:16px;min-height:22px}
+.boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{font-size:7.5px;line-height:1.02;min-height:22px}
+.boletinDoc .resumenGeneralKpis .kpi small{font-size:6px;min-height:13px}
+.boletinDoc .resumenGeneralKpis .kpi em{font-size:5.7px;min-height:17px;padding-top:2px}
+.boletinDoc .grid2{gap:5px;margin-top:5px}
+.boletinDoc .card{border-radius:4px}
+.boletinDoc .title{font-size:8.2px;padding:4px 6px;line-height:1.1}
+.boletinDoc .body{padding:4px 6px}
+.boletinDoc .analysis{padding:4px 6px;font-size:6.5px;line-height:1.2;min-height:25px}
+.boletinDoc .legend{font-size:5.8px;gap:6px}
+.boletinDoc .legendTop{padding:2px 4px;margin-bottom:2px;gap:8px}
+.boletinDoc .legend i{width:8px;height:2px}
+.boletinDoc svg{display:block;max-height:142px}
+.boletinDoc table{font-size:6.7px}
+.boletinDoc th,.boletinDoc td{padding:2.6px 3px;line-height:1.05}
+.boletinDoc .tablaComparativoEvento th{font-size:6.2px}
+.boletinDoc .tablaComparativoEvento td{font-size:6.4px}
+.boletinDoc .comparativoEventoCard .body{padding:4px 6px}
+.boletinDoc .footer{margin-top:5px;padding:3px 6px;font-size:6px}
+
+/* F4.94 — IMPRESIÓN A4 A HOJA COMPLETA
+   Corrige el exceso de reducción de F4.93. El boletín ocupa el ancho imprimible
+   del A4 y distribuye su contenido verticalmente sin deformar gráficos/tablas. */
+@media print{
+  @page{size:A4 portrait;margin:3mm}
+  html,body{
+    width:210mm!important;
+    min-height:297mm!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+  }
+  body{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    overflow:visible!important;
+  }
+  .actions{display:none!important}
+  .boletinDoc{
+    box-sizing:border-box!important;
+    width:204mm!important;
+    max-width:204mm!important;
+    min-height:289mm!important;
+    margin:0 auto!important;
+    padding:0!important;
+    zoom:1!important;
+    transform:none!important;
+    transform-origin:top center!important;
+  }
+
+  /* Aprovechar la hoja: compacto, pero legible */
+  .boletinDoc .hero{min-height:52px;padding:6px 9px}
+  .boletinDoc .hero h1{font-size:16px}
+  .boletinDoc .heroHospital{font-size:9px}
+  .boletinDoc .hero p{font-size:7px}
+  .boletinDoc .sebox{min-width:105px;padding:4px 7px}
+  .boletinDoc .sebox b{font-size:16px}
+  .boletinDoc .meta{padding:4px 3px;font-size:6.7px}
+  .boletinDoc .sectionHeading{margin:4px 0 4px;padding:4px 7px;font-size:8.2px}
+  .boletinDoc .kpis{gap:3px;margin-bottom:4px}
+  .boletinDoc .resumenGeneralKpis .kpi{
+    min-height:65px;
+    padding:3px;
+    grid-template-rows:18px minmax(20px,auto) 12px 15px
+  }
+  .boletinDoc .resumenGeneralKpis .kpi label{font-size:4.8px;padding-left:17px}
+  .boletinDoc .resumenGeneralKpis .kpi strong{font-size:14px}
+  .boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{font-size:6.8px}
+  .boletinDoc .resumenGeneralKpis .kpi small{font-size:5.5px}
+  .boletinDoc .resumenGeneralKpis .kpi em{font-size:5.1px}
+  .boletinDoc .resumenGeneralKpis .kpiIcon{width:15px;height:15px;font-size:8px}
+
+  .boletinDoc .grid2{gap:4px;margin-top:4px;align-items:stretch}
+  .boletinDoc .card{break-inside:avoid;page-break-inside:avoid}
+  .boletinDoc .title{font-size:7.4px;padding:3px 5px}
+  .boletinDoc .body{padding:3px 5px}
+  .boletinDoc .analysis{padding:3px 5px;font-size:5.8px;line-height:1.15;min-height:20px}
+  .boletinDoc .legend{font-size:5.1px;gap:5px}
+  .boletinDoc .legendTop{padding:1px 3px;margin-bottom:1px;gap:6px}
+  .boletinDoc svg{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    max-height:118px!important;
+  }
+  .boletinDoc table{font-size:5.9px}
+  .boletinDoc th,.boletinDoc td{padding:2px 2.5px;line-height:1.02}
+  .boletinDoc .tablaComparativoEvento th{font-size:5.5px}
+  .boletinDoc .tablaComparativoEvento td{font-size:5.7px}
+  .boletinDoc .footer{margin-top:4px;padding:3px 5px;font-size:5.5px}
+
+  .card,.grid2,.kpis,.hero,.meta,.sectionHeading,.footer{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+}
+
+/* F4.96 — A4 OCUPACIÓN TOTAL — aplicado dentro del documento del BOLETÍN */
+@media print{
+  @page{size:A4 portrait;margin:3mm}
+
+  html,body{
+    width:204mm!important;
+    height:291mm!important;
+    min-height:291mm!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+
+  .boletinDoc{
+    width:204mm!important;
+    max-width:204mm!important;
+    height:291mm!important;
+    min-height:291mm!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    grid-template-rows:auto auto auto auto 1fr auto auto!important;
+    align-content:stretch!important;
+    box-sizing:border-box!important;
+  }
+
+  .boletinDoc .hero{min-height:16mm!important}
+  .boletinDoc .meta{min-height:8mm!important;align-items:center!important}
+  .boletinDoc .sectionHeading{min-height:7mm!important;display:flex!important;align-items:center!important}
+  .boletinDoc .kpis{min-height:24mm!important}
+
+  /* 3 filas principales: 2/3, 4/5 y 6/7. Ocupan el espacio central disponible */
+  .boletinDoc .grid2{
+    height:184mm!important;
+    min-height:184mm!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    grid-template-rows:repeat(3,1fr)!important;
+    gap:2mm!important;
+    margin-top:1.5mm!important;
+    align-items:stretch!important;
+  }
+  .boletinDoc .grid2>.card{
+    height:100%!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  .boletinDoc .grid2>.card>.body{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+  }
+  .boletinDoc .grid2>.card>.analysis{
+    flex:0 0 auto!important;
+    min-height:8mm!important;
+  }
+
+  /* Los gráficos crecen realmente dentro de cada tarjeta */
+  .boletinDoc .grid2 svg{
+    width:100%!important;
+    height:42mm!important;
+    max-height:42mm!important;
+    min-height:42mm!important;
+  }
+
+  /* Los comparativos aprovechan la altura de su tarjeta */
+  .boletinDoc .comparativoEventoCard .body{
+    justify-content:flex-start!important;
+  }
+  .boletinDoc .tablaComparativoEvento{
+    width:100%!important;
+  }
+  .boletinDoc .tablaComparativoEvento th,
+  .boletinDoc .tablaComparativoEvento td{
+    padding-top:1.15mm!important;
+    padding-bottom:1.15mm!important;
+  }
+
+  /* Bloques finales 8–10 */
+  .boletinDoc .bottom{
+    min-height:31mm!important;
+    height:31mm!important;
+    margin-top:2mm!important;
+    gap:2mm!important;
+    align-items:stretch!important;
+  }
+  .boletinDoc .bottom>.card{
+    height:31mm!important;
+    overflow:hidden!important;
+  }
+
+  /* Pie pegado al borde inferior útil */
+  .boletinDoc .footer{
+    min-height:6mm!important;
+    height:6mm!important;
+    margin-top:1.5mm!important;
+    display:flex!important;
+    align-items:center!important;
+  }
+}
 @media(max-width:900px) and (min-width:701px){.resumenGeneralKpis{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.grid2,.bottom{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start}.heroHospital{font-size:11px}.hero h1{font-size:16px}.hero p{font-size:8px}.sebox{min-width:108px;padding:6px}.sebox b{font-size:18px}.sebox small{font-size:7px}.meta{grid-template-columns:1fr;font-size:10px;gap:6px;padding:9px 8px}.meta b{font-size:10px}.actions{position:sticky;bottom:4px;justify-content:center}}
 </style></head><body class="boletinDoc">

@@ -3,7 +3,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10751,10 +10750,12 @@ function abrirAvisoBoletinSEVea(){
   const totalIndividualVar=totalIndividualActual-totalIndividualPrev;
   const totalIndividualPct=totalIndividualPrev?(totalIndividualVar/totalIndividualPrev*100):null;
   const analisisIndividualComparativo=(()=>{
-    if(!comparativoIndividualTop.length) return `No se registran casos individuales en la S.E. ${se}.`;
+    if(!comparativoIndividualTop.length) return `En la S.E. ${se} no se registraron casos individuales.`;
     const principal=comparativoIndividualTop[0];
-    const tendencia=principal.variacion>0?'aumentó':principal.variacion<0?'disminuyó':'se mantuvo';
-    return `${principal.nombre}: ${principal.actual.toLocaleString('es-PE')} caso(s) en S.E. ${se}; ${tendencia} frente a S.E. ${seAnt??'anterior'}.`;
+    const cambio=totalIndividualVar>0?'aumentaron':totalIndividualVar<0?'disminuyeron':'se mantuvieron';
+    const magnitud=Math.abs(totalIndividualVar).toLocaleString('es-PE');
+    const porcentaje=totalIndividualPct===null?'':` (${pctTxt(totalIndividualPct)})`;
+    return `Los casos individuales ${cambio} de ${totalIndividualPrev.toLocaleString('es-PE')} a ${totalIndividualActual.toLocaleString('es-PE')} frente a la S.E. ${seAnt??'anterior'}: ${magnitud} caso(s)${porcentaje}. Predominó ${principal.nombre}.`;
   })();
 
   const colorEvento={'IRAs':'#1455c0','Febriles':'#e32636','EDAs Acuosas':'#65a83d','EDAs Disentéricas':'#6d45ad','SOBA':'#0aa5bf'};
@@ -10847,24 +10848,32 @@ function abrirAvisoBoletinSEVea(){
   const totalHospVar=totalHospActualComp-totalHospPrevComp;
   const totalHospPct=totalHospPrevComp?(totalHospVar/totalHospPrevComp*100):null;
   const analisisHospComparativo=(()=>{
-    const suben=hospComparativo.filter(x=>x.variacion>0).sort((a,b)=>b.variacion-a.variacion).slice(0,2).map(x=>x.nombre);
-    const bajan=hospComparativo.filter(x=>x.variacion<0).sort((a,b)=>a.variacion-b.variacion).slice(0,2).map(x=>x.nombre);
-    const partes=[];
-    if(suben.length) partes.push(`Aumentaron: ${suben.join(' y ')}`);
-    if(bajan.length) partes.push(`Disminuyeron: ${bajan.join(' y ')}`);
-    return partes.length?`${partes.join('; ')} frente a S.E. ${seAnt??'anterior'}.`:`Sin variación de hospitalizados frente a S.E. ${seAnt??'anterior'}.`;
+    if(totalHospVar===0) return `No se observó variación: las S.E. ${seAnt??'anterior'} y ${se} registraron ${totalHospActualComp.toLocaleString('es-PE')} hospitalización(es).`;
+    const cambio=totalHospVar>0?'aumentaron':'disminuyeron';
+    const porcentaje=totalHospPct===null?'':` (${pctTxt(totalHospPct)})`;
+    const principal=[...hospComparativo].sort((a,b)=>Math.abs(b.variacion)-Math.abs(a.variacion))[0];
+    return `Las hospitalizaciones ${cambio} de ${totalHospPrevComp.toLocaleString('es-PE')} a ${totalHospActualComp.toLocaleString('es-PE')}: ${Math.abs(totalHospVar).toLocaleString('es-PE')} caso(s)${porcentaje}. Mayor variación: ${principal?.nombre||'sin evento predominante'}.`;
   })();
 
   const indivRows=(dxTop.length?dxTop:[['Sin registros individuales',0]]).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v}</td><td>${inds.length?(v/inds.length*100).toFixed(1):'0.0'}%</td></tr>`).join('');
 
   const analisisComparativo=(()=>{
-    const suben=filasEvento.filter(x=>x.variacion>0).sort((a,b)=>b.variacion-a.variacion).slice(0,2).map(x=>x.nombre);
-    const bajan=filasEvento.filter(x=>x.variacion<0).sort((a,b)=>a.variacion-b.variacion).slice(0,2).map(x=>x.nombre);
-    let s=[];
-    if(suben.length)s.push(`Aumentaron: ${suben.join(' y ')}`);
-    if(bajan.length)s.push(`Disminuyeron: ${bajan.join(' y ')}`);
-    return s.length?`${s.join('; ')} frente a S.E. ${seAnt??'anterior'}.`:`Sin variación frente a S.E. ${seAnt??'anterior'}.`;
+    const variacion=total-totalPrev;
+    if(variacion===0) return `El total se mantuvo en ${total.toLocaleString('es-PE')} casos entre las S.E. ${seAnt??'anterior'} y ${se}.`;
+    const cambio=variacion>0?'aumentó':'disminuyó';
+    const porcentaje=totalPrev?` (${pctTxt(variacion/totalPrev*100)})`:'';
+    const principal=[...filasEvento].sort((a,b)=>Math.abs(b.variacion)-Math.abs(a.variacion))[0];
+    return `El total ${cambio} de ${totalPrev.toLocaleString('es-PE')} a ${total.toLocaleString('es-PE')}: ${Math.abs(variacion).toLocaleString('es-PE')} caso(s)${porcentaje}. Mayor variación: ${principal?.nombre||'sin evento predominante'}.`;
   })();
+
+  const lecturaTendenciaEventos=`En la S.E. ${se}, ${dominante.nombre} presentó el mayor volumen con ${dominante.casos.toLocaleString('es-PE')} casos; se mantiene la vigilancia de los demás eventos.`;
+  const lecturaTendenciaHosp=totalHosp
+    ?`En la S.E. ${se} se registraron ${totalHosp.toLocaleString('es-PE')} hospitalización(es); predominó ${hospDominante.nombre} con ${hospActual.toLocaleString('es-PE')}.`
+    :`En la S.E. ${se} no se registraron hospitalizaciones en los eventos vigilados.`;
+  const lecturaTendenciaIndividual=totalIndividualActual
+    ?`En la S.E. ${se}, el diagnóstico individual predominante fue ${individualDominanteTrend.nombre}, con ${individualActualTrend.toLocaleString('es-PE')} caso(s).`
+    :`En la S.E. ${se} no se registraron casos individuales.`;
+  const direccionGeneral=total>totalPrev?'incremento':total<totalPrev?'disminución':'estabilidad';
 
   const fecha=new Date().toLocaleDateString('es-PE');
   const zoomInicial=Math.max(.75,Math.min(1.5,Number(window.__veaBoletinZoom||1)));
@@ -10883,7 +10892,7 @@ function abrirAvisoBoletinSEVea(){
     return `${sunday.getUTCDate()} de ${meses[sunday.getUTCMonth()]} al ${saturday.getUTCDate()} de ${meses[saturday.getUTCMonth()]} del ${saturday.getUTCFullYear()}`;
   }
   const rangoSE=rangoSemanaEpidemiologicaCDC(anio,se);
-  const html=`<!doctype html><html><head><meta charset="utf-8"><title>Boletín Epidemiológico S.E. ${se} - ${anio}</title>
+  const html=`<!doctype html><html><head><meta charset="utf-8"><title>BOLETIN_EPIDEMIOLOGICO_SE_${se}_${anio}</title>
 <style>
 @page{size:A4 portrait;margin:7mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;color:#101827;background:#fff;font-size:9px}
 .hero{background:linear-gradient(90deg,#07306f,#0b438d);color:#fff;border-radius:3px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;gap:14px}
@@ -11318,10 +11327,79 @@ table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;te
     border-top:1px solid #d6e2f1;
     font-size:clamp(9px,.68vw,10.5px);
   }
+
+  /* F5.03 — cierre del boletín legible y responsive en pantalla */
+  .boletinDoc .bottom{
+    grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr) minmax(0,1.08fr);
+    gap:12px;
+    margin-top:12px;
+    align-items:stretch;
+  }
+  .boletinDoc .bottom>.card{
+    min-height:142px;
+    display:flex;
+    flex-direction:column;
+    border-radius:7px;
+    background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);
+  }
+  .boletinDoc .bottom>.card>.title{
+    flex:0 0 auto;
+    min-height:32px;
+    padding:8px 10px;
+    display:flex;
+    align-items:center;
+    font-size:clamp(10px,.78vw,12px);
+    line-height:1.18;
+    letter-spacing:.02em;
+  }
+  .boletinDoc .bottom>.card>.body{
+    flex:1 1 auto;
+    padding:12px 13px;
+    font-size:clamp(10px,.76vw,11.8px);
+    line-height:1.55;
+    color:#203653;
+  }
+  .boletinDoc .bottom .textblock{
+    font-size:clamp(10px,.76vw,11.8px);
+    line-height:1.55;
+  }
+  .boletinDoc .bottom .checks{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:7px;
+  }
+  .boletinDoc .bottom .checks div{
+    margin:0;
+    display:flex;
+    align-items:flex-start;
+    gap:6px;
+  }
+  .boletinDoc .bottom .checks span{
+    flex:0 0 auto;
+    margin:0;
+    font-size:1.05em;
+    line-height:1.4;
+  }
+  .boletinDoc .footer{
+    min-height:34px;
+    margin-top:10px;
+    padding:8px 12px;
+    align-items:center;
+    gap:14px;
+    border-radius:4px 4px 0 0;
+    font-size:clamp(9px,.68vw,10.5px);
+    line-height:1.25;
+    letter-spacing:.02em;
+  }
+  .boletinDoc .footer b,
+  .boletinDoc .footer span{white-space:nowrap}
 }
 @media screen and (max-width:1050px){
   .boletinDoc .grid2{grid-template-columns:1fr}
   .boletinDoc .grid2>.card{min-height:auto}
+  .boletinDoc .bottom{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .boletinDoc .bottom>.card:first-child{grid-column:1/-1}
 }
 @media screen and (max-width:700px){
   .boletinDoc .grid2 .analysis,
@@ -11334,7 +11412,33 @@ table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;te
   }
 }
 @media(max-width:900px) and (min-width:701px){.resumenGeneralKpis{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.boletinDoc{width:calc(100% - 16px);margin:0 8px}.grid2,.bottom{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start}.heroHospital{font-size:11px}.hero h1{font-size:16px}.hero p{font-size:8px}.sebox{min-width:108px;padding:6px}.sebox b{font-size:18px}.sebox small{font-size:7px}.meta{grid-template-columns:1fr;font-size:10px;gap:6px;padding:9px 8px}.meta b{font-size:10px}.actions{max-width:calc(100vw - 16px);bottom:8px}.actionItems{overflow-x:auto;max-width:calc(100vw - 26px);padding-bottom:1px}.actions button{height:30px;padding:0 7px;font-size:10px}.actionLabel{display:none}}
+@media(max-width:700px){.boletinDoc{width:calc(100% - 16px);margin:0 8px}.grid2,.bottom,.boletinDoc .bottom{grid-template-columns:1fr}.boletinDoc .bottom>.card:first-child{grid-column:auto}.boletinDoc .bottom>.card{min-height:auto}.boletinDoc .bottom>.card>.title{font-size:11px}.boletinDoc .bottom>.card>.body,.boletinDoc .bottom .textblock{font-size:10.5px;line-height:1.5}.boletinDoc .footer{flex-direction:column;justify-content:center;text-align:center;gap:3px;padding:9px 8px;font-size:9px}.boletinDoc .footer b,.boletinDoc .footer span{white-space:normal}.kpis{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start}.heroHospital{font-size:11px}.hero h1{font-size:16px}.hero p{font-size:8px}.sebox{min-width:108px;padding:6px}.sebox b{font-size:18px}.sebox small{font-size:7px}.meta{grid-template-columns:1fr;font-size:10px;gap:6px;padding:9px 8px}.meta b{font-size:10px}.actions{max-width:calc(100vw - 16px);bottom:8px}.actionItems{overflow-x:auto;max-width:calc(100vw - 26px);padding-bottom:1px}.actions button{height:30px;padding:0 7px;font-size:10px}.actionLabel{display:none}}
+/* F5.08 — auditoría responsive móvil: lectura real sin desbordar la página. */
+@media screen and (max-width:700px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .boletinDoc .grid2>.card{width:100%;min-width:0;overflow:hidden}
+  .boletinDoc .grid2>.card>.body{width:100%;min-width:0;overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}
+  .boletinDoc .grid2>.card:not(.comparativoEventoCard) svg{width:620px;min-width:620px;height:196px;max-height:196px!important}
+  .boletinDoc .grid2 .comparativoEventoCard .body{justify-content:flex-start;padding:8px 6px}
+  .boletinDoc .grid2 .comparativoEventoCard table{width:540px;min-width:540px;margin:0}
+  .boletinDoc .grid2 .comparativoEventoCard th{padding:6px 4px;font-size:8.4px}
+  .boletinDoc .grid2 .comparativoEventoCard td{padding:6px 4px;font-size:8.4px}
+  .boletinDoc .grid2 .analysis,.boletinDoc .grid2 .comparativoEventoCard .analysis{font-size:10px;overflow-wrap:anywhere}
+  .boletinDoc .legendTop{position:sticky;left:0;width:max-content;min-width:100%}
+  .actions{touch-action:manipulation}
+  .actions button{min-width:36px}
+}
+@media screen and (max-width:420px){
+  .boletinDoc .hero{display:grid;grid-template-columns:1fr;gap:8px;padding:10px}
+  .boletinDoc .heroText{text-align:center}
+  .boletinDoc .hero h1{font-size:15px;line-height:1.12}
+  .boletinDoc .sebox{width:100%;min-width:0}
+  .boletinDoc .resumenGeneralKpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .boletinDoc .resumenGeneralKpis .kpi{min-width:0;padding-left:5px;padding-right:5px}
+  .boletinDoc .resumenGeneralKpis .kpi label{font-size:8.2px}
+  .boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{font-size:9px}
+  .boletinDoc .sectionHeading{font-size:9.5px;line-height:1.2}
+}
 </style></head><body onload="window.__barraTimer=setTimeout(()=>document.getElementById('barraAccionesBoletinVea')?.classList.add('collapsed'),5000)">
 <div id="barraAccionesBoletinVea" class="actions" onmouseenter="clearTimeout(window.__barraTimer)" onmouseleave="clearTimeout(window.__barraTimer);window.__barraTimer=setTimeout(()=>this.classList.add('collapsed'),2500)"><button class="toolbarToggle" onclick="this.parentElement.classList.toggle('collapsed');clearTimeout(window.__barraTimer)" title="Mostrar u ocultar controles"><span class="hideIcon">▼</span><span class="showIcon">▲</span></button><div class="actionItems"><button class="zoomBtn" onclick="window.opener&&window.opener.cambiarZoomBoletinVea(window,-.1)" title="Reducir zoom">−</button><span id="zoomValorBoletinVea" class="zoomValue">${Math.round(zoomInicial*100)}%</span><button class="zoomBtn" onclick="window.opener&&window.opener.cambiarZoomBoletinVea(window,.1)" title="Aumentar zoom">+</button><button class="fit" onclick="window.opener&&window.opener.ajustarZoomBoletinVea(window)" title="Ajustar al ancho">⛶ <span class="actionLabel">AJUSTAR</span></button><button class="print" onclick="window.print()" title="Imprimir boletín">🖨 <span class="actionLabel">IMPRIMIR</span></button><button class="pdf" onclick="window.print()" title="Guardar como PDF">PDF</button><button class="filters" onclick="if(window.opener&&!window.opener.closed&&typeof window.opener.abrirSelectorBoletinVea==='function'){window.opener.abrirSelectorBoletinVea();window.opener.focus();}window.close()" title="Volver al selector Año + S.E.">↩ <span class="actionLabel">FILTROS</span></button><button class="close" onclick="window.close()" title="Cerrar boletín">✕ <span class="actionLabel">CERRAR</span></button></div></div>
 <div id="contenidoBoletinVea" class="boletinDoc" style="zoom:${zoomInicial}">
@@ -11352,18 +11456,18 @@ table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;te
 </div>
 
 <div class="grid2">
- <section class="card"><div class="title">2. TENDENCIA DE CASOS POR EVENTO (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${legends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia de casos por evento desde la semana epidemiológica 1 hasta la ${se}">${yAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${lines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(dominante.nombre)} predominó con ${dominante.casos.toLocaleString('es-PE')} casos en S.E. ${se}.</div></section>
+ <section class="card"><div class="title">2. TENDENCIA DE CASOS POR EVENTO (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${legends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia de casos por evento desde la semana epidemiológica 1 hasta la ${se}">${yAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${lines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(lecturaTendenciaEventos)}</div></section>
  <section class="card comparativoEventoCard"><div class="title">3. COMPARATIVO DE EVENTO: S.E. ${seAnt??'—'} vs S.E. ${se}</div><div class="body"><table class="tablaComparativoEvento"><colgroup><col class="colEvento"><col class="colSemana"><col class="colSemana"><col class="colVariacion"><col class="colPorcentaje"></colgroup><thead><tr><th>EVENTO</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>VARIACIÓN</th><th>% VARIACIÓN</th></tr></thead><tbody>${comparativo}<tr class="filaTotalComparativo"><td><b>TOTAL</b></td><td><b>${totalPrev}</b></td><td><b>${total}</b></td><td><b>${arrow(total-totalPrev)} ${Math.abs(total-totalPrev)}</b></td><td><b>${totalPrev?pctTxt((total-totalPrev)/totalPrev*100):'—'}</b></td></tr></tbody></table></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(analisisComparativo)}</div></section>
- <section class="card"><div class="title">4. TENDENCIA SEMANAL DE CASOS HOSPITALIZADOS (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${hospLegends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia semanal de casos hospitalizados desde la semana epidemiológica 1 hasta la ${se}">${hospYAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${hospLines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS HOSPITALIZADOS</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>ANÁLISIS:</b> S.E. ${se}: ${totalHosp.toLocaleString('es-PE')} hospitalizado(s) registrados.</div></section><section class="card comparativoEventoCard"><div class="title">5. COMPARATIVO DE HOSPITALIZADOS: S.E. ${seAnt??'—'} vs S.E. ${se}</div><div class="body"><table class="tablaComparativoEvento"><colgroup><col class="colEvento"><col class="colSemana"><col class="colSemana"><col class="colVariacion"><col class="colPorcentaje"></colgroup><thead><tr><th>EVENTO</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>VARIACIÓN</th><th>% VARIACIÓN</th></tr></thead><tbody>${hospComparativoRows}<tr class="filaTotalComparativo"><td><b>TOTAL</b></td><td><b>${totalHospPrevComp.toLocaleString('es-PE')}</b></td><td><b>${totalHospActualComp.toLocaleString('es-PE')}</b></td><td><b>${arrow(totalHospVar)} ${Math.abs(totalHospVar).toLocaleString('es-PE')}</b></td><td><b>${totalHospPct===null?'—':pctTxt(totalHospPct)}</b></td></tr></tbody></table></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(analisisHospComparativo)}</div></section>
- <section class="card"><div class="title">6. TENDENCIA SEMANAL DE CASOS INDIVIDUALES (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${individualLegends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia semanal de casos individuales desde la semana epidemiológica 1 hasta la ${se}">${individualYAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${individualLines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS INDIVIDUALES</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(individualDominanteTrend.nombre)}: ${individualActualTrend.toLocaleString('es-PE')} caso(s) en S.E. ${se}.</div></section><section class="card comparativoEventoCard"><div class="title">7. COMPARATIVO DE CASOS INDIVIDUALES: S.E. ${seAnt??'—'} vs S.E. ${se}</div><div class="body"><table class="tablaComparativoEvento"><colgroup><col class="colEvento"><col class="colSemana"><col class="colSemana"><col class="colVariacion"><col class="colPorcentaje"></colgroup><thead><tr><th>DIAGNÓSTICO / EVENTO</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>VARIACIÓN</th><th>% VARIACIÓN</th></tr></thead><tbody>${comparativoIndividualRows}<tr class="filaTotalComparativo"><td><b>TOTAL GENERAL</b></td><td><b>${totalIndividualPrev.toLocaleString('es-PE')}</b></td><td><b>${totalIndividualActual.toLocaleString('es-PE')}</b></td><td><b>${arrow(totalIndividualVar)} ${Math.abs(totalIndividualVar).toLocaleString('es-PE')}</b></td><td><b>${totalIndividualPct===null?'—':pctTxt(totalIndividualPct)}</b></td></tr></tbody></table></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(analisisIndividualComparativo)}</div></section>
+ <section class="card"><div class="title">4. TENDENCIA SEMANAL DE CASOS HOSPITALIZADOS (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${hospLegends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia semanal de casos hospitalizados desde la semana epidemiológica 1 hasta la ${se}">${hospYAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${hospLines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS HOSPITALIZADOS</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(lecturaTendenciaHosp)}</div></section><section class="card comparativoEventoCard"><div class="title">5. COMPARATIVO DE HOSPITALIZADOS: S.E. ${seAnt??'—'} vs S.E. ${se}</div><div class="body"><table class="tablaComparativoEvento"><colgroup><col class="colEvento"><col class="colSemana"><col class="colSemana"><col class="colVariacion"><col class="colPorcentaje"></colgroup><thead><tr><th>EVENTO</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>VARIACIÓN</th><th>% VARIACIÓN</th></tr></thead><tbody>${hospComparativoRows}<tr class="filaTotalComparativo"><td><b>TOTAL</b></td><td><b>${totalHospPrevComp.toLocaleString('es-PE')}</b></td><td><b>${totalHospActualComp.toLocaleString('es-PE')}</b></td><td><b>${arrow(totalHospVar)} ${Math.abs(totalHospVar).toLocaleString('es-PE')}</b></td><td><b>${totalHospPct===null?'—':pctTxt(totalHospPct)}</b></td></tr></tbody></table></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(analisisHospComparativo)}</div></section>
+ <section class="card"><div class="title">6. TENDENCIA SEMANAL DE CASOS INDIVIDUALES (S.E. 1 – ${se})</div><div class="body"><div class="legend legendTop">${individualLegends}</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendencia semanal de casos individuales desde la semana epidemiológica 1 hasta la ${se}">${individualYAxis}<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#52647d" stroke-width="1.1"/>${xAxis}${individualLines}<text x="12" y="${(padT+(H-padT-padB)/2).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d" transform="rotate(-90 12 ${(padT+(H-padT-padB)/2).toFixed(1)})">CASOS INDIVIDUALES</text><text x="${((padL+W-padR)/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" font-weight="700" fill="#26364d">SEMANA EPIDEMIOLÓGICA</text></svg></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(lecturaTendenciaIndividual)}</div></section><section class="card comparativoEventoCard"><div class="title">7. COMPARATIVO DE CASOS INDIVIDUALES: S.E. ${seAnt??'—'} vs S.E. ${se}</div><div class="body"><table class="tablaComparativoEvento"><colgroup><col class="colEvento"><col class="colSemana"><col class="colSemana"><col class="colVariacion"><col class="colPorcentaje"></colgroup><thead><tr><th>DIAGNÓSTICO / EVENTO</th><th>S.E. ${seAnt??'—'}</th><th>S.E. ${se}</th><th>VARIACIÓN</th><th>% VARIACIÓN</th></tr></thead><tbody>${comparativoIndividualRows}<tr class="filaTotalComparativo"><td><b>TOTAL GENERAL</b></td><td><b>${totalIndividualPrev.toLocaleString('es-PE')}</b></td><td><b>${totalIndividualActual.toLocaleString('es-PE')}</b></td><td><b>${arrow(totalIndividualVar)} ${Math.abs(totalIndividualVar).toLocaleString('es-PE')}</b></td><td><b>${totalIndividualPct===null?'—':pctTxt(totalIndividualPct)}</b></td></tr></tbody></table></div><div class="analysis"><b>ANÁLISIS:</b> ${esc(analisisIndividualComparativo)}</div></section>
 </div>
 
 <div class="bottom">
- <section class="card"><div class="title">5. ANÁLISIS GENERAL</div><div class="body textblock">En la S.E. ${se} se registran <b>${total.toLocaleString('es-PE')} casos</b> en las vigilancias incluidas. El evento con mayor volumen es <b>${esc(dominante.nombre)}</b>. Se identifican <b>${totalHosp}</b> hospitalizaciones y <b>${inds.length}</b> registros individuales. La lectura corresponde a los datos disponibles en el repositorio VEA activo.</div></section>
- <section class="card"><div class="title">6. HALLAZGOS DE LA SEMANA</div><div class="body checks"><div><span>●</span>${esc(analisisComparativo)}</div><div><span>●</span>Mayor volumen: ${esc(dominante.nombre)} (${dominante.casos} casos).</div><div><span>●</span>Hospitalizados registrados: ${totalHosp}.</div></div></section>
- <section class="card"><div class="title">7. CONCLUSIONES Y RECOMENDACIONES</div><div class="body checks"><div><span>✓</span>Mantener vigilancia activa y notificación oportuna.</div><div><span>✓</span>Revisar los eventos con incremento frente a la semana anterior.</div><div><span>✓</span>Validar epidemiológicamente el boletín antes de su difusión oficial.</div></div></section>
+ <section class="card"><div class="title">5. ANÁLISIS GENERAL</div><div class="body textblock">En la S.E. ${se} se notificaron <b>${total.toLocaleString('es-PE')} casos</b> en las vigilancias incluidas. <b>${esc(dominante.nombre)}</b> presentó el mayor volumen, con <b>${dominante.casos.toLocaleString('es-PE')} casos</b>. Se registraron <b>${totalHosp.toLocaleString('es-PE')} hospitalización(es)</b> y <b>${inds.length.toLocaleString('es-PE')} caso(s) individual(es)</b>.</div></section>
+ <section class="card"><div class="title">6. HALLAZGOS DE LA SEMANA</div><div class="body checks"><div><span>●</span>${esc(analisisComparativo)}</div><div><span>●</span>Evento predominante: ${esc(dominante.nombre)}, con ${dominante.casos.toLocaleString('es-PE')} casos.</div><div><span>●</span>Hospitalizaciones notificadas: ${totalHosp.toLocaleString('es-PE')}.</div></div></section>
+ <section class="card"><div class="title">7. CONCLUSIONES Y RECOMENDACIONES</div><div class="body checks"><div><span>✓</span>La vigilancia presentó ${direccionGeneral} respecto a la S.E. ${seAnt??'anterior'}.</div><div><span>✓</span>Mantener vigilancia activa y revisar oportunamente los eventos con incremento.</div><div><span>✓</span>Validar epidemiológicamente los registros antes de la difusión oficial.</div></div></section>
 </div>
-<div class="footer"><b>UNIDAD DE EPIDEMIOLOGÍA — HOSPITAL DE VENTANILLA</b><span>VIGILAR · ANALIZAR · INFORMAR · ACTUAR</span></div>
+<div class="footer"><b>UNIDAD DE EPIDEMIOLOGÍA Y SALUD AMBIENTAL — HOSPITAL DE VENTANILLA</b><span>FUENTE: NOTIWEB CDC MINSA · INFORMACIÓN SUJETA A VALIDACIÓN · S.E. ${se} — ${anio}</span></div>
 </div></body></html>`;
 
   const w=window.open('','_blank');

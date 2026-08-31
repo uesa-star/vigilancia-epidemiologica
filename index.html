@@ -1201,7 +1201,6 @@
 
 
 /* F4.65 — DATOS ACUMULADOS: SOLO AÑO + MATRIZ RESUMEN ANUAL */
-#contentDatos #filtrosDatosAcumuladosReferencia,
 #contentDatos #daTickerAlertas,
 #contentDatos #daAlertOverlay,
 #contentDatos #panelTablaDatosAcumuladosV6B{display:none!important}
@@ -1713,6 +1712,7 @@
         <div class="relative">
             <label class="block text-xs font-bold text-slate-400 mb-1.5">Años de Análisis / Comparar</label>
             <button id="btnDropdownAniosDatosAcumulados" type="button" onclick="toggleAniosDropdownDatosAcumuladosV656(event)"
+                    aria-expanded="false" aria-controls="dropdownAniosDatosAcumulados"
                     class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 flex justify-between items-center transition-all font-semibold">
                 <span id="txtAniosDatosAcumulados" class="truncate">Seleccionar años</span>
                 <svg class="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -1725,22 +1725,25 @@
         </div>
 
         <div class="relative">
-            <label class="block text-xs font-bold text-slate-400 mb-1.5">Mes de Análisis</label>
-            <select id="selectMesDatosAcumulados" onchange="actualizarFiltroDatosAcumuladosV6B('mes',this.value)"
+            <label class="block text-xs font-bold text-slate-400 mb-1.5">Tipo de vigilancia</label>
+            <button id="btnDropdownTiposDatosAcumulados" type="button" onclick="toggleTiposDropdownDatosAcumulados(event)"
+                    aria-expanded="false" aria-controls="dropdownTiposDatosAcumulados"
+                    class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 flex justify-between items-center transition-all font-semibold">
+                <span id="txtTiposDatosAcumulados" class="truncate">Todas las vigilancias</span>
+                <svg class="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="dropdownTiposDatosAcumulados" class="absolute left-0 right-0 mt-1.5 bg-slate-950 border border-slate-800 rounded-xl shadow-2xl z-[110] p-2.5 hidden max-h-80 overflow-y-auto"></div>
+        </div>
+
+        <div class="relative">
+            <label class="block text-xs font-bold text-slate-400 mb-1.5">Mes</label>
+            <select id="selectMesDatosAcumulados" onchange="cambiarMesDatosAcumuladosRapido(this.value)"
                     class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 appearance-none cursor-pointer font-semibold">
-                <option value="Todos">Todos los Meses</option>
+                <option value="Todos">Todos los meses</option>
                 <option value="Ene">Enero</option><option value="Feb">Febrero</option><option value="Mar">Marzo</option>
                 <option value="Abr">Abril</option><option value="May">Mayo</option><option value="Jun">Junio</option>
                 <option value="Jul">Julio</option><option value="Ago">Agosto</option><option value="Sep">Septiembre</option>
                 <option value="Oct">Octubre</option><option value="Nov">Noviembre</option><option value="Dic">Diciembre</option>
-            </select>
-        </div>
-
-        <div class="relative">
-            <label class="block text-xs font-bold text-slate-400 mb-1.5">Semana Epidemiológica</label>
-            <select id="selectSemanaDatosAcumulados" onchange="actualizarFiltroDatosAcumuladosV6B('semana',this.value)"
-                    class="w-full bg-[#0b1329] border border-slate-800 rounded-lg py-2.5 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-red-500 text-slate-300 appearance-none cursor-pointer font-semibold">
-                <option value="Todas">Todas las Semanas</option>
             </select>
         </div>
 
@@ -3560,8 +3563,11 @@
         let filasPorPaginaTablaDatosV6B = 25;
         let anioTablaDatosV6B = null;
         let firmaAniosSelectorDatosV6B = "";
+        let firmaTiposSelectorDatosV6B = "";
         let frameActualizacionAniosDatosV6B = null;
+        let frameActualizacionTiposDatosV6B = null;
         let secuenciaCambioAniosDatosV6B = 0;
+        let cacheTiposDisponiblesDatosAcumuladosV6B = null;
         const cacheModelosDatosAcumuladosV6B = new Map();
         const cacheKpisAnualesDatosV6B = new Map();
         let firmaFuentesCacheDatosV6B = null;
@@ -3574,14 +3580,138 @@
 
         function obtenerEstadoDatosAcumuladosV6B() {
             if (!estadoFiltrosVea.DatosAcumulados) {
-                estadoFiltrosVea.DatosAcumulados = { anios: [], mes: 'Todos', semana: 'Todas', inicializado: false };
+                estadoFiltrosVea.DatosAcumulados = { anios: [], tipos: [], mes: 'Todos', semana: 'Todas', inicializado: false };
             }
+            if (!Array.isArray(estadoFiltrosVea.DatosAcumulados.tipos)) estadoFiltrosVea.DatosAcumulados.tipos = [];
+            if (typeof estadoFiltrosVea.DatosAcumulados.tiposInicializados !== 'boolean') estadoFiltrosVea.DatosAcumulados.tiposInicializados = false;
             return estadoFiltrosVea.DatosAcumulados;
+        }
+
+        function obtenerTiposDisponiblesDatosAcumuladosV6B() {
+            const fuentesTipos=[
+                databaseActiva.EDAsAcuosa,databaseActiva.EDAsDisenterica,databaseActiva.IRAs,
+                databaseActiva.SOBA,databaseActiva.Neumonias,databaseActiva.Febriles,databaseActiva.EDAs,
+                datosModulosIndependientes.casos,datosModulosIndependientes.soat,
+                datosModulosIndependientes.vih,datosModulosIndependientes.tbc
+            ];
+            const cacheVigente=cacheTiposDisponiblesDatosAcumuladosV6B&&fuentesTipos.every((lista,indice)=>{
+                const anterior=cacheTiposDisponiblesDatosAcumuladosV6B.fuentes[indice];
+                return anterior&&anterior.lista===lista&&anterior.longitud===(lista||[]).length;
+            });
+            if(cacheVigente)return cacheTiposDisponiblesDatosAcumuladosV6B.grupos;
+            const grupos = [];
+            const principal = [
+                ['principal:EDAsAcuosa','EDAs Acuosas','EDAs'],
+                ['principal:EDAsDisenterica','EDAs Disentéricas','EDAs'],
+                ['principal:IRAs','IRAs','IRAs'],
+                ['principal:SOBA','SOBA / Asma','IRAs'],
+                ['principal:Neumonias','Neumonías','IRAs'],
+                ['principal:Febriles','Febriles','Febriles']
+            ].filter(([, , fuente]) => (databaseActiva[fuente] || []).length);
+            grupos.push({ titulo: 'VIGILANCIA PRINCIPAL', items: principal.map(([clave,etiqueta])=>({clave,etiqueta})) });
+            const diagnosticos = new Map();
+            (datosModulosIndependientes.casos || []).forEach(item => {
+                const canon=item.__VEA_CANONICO||{};
+                const codigo=limpiarEtiquetaIndividualResumenV6B(canon.DIAGNOSTICO ?? valorExactoVea(item,'diagnostic'));
+                const nombre=limpiarEtiquetaIndividualResumenV6B(valorExactoVea(item,'Enfermedad'));
+                if(!codigo&&!nombre)return;
+                const clave=`individual:${normalizarAgrupacionIndividualResumenV6B(codigo)}|${normalizarAgrupacionIndividualResumenV6B(nombre)}`;
+                if(!diagnosticos.has(clave))diagnosticos.set(clave,{clave,etiqueta:[codigo,nombre].filter(Boolean).join(' · ')});
+            });
+            grupos.push({ titulo: 'NOTI-INDIVIDUAL', items: [...diagnosticos.values()].sort((a,b)=>a.etiqueta.localeCompare(b.etiqueta,'es',{numeric:true})) });
+            const hospitalizados=[];
+            if((databaseActiva.EDAs||[]).some(r=>r.TO_HOS!==null&&r.TO_HOS!==undefined&&r.TO_HOS!==''))hospitalizados.push({clave:'hospital:HospEDAs',etiqueta:'Hospitalizados por EDAs'});
+            if((databaseActiva.IRAs||[]).some(r=>r.TO_HOS!==null&&r.TO_HOS!==undefined&&r.TO_HOS!==''))hospitalizados.push({clave:'hospital:HospIRAs',etiqueta:'Hospitalizados por IRAs'});
+            grupos.push({ titulo: 'HOSPITALIZADOS', items: hospitalizados });
+            const otros=[];
+            if((datosModulosIndependientes.soat||[]).length)otros.push({clave:'otros:SOAT',etiqueta:'SOAT'});
+            if((datosModulosIndependientes.vih||[]).length)otros.push({clave:'otros:VIH',etiqueta:'VIH'});
+            if((datosModulosIndependientes.tbc||[]).length)otros.push({clave:'otros:TBC',etiqueta:'TBC'});
+            grupos.push({ titulo: 'OTROS REGISTROS', items: otros });
+            cacheTiposDisponiblesDatosAcumuladosV6B={
+                fuentes:fuentesTipos.map(lista=>({lista,longitud:(lista||[]).length})),
+                grupos
+            };
+            return grupos;
+        }
+
+        function cambiarTipoDatosAcumuladosV6B(clave, activo) {
+            const estado=obtenerEstadoDatosAcumuladosV6B();
+            const disponibles=obtenerTiposDisponiblesDatosAcumuladosV6B().flatMap(g=>g.items.map(i=>i.clave));
+            const actual=new Set(estado.tipos.length?estado.tipos:disponibles);
+            if(activo)actual.add(clave);else actual.delete(clave);
+            estado.tipos=disponibles.filter(tipo=>actual.has(tipo));
+            estado.tiposInicializados=true;
+            estado.inicializado=true;paginaTablaDatosV6B=1;
+            sincronizarResumenTiposDatosAcumuladosRapido();
+            aplicarVisibilidadTiposDatosAcumuladosV6B();
+        }
+
+        function aplicarVisibilidadTiposDatosAcumuladosV6B(){
+            const inicio=performance.now();
+            const estado=obtenerEstadoDatosAcumuladosV6B();
+            const seleccion=new Set(estado.tipos||[]);
+            const tbody=document.getElementById('tablaResumenAnualDatosV6B');
+            if(!tbody)return;
+            let visibles=0;
+            tbody.querySelectorAll('tr[data-tipo-filtro]').forEach(fila=>{
+                let clave=fila.dataset.tipoFiltro||'';
+                try{clave=decodeURIComponent(clave)}catch(_error){}
+                const mostrar=seleccion.has(clave);
+                fila.classList.toggle('hidden',!mostrar);
+                if(mostrar)visibles++;
+            });
+            tbody.querySelectorAll('tr[data-grupo-filtro]').forEach(cabecera=>{
+                const grupo=cabecera.dataset.grupoFiltro||'';
+                const tieneVisibles=[...tbody.querySelectorAll(`tr[data-grupo="${grupo}"]`)]
+                    .some(fila=>!fila.classList.contains('hidden'));
+                cabecera.classList.toggle('hidden',!tieneVisibles);
+            });
+            document.getElementById('filaSinTiposDatosV6B')?.classList.toggle('hidden',visibles>0);
+            window.auditoriaFiltroTiposDatosAcumulados={
+                estrategia:'visibilidad DOM sin reconstruir matriz',
+                filasVisibles:visibles,
+                duracionMs:Number((performance.now()-inicio).toFixed(3)),
+                renderCompleto:false
+            };
+        }
+
+        function sincronizarResumenTiposDatosAcumuladosRapido(){
+            const estado=obtenerEstadoDatosAcumuladosV6B();
+            const total=obtenerTiposDisponiblesDatosAcumuladosV6B().flatMap(g=>g.items).length;
+            const txt=document.getElementById('txtTiposDatosAcumulados');
+            if(txt)txt.textContent=!total?'Sin datos':estado.tipos.length===total?'Todas las vigilancias':estado.tipos.length?`${estado.tipos.length} seleccionadas`:'Ninguna vigilancia';
+            const resumen=document.getElementById('resumenFiltrosDatosAcumulados');
+            const anios=normalizarListaAniosVea(estado.anios||[]).join(', ')||'Ninguno';
+            if(resumen)resumen.textContent=`Filtros propios · Años: ${anios} · Vigilancias: ${estado.tipos.length}/${total} · Mes: ${estado.mes||'Todos'}`;
+        }
+
+        function programarRenderFiltroDatosAcumuladosRapido(){
+            if(frameActualizacionTiposDatosV6B!==null)cancelAnimationFrame(frameActualizacionTiposDatosV6B);
+            frameActualizacionTiposDatosV6B=requestAnimationFrame(()=>{
+                frameActualizacionTiposDatosV6B=null;
+                matrizDatosAcumuladosPendienteV6B=true;
+                if(matrizDatosAcumuladosAbiertaV6B){renderResumenAnualDatosAcumuladosV6B();matrizDatosAcumuladosPendienteV6B=false}
+            });
+        }
+
+        function cambiarMesDatosAcumuladosRapido(valor){
+            const estado=obtenerEstadoDatosAcumuladosV6B();
+            estado.mes=MESES_DATOS_ACUMULADOS_V6B.includes(valor)?valor:'Todos';
+            estado.semana='Todas';estado.inicializado=true;
+            sincronizarResumenTiposDatosAcumuladosRapido();
+            programarRenderFiltroDatosAcumuladosRapido();
         }
 
         function obtenerRegistrosFiltradosDatosAcumulados(evento) {
             if (!EVENTOS_DATOS_ACUMULADOS_V6B.includes(evento)) return [];
             const estado = obtenerEstadoDatosAcumuladosV6B();
+            const clavesEvento={
+                EDAs:['principal:EDAsAcuosa','principal:EDAsDisenterica'],
+                IRAs:['principal:IRAs','principal:SOBA','principal:Neumonias'],
+                Febriles:['principal:Febriles']
+            };
+            if (estado.tiposInicializados && !(clavesEvento[evento]||[]).some(clave=>estado.tipos.includes(clave))) return [];
             return obtenerRegistrosFiltradosVigilancia(evento, {
                 anios: estado.anios || [],
                 mes: estado.mes || 'Todos',
@@ -3590,9 +3720,14 @@
         }
 
         function obtenerSemanasDisponiblesDatosAcumuladosV6B() {
+            const estado = obtenerEstadoDatosAcumuladosV6B();
+            const anios = new Set(normalizarListaAniosVea(estado.anios || []));
+            const mes = estado.mes || 'Todos';
             const semanas = new Set();
             EVENTOS_DATOS_ACUMULADOS_V6B.forEach(evento => {
                 (databaseActiva[evento] || []).forEach(item => {
+                    if (anios.size && !anios.has(Number(item.ANO))) return;
+                    if (mes !== 'Todos' && String(item.MES || '').trim() !== mes) return;
                     const semana = Number(item.SEMANA);
                     if (Number.isInteger(semana) && semana >= 1 && semana <= 53) semanas.add(semana);
                 });
@@ -3638,22 +3773,25 @@
             const selMes = document.getElementById('selectMesDatosAcumulados');
             if (selMes) selMes.value = estado.mes || 'Todos';
 
-            const selSemana = document.getElementById('selectSemanaDatosAcumulados');
-            if (selSemana) {
-                const valorActual = String(estado.semana || 'Todas');
-                const semanas = obtenerSemanasDisponiblesDatosAcumuladosV6B();
-                selSemana.innerHTML = '<option value="Todas">Todas las Semanas</option>' +
-                    semanas.map(se => `<option value="${se}">S.E. ${se}</option>`).join('');
-                selSemana.value = semanas.includes(Number(valorActual)) ? valorActual : 'Todas';
-                if (valorActual !== 'Todas' && selSemana.value === 'Todas') {
-                    estado.semana = 'Todas';
-                }
+            const gruposTipos=obtenerTiposDisponiblesDatosAcumuladosV6B();
+            const disponiblesTipos=gruposTipos.flatMap(g=>g.items.map(i=>i.clave));
+            if(!estado.tiposInicializados&&disponiblesTipos.length){estado.tipos=[...disponiblesTipos];estado.tiposInicializados=true}
+            estado.tipos=estado.tipos.filter(t=>disponiblesTipos.includes(t));
+            const firmaTipos=gruposTipos.map(g=>`${g.titulo}:${g.items.map(i=>i.clave).join(',')}`).join('|');
+            const dropdownTipos=document.getElementById('dropdownTiposDatosAcumulados');
+            if(dropdownTipos&&firmaTipos!==firmaTiposSelectorDatosV6B){
+                firmaTiposSelectorDatosV6B=firmaTipos;
+                dropdownTipos.innerHTML=gruposTipos.map(grupo=>`<section class="py-1.5"><div class="px-2 py-1 text-[10px] font-black tracking-wider text-indigo-400">${grupo.titulo}</div>${grupo.items.length?grupo.items.map(item=>`<label class="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-slate-900 cursor-pointer text-xs text-slate-300"><input type="checkbox" value="${item.clave}" onchange="cambiarTipoDatosAcumuladosV6B(this.value,this.checked)" class="w-4 h-4 accent-red-500"><span>${item.etiqueta}</span></label>`).join(''):'<div class="px-2 py-1 text-[10px] text-slate-600">Sin registros cargados</div>'}</section>`).join('');
             }
+            const tiposSeleccionados=new Set(estado.tipos);
+            dropdownTipos?.querySelectorAll('input[type="checkbox"]').forEach(c=>{c.checked=tiposSeleccionados.has(c.value)});
+            const txtTipos=document.getElementById('txtTiposDatosAcumulados');
+            if(txtTipos)txtTipos.textContent=!disponiblesTipos.length?'Sin datos':estado.tipos.length===disponiblesTipos.length?'Todas las vigilancias':estado.tipos.length?`${estado.tipos.length} seleccionadas`:'Ninguna vigilancia';
 
             const resumen = document.getElementById('resumenFiltrosDatosAcumulados');
             if (resumen) {
                 const aniosTxt = aniosSeleccionados.length ? aniosSeleccionados.join(', ') : 'Ninguno';
-                resumen.textContent = `Filtros propios · Años: ${aniosTxt} · Mes: ${estado.mes || 'Todos'} · S.E.: ${estado.semana || 'Todas'}`;
+                resumen.textContent = `Filtros propios · Años: ${aniosTxt} · Vigilancias: ${estado.tipos.length}/${disponiblesTipos.length} · Mes: ${estado.mes || 'Todos'}`;
             }
         }
 
@@ -3669,7 +3807,8 @@
             const resumen = document.getElementById('resumenFiltrosDatosAcumulados');
             if (resumen) {
                 const aniosTxt = aniosSeleccionados.length ? aniosSeleccionados.join(', ') : 'Ninguno';
-                resumen.textContent = `Filtros propios · Años: ${aniosTxt} · Mes: ${estado.mes || 'Todos'} · S.E.: ${estado.semana || 'Todas'}`;
+                const totalTipos=obtenerTiposDisponiblesDatosAcumuladosV6B().flatMap(g=>g.items).length;
+                resumen.textContent = `Filtros propios · Años: ${aniosTxt} · Vigilancias: ${estado.tipos.length}/${totalTipos} · Mes: ${estado.mes || 'Todos'}`;
             }
         }
 
@@ -3724,19 +3863,18 @@
 
         function limpiarFiltrosDatosAcumuladosV6B() {
             const estado = obtenerEstadoDatosAcumuladosV6B();
-            estado.anios = [];
+            estado.anios = tresAniosMasRecientesVea(obtenerAniosComunesVigilanciaVea());
+            estado.tipos = [];
+            estado.tiposInicializados = false;
             estado.mes = 'Todos';
             estado.semana = 'Todas';
             estado.inicializado = true;
             paginaTablaDatosV6B = 1;
             matrizDatosAcumuladosPendienteV6B = true;
             tablaDatosAcumuladosPendienteV6B = true;
-            document.querySelectorAll('#dropdownAniosDatosAcumulados input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            sincronizarResumenAniosDatosAcumuladosV6B();
+            sincronizarControlesDatosAcumuladosV6B();
             secuenciaCambioAniosDatosV6B += 1;
-            programarActualizacionAniosDatosAcumuladosV6B();
+            programarRenderFiltroDatosAcumuladosRapido();
         }
 
         function destruirGraficosDatosAcumuladosV6B() {
@@ -4508,6 +4646,7 @@
 
                     return {
                         clave: `Individual:${grupo.codigoNormalizado}:${grupo.descripcionNormalizada}`,
+                        tipoFiltro: `individual:${grupo.codigoNormalizado}|${grupo.descripcionNormalizada}`,
                         etiqueta: descripcion
                             ? `${codigo} · ${descripcion}`
                             : `${codigo} · SIN DESCRIPCIÓN EN FUENTE`,
@@ -4547,12 +4686,12 @@
             const serieAcuosa = construirSerieMensualCasosResumenV6B("EDAs", anio);
             const serieDisenterica = construirSerieMensualCampoResumenV6B("EDAs", anio, "TO_DIS");
             const filas = [
-                { clave: "EDAsAcuosa", etiqueta: "EDAs Acuosas", grupo: "principal", serie: serieAcuosa, unidad: "casos oficiales · TO ACU" },
-                { clave: "EDAsDisenterica", etiqueta: "EDAs Disentéricas", grupo: "principal", serie: serieDisenterica, unidad: "casos reales · TO DIS" },
-                { clave: "IRAs", etiqueta: "IRAs", grupo: "principal", serie: construirSerieMensualCasosResumenV6B("IRAs", anio), unidad: "casos oficiales · TOTAL IRAS" },
-                { clave: "SOBA", etiqueta: "SOBA", grupo: "principal", serie: construirSerieMensualCampoResumenV6B("IRAs", anio, "SOBA"), unidad: "casos SOBA · TOTAL SOBA" },
-                { clave: "Neumonias", etiqueta: "Neumonías", grupo: "principal", serie: construirSerieMensualCampoResumenV6B("IRAs", anio, "NEUMONIAS"), unidad: "casos de neumonía · TOTAL NEUMO" },
-                { clave: "Febriles", etiqueta: "Febriles", grupo: "principal", serie: construirSerieMensualCasosResumenV6B("Febriles", anio), unidad: "casos oficiales · feb_tot" }
+                { clave: "EDAsAcuosa", tipoFiltro:"principal:EDAsAcuosa", etiqueta: "EDAs Acuosas", grupo: "principal", serie: serieAcuosa, unidad: "casos oficiales · TO ACU" },
+                { clave: "EDAsDisenterica", tipoFiltro:"principal:EDAsDisenterica", etiqueta: "EDAs Disentéricas", grupo: "principal", serie: serieDisenterica, unidad: "casos reales · TO DIS" },
+                { clave: "IRAs", tipoFiltro:"principal:IRAs", etiqueta: "IRAs", grupo: "principal", serie: construirSerieMensualCasosResumenV6B("IRAs", anio), unidad: "casos oficiales · TOTAL IRAS" },
+                { clave: "SOBA", tipoFiltro:"principal:SOBA", etiqueta: "SOBA", grupo: "principal", serie: construirSerieMensualCampoResumenV6B("IRAs", anio, "SOBA"), unidad: "casos SOBA · TOTAL SOBA" },
+                { clave: "Neumonias", tipoFiltro:"principal:Neumonias", etiqueta: "Neumonías", grupo: "principal", serie: construirSerieMensualCampoResumenV6B("IRAs", anio, "NEUMONIAS"), unidad: "casos de neumonía · TOTAL NEUMO" },
+                { clave: "Febriles", tipoFiltro:"principal:Febriles", etiqueta: "Febriles", grupo: "principal", serie: construirSerieMensualCasosResumenV6B("Febriles", anio), unidad: "casos oficiales · feb_tot" }
             ];
 
             if (filasIndividuales.length) {
@@ -4568,11 +4707,11 @@
             }
 
             filas.push(
-                { clave: "HospEDAs", etiqueta: "Hospitalizados EDAs", grupo: "hospitalizados", serie: construirSerieMensualCampoResumenV6B("EDAs", anio, "TO_HOS"), unidad: "hospitalizaciones reales · TO HOS" },
-                { clave: "HospIRAs", etiqueta: "Hospitalizados IRAs", grupo: "hospitalizados", serie: construirSerieMensualCampoResumenV6B("IRAs", anio, "TO_HOS"), unidad: "hospitalizaciones reales · TOTAL HOSPI" },
-                { clave: "SOAT", etiqueta: "SOAT", grupo: "otros", serie: construirSerieMensualRegistrosResumenV6B("soat", anio), unidad: "registros SOAT" },
-                { clave: "VIH", etiqueta: "VIH", grupo: "otros", serie: construirSerieMensualRegistrosResumenV6B("vih", anio), unidad: "notificaciones VIH" },
-                { clave: "TBC", etiqueta: "TBC", grupo: "otros", serie: construirSerieMensualRegistrosResumenV6B("tbc", anio), unidad: "registros TBC · diabetes permanece como comorbilidad interna" }
+                { clave: "HospEDAs", tipoFiltro:"hospital:HospEDAs", etiqueta: "Hospitalizados EDAs", grupo: "hospitalizados", serie: construirSerieMensualCampoResumenV6B("EDAs", anio, "TO_HOS"), unidad: "hospitalizaciones reales · TO HOS" },
+                { clave: "HospIRAs", tipoFiltro:"hospital:HospIRAs", etiqueta: "Hospitalizados IRAs", grupo: "hospitalizados", serie: construirSerieMensualCampoResumenV6B("IRAs", anio, "TO_HOS"), unidad: "hospitalizaciones reales · TOTAL HOSPI" },
+                { clave: "SOAT", tipoFiltro:"otros:SOAT", etiqueta: "SOAT", grupo: "otros", serie: construirSerieMensualRegistrosResumenV6B("soat", anio), unidad: "registros SOAT" },
+                { clave: "VIH", tipoFiltro:"otros:VIH", etiqueta: "VIH", grupo: "otros", serie: construirSerieMensualRegistrosResumenV6B("vih", anio), unidad: "notificaciones VIH" },
+                { clave: "TBC", tipoFiltro:"otros:TBC", etiqueta: "TBC", grupo: "otros", serie: construirSerieMensualRegistrosResumenV6B("tbc", anio), unidad: "registros TBC · diabetes permanece como comorbilidad interna" }
             );
 
             return filas;
@@ -4612,6 +4751,7 @@
             }
             select.innerHTML = anios.map(anio => `<option value="${anio}" ${anio === anioResumenDatosAcumuladosV6B ? "selected" : ""}>${anio}</option>`).join("");
 
+            const estadoTipos=obtenerEstadoDatosAcumuladosV6B();
             const filas = construirModeloResumenAnualDatosV6B(anioResumenDatosAcumuladosV6B);
             const titulosGrupo = {
                 principal: "VIGILANCIA PRINCIPAL",
@@ -4625,22 +4765,30 @@
             filas.forEach(fila => {
                 if (fila.grupo !== grupoActual) {
                     grupoActual = fila.grupo;
-                    html.push(`<tr class="vea-matriz-grupo bg-slate-900/95 border-y border-slate-700">
+                    const grupoVisible=filas.some(item=>item.grupo===grupoActual&&(!estadoTipos.tiposInicializados||estadoTipos.tipos.includes(item.tipoFiltro)));
+                    html.push(`<tr data-grupo-filtro="${grupoActual}" class="${grupoVisible?'':'hidden '}vea-matriz-grupo bg-slate-900/95 border-y border-slate-700">
                         <td colspan="14" class="font-black uppercase text-red-400">${titulosGrupo[grupoActual] || String(grupoActual || "").toUpperCase()}</td>
                     </tr>`);
                 }
 
+                const tipoVisible=!estadoTipos.tiposInicializados||estadoTipos.tipos.includes(fila.tipoFiltro);
+                const atributosTipo=`data-tipo-filtro="${encodeURIComponent(fila.tipoFiltro||'')}" data-grupo="${fila.grupo}"`;
+
                 if (fila.pendiente) {
-                    html.push(`<tr class="bg-slate-950/70">
+                    html.push(`<tr ${atributosTipo} class="${tipoVisible?'':'hidden '}bg-slate-950/70">
                         <td class="vea-matriz-nombre sticky left-0 z-[5] bg-slate-950 font-black text-slate-300">${fila.etiqueta}</td>
                         <td colspan="13" class="py-1.5 px-2 text-center text-[9px] font-black uppercase tracking-wider text-amber-400">${fila.motivo}</td>
                     </tr>`);
                     return;
                 }
 
-                const total = totalSerieResumenAnualV6B(fila.serie);
+                const mesFiltro=estadoTipos.mes||'Todos';
+                const total = mesFiltro==='Todos'
+                    ? totalSerieResumenAnualV6B(fila.serie)
+                    : (fila.serie[mesFiltro]?.presencia ? fila.serie[mesFiltro].valor : null);
                 const celdas = MESES_RESUMEN_ANUAL_V6B.map(mes => {
                     const dato = fila.serie[mes];
+                    if(mesFiltro!=='Todos'&&mes!==mesFiltro)return '<td class="vea-matriz-mes text-slate-700">—</td>';
                     return `<td class="vea-matriz-mes ${dato.presencia ? "text-slate-200 font-semibold" : "text-slate-600"}">${dato.presencia ? formatoNumeroDatosAcumuladosV6B(dato.valor) : "—"}</td>`;
                 }).join("");
 
@@ -4656,7 +4804,7 @@
                     </div>`;
                 }
 
-                html.push(`<tr class="hover:bg-slate-900/40">
+                html.push(`<tr ${atributosTipo} class="${tipoVisible?'':'hidden '}hover:bg-slate-900/40">
                     <td class="vea-matriz-nombre sticky left-0 z-[5] bg-slate-950">
                         <div class="vea-matriz-etiqueta font-black text-slate-200">${fila.etiqueta}</div>
                         <div class="vea-matriz-unidad text-slate-600">${fila.unidad}</div>
@@ -4666,10 +4814,12 @@
                     <td class="vea-matriz-total font-black bg-slate-900/70 ${total === null ? "text-slate-600" : "text-slate-100"}">${total === null ? "—" : formatoNumeroDatosAcumuladosV6B(total)}</td>
                 </tr>`);
             });
+            const cantidadVisible=filas.filter(fila=>!estadoTipos.tiposInicializados||estadoTipos.tipos.includes(fila.tipoFiltro)).length;
+            html.push(`<tr id="filaSinTiposDatosV6B" class="${cantidadVisible?'hidden':''}"><td colspan="14" class="px-3 py-8 text-center text-slate-500">Seleccione al menos un tipo de vigilancia.</td></tr>`);
             tbody.innerHTML = html.join("");
 
             if (nota) {
-                nota.textContent = `Año ${anioResumenDatosAcumuladosV6B}. “0” = período existente con resultado cero; “—” = período ausente/no disponible. INDIVIDUAL se reconstruye dinámicamente por código + enfermedad. Diabetes permanece únicamente como comorbilidad dentro de TBC y no se presenta como vigilancia independiente.`;
+                nota.textContent = `Año ${anioResumenDatosAcumuladosV6B} · Mes: ${estadoTipos.mes || 'Todos'}. “0” = período existente con resultado cero; “—” = período ausente/no disponible. INDIVIDUAL se reconstruye dinámicamente por código + enfermedad.`;
             }
         }
 
@@ -4684,6 +4834,10 @@
                 if (!anios.has(Number(canon.ANO))) return false;
                 if (estado.mes !== "Todos" && String(canon.MES || "") !== String(estado.mes)) return false;
                 if (semana !== null && Number(canon.SEMANA_EPIDEMIOLOGICA) !== semana) return false;
+                const codigo=limpiarEtiquetaIndividualResumenV6B(canon.DIAGNOSTICO ?? valorExactoVea(item,'diagnostic'));
+                const nombre=limpiarEtiquetaIndividualResumenV6B(valorExactoVea(item,'Enfermedad'));
+                const clave=`individual:${normalizarAgrupacionIndividualResumenV6B(codigo)}|${normalizarAgrupacionIndividualResumenV6B(nombre)}`;
+                if (estado.tiposInicializados && !estado.tipos.includes(clave)) return false;
                 return true;
             });
         }
@@ -10201,14 +10355,35 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
 function toggleAniosDropdownDatosAcumuladosV656(ev){
     if(ev){ ev.preventDefault(); ev.stopPropagation(); }
     const dropdown=document.getElementById('dropdownAniosDatosAcumulados');
-    if(dropdown) dropdown.classList.toggle('hidden');
+    if(dropdown){
+        dropdown.classList.toggle('hidden');
+        document.getElementById('btnDropdownAniosDatosAcumulados')?.setAttribute('aria-expanded',String(!dropdown.classList.contains('hidden')));
+    }
+}
+function toggleTiposDropdownDatosAcumulados(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation()}
+    const dropdown=document.getElementById('dropdownTiposDatosAcumulados');
+    if(!dropdown)return;
+    dropdown.classList.toggle('hidden');
+    document.getElementById('btnDropdownTiposDatosAcumulados')?.setAttribute('aria-expanded',String(!dropdown.classList.contains('hidden')));
 }
 document.addEventListener('click', function(event){
     const dropdown=document.getElementById('dropdownAniosDatosAcumulados');
     const btn=document.getElementById('btnDropdownAniosDatosAcumulados');
     if(dropdown && btn && !btn.contains(event.target) && !dropdown.contains(event.target)){
         dropdown.classList.add('hidden');
+        btn.setAttribute('aria-expanded','false');
     }
+    const tipos=document.getElementById('dropdownTiposDatosAcumulados');
+    const btnTipos=document.getElementById('btnDropdownTiposDatosAcumulados');
+    if(tipos&&btnTipos&&!btnTipos.contains(event.target)&&!tipos.contains(event.target)){tipos.classList.add('hidden');btnTipos.setAttribute('aria-expanded','false')}
+});
+document.addEventListener('keydown', function(event){
+    if(event.key!=='Escape')return;
+    document.getElementById('dropdownAniosDatosAcumulados')?.classList.add('hidden');
+    document.getElementById('btnDropdownAniosDatosAcumulados')?.setAttribute('aria-expanded','false');
+    document.getElementById('dropdownTiposDatosAcumulados')?.classList.add('hidden');
+    document.getElementById('btnDropdownTiposDatosAcumulados')?.setAttribute('aria-expanded','false');
 });
 </script>
 
@@ -10233,7 +10408,15 @@ function construir(){
  box.classList.remove('hidden');a=Math.min(a,slides.length-1);pintar()
 }
 function pintar(){const s=slides[a];if(!s)return;document.getElementById('daAlertTitle').textContent=s.titulo;document.getElementById('daAlertText').textContent=s.text;document.getElementById('daAlertIndicaciones').innerHTML=s.ind.map(x=>`<li>${x}</li>`).join('');document.getElementById('daAlertAcciones').innerHTML=s.acc.map(x=>`<li>${x}</li>`).join('');document.getElementById('daAlertDots').innerHTML=slides.map((_,i)=>`<button class="da-alert-dot ${i===a?'active':''}" data-i="${i}"></button>`).join('');document.querySelectorAll('#daAlertDots button').forEach(b=>b.onclick=()=>{a=+b.dataset.i;pintar()})}
-function init(){kpis();construir();document.getElementById('daAlertPrev')?.addEventListener('click',()=>{a=(a-1+slides.length)%slides.length;pintar()});document.getElementById('daAlertNext')?.addEventListener('click',()=>{a=(a+1)%slides.length;pintar()});let q;new MutationObserver(()=>{clearTimeout(q);q=setTimeout(()=>{kpis();construir()},100)}).observe(document.getElementById('contentDatos'),{subtree:true,characterData:true,childList:true})}
+function init(){
+ kpis();construir();
+ document.getElementById('daAlertPrev')?.addEventListener('click',()=>{a=(a-1+slides.length)%slides.length;pintar()});
+ document.getElementById('daAlertNext')?.addEventListener('click',()=>{a=(a+1)%slides.length;pintar()});
+ let q;const observer=new MutationObserver(()=>{clearTimeout(q);q=setTimeout(()=>{kpis();construir()},100)});
+ ['kpiDatosEdas','kpiDatosIras','kpiDatosFebriles','kpiDatosPredominante','kpiDatosIndividual'].forEach(id=>{
+   const el=document.getElementById(id);if(el)observer.observe(el,{characterData:true,childList:true,subtree:true});
+ });
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init()
 })();
 </script>
@@ -10339,9 +10522,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    document.getElementById('daAlertPanelClose')?.addEventListener('click',cerrar);
    document.getElementById('daAlertOverlay')?.addEventListener('click',e=>{if(e.target.id==='daAlertOverlay')cerrar()});
    document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrar()});
-   let q;
-   const root=document.getElementById('contentDatos');
-   if(root)new MutationObserver(()=>{clearTimeout(q);q=setTimeout(render,120)}).observe(root,{subtree:true,childList:true,characterData:true});
+   let q;const observer=new MutationObserver(()=>{clearTimeout(q);q=setTimeout(render,120)});
+   ['kpiDatosEdas','kpiDatosIras','kpiDatosFebriles','kpiDatosPredominante','kpiDatosIndividual'].forEach(id=>{
+     const el=document.getElementById(id);if(el)observer.observe(el,{characterData:true,childList:true,subtree:true});
+   });
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
@@ -10359,6 +10543,36 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   noti:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 10h6M12 7v6"/></svg>'
  };
  const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
+
+ function cardOf(id){
+   const value=document.getElementById(id);
+   return value?.closest('.bg-slate-950.border.rounded-xl')||value?.parentElement||null;
+ }
+ function decorate(id,tipo,titulo,subtitulo){
+   const value=document.getElementById(id), card=cardOf(id); if(!value||!card)return;
+   card.classList.add('da-kpi-card-f460',`da460-${tipo}`);
+   const title=document.getElementById(`${id}Titulo`)||card.firstElementChild;
+   if(title){title.textContent=titulo;title.classList.add('da460-title')}
+   value.classList.add('da460-value');
+   let icon=card.querySelector('.da460-icon');
+   if(!icon){icon=document.createElement('div');icon.className='da460-icon';card.prepend(icon)}
+   icon.innerHTML=svg[tipo]||'';
+   let subtitle=card.querySelector('.da460-subtitle');
+   const detail=id==='kpiDatosPredominante'?document.getElementById('kpiDatosPredominanteDetalle'):
+     id==='kpiDatosIndividual'?document.getElementById('kpiDatosIndividualDetalle'):null;
+   if(detail){subtitle=detail;subtitle.classList.add('da460-subtitle')}
+   else if(!subtitle){subtitle=document.createElement('div');subtitle.className='da460-subtitle';value.after(subtitle)}
+   if(subtitle&&subtitulo)subtitle.textContent=subtitulo;
+   let total=card.querySelector('.da460-total');
+   if(!total){total=document.createElement('div');total.className='da460-total';total.textContent='TOTAL registrados';card.append(total)}
+ }
+ function ensureSoba(grid){
+   if(document.getElementById('daKpiSobaCard'))return;
+   const card=document.createElement('div');
+   card.id='daKpiSobaCard';card.className='bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm da-kpi-card-f460 da460-soba';
+   card.innerHTML=`<div class="da460-icon">${svg.soba}</div><div id="kpiDatosSobaTitulo" class="da460-title">Casos SOBA —</div><div id="kpiDatosSoba" class="da460-value">—</div><div class="da460-subtitle"></div><div class="da460-total">TOTAL registrados</div>`;
+   grid.append(card);
+ }
 
  function year(){
    const all=[...document.querySelectorAll('#contentDatos [id*="Titulo"],#contentDatos')].map(x=>x.textContent||'').join(' ');
@@ -10409,8 +10623,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  }
  function init(){
    render();
-   let q;const root=document.getElementById('contentDatos');
-   if(root)new MutationObserver(()=>{clearTimeout(q);q=setTimeout(render,120)}).observe(root,{subtree:true,childList:true,characterData:true});
+   let q;const observer=new MutationObserver(()=>{clearTimeout(q);q=setTimeout(render,120)});
+   ['kpiDatosEdas','kpiDatosIras','kpiDatosFebriles','kpiDatosPredominante','kpiDatosIndividual'].forEach(id=>{
+     const el=document.getElementById(id);if(el)observer.observe(el,{characterData:true,childList:true,subtree:true});
+   });
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

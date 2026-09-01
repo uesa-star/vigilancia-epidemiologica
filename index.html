@@ -1212,17 +1212,10 @@
 #contentDatos #resumenAnualDatosAcumuladosV6B{order:1!important;margin-top:0!important}
 #contentDatos #contenidoMatrizDatosV6B{display:block!important}
 #contentDatos #btnToggleMatrizDatosV6B{display:none!important}
-#contentDatos #resumenAnualDatosAcumuladosV6B .vea-matriz-selector{min-width:180px!important}
-#contentDatos #selectAnioResumenDatosV6B{
- width:100%!important;min-height:40px!important;border-radius:8px!important;
- padding:8px 10px!important;font-size:12px!important;font-weight:800!important
-}
 @media(max-width:767px){
  #contentDatos #resumenAnualDatosAcumuladosV6B .vea-matriz-header{
   display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:14px!important
  }
- #contentDatos #resumenAnualDatosAcumuladosV6B .vea-matriz-selector{width:100%!important;min-width:0!important}
- #contentDatos #selectAnioResumenDatosV6B{min-height:44px!important;font-size:14px!important}
 }
 
 @media(max-width:420px){.resumenGeneralKpis{grid-template-columns:1fr}.kpi{min-height:76px}}
@@ -1833,12 +1826,6 @@
                         <div class="vea-matriz-kicker font-black uppercase text-red-400">Lectura rápida anual</div>
                         <h4 class="vea-matriz-heading font-black text-slate-100">Matriz Resumen Anual</h4>
                         <p class="vea-matriz-descripcion text-slate-500">Valores reales por mes. “—” indica ausencia de información; no equivale a cero.</p>
-                    </div>
-                    <div class="vea-matriz-selector">
-                        <label for="selectAnioResumenDatosV6B" class="block font-black uppercase text-slate-400">Año del resumen</label>
-                        <select id="selectAnioResumenDatosV6B" onchange="cambiarAnioResumenDatosAcumuladosV6B(this.value)" class="bg-[#0b1329] border border-slate-800 text-slate-200 focus:outline-none focus:ring-1 focus:ring-red-500">
-                            <option value="">Sin años disponibles</option>
-                        </select>
                     </div>
                 </div>
 
@@ -3700,7 +3687,49 @@
             estado.mes=MESES_DATOS_ACUMULADOS_V6B.includes(valor)?valor:'Todos';
             estado.semana='Todas';estado.inicializado=true;
             sincronizarResumenTiposDatosAcumuladosRapido();
-            programarRenderFiltroDatosAcumuladosRapido();
+            aplicarMesDatosAcumuladosEnMatrizV6B();
+        }
+
+        function aplicarMesDatosAcumuladosEnMatrizV6B(){
+            const inicio=performance.now();
+            const estado=obtenerEstadoDatosAcumuladosV6B();
+            const mes=estado.mes||'Todos';
+            const tbody=document.getElementById('tablaResumenAnualDatosV6B');
+            if(!tbody)return;
+            let filasActualizadas=0;
+            tbody.querySelectorAll('tr[data-tipo-filtro]').forEach(fila=>{
+                const celdas=[...fila.querySelectorAll('td[data-mes]')];
+                if(!celdas.length)return;
+                celdas.forEach(celda=>{
+                    const visible=mes==='Todos'||celda.dataset.mes===mes;
+                    celda.textContent=visible?(celda.dataset.valorVisible||'—'):'—';
+                    celda.classList.toggle('text-slate-700',!visible);
+                    celda.classList.toggle('text-slate-200',visible&&celda.dataset.presencia==='1');
+                    celda.classList.toggle('font-semibold',visible&&celda.dataset.presencia==='1');
+                    celda.classList.toggle('text-slate-600',visible&&celda.dataset.presencia!=='1');
+                });
+                const total=fila.querySelector('td[data-total-anual]');
+                if(total){
+                    const celdaMes=celdas.find(celda=>celda.dataset.mes===mes);
+                    const valor=mes==='Todos'
+                        ? total.dataset.totalAnual
+                        : (celdaMes?.dataset.presencia==='1'?celdaMes.dataset.valorVisible:'—');
+                    total.textContent=valor||'—';
+                    total.classList.toggle('text-slate-600',!valor||valor==='—');
+                    total.classList.toggle('text-slate-100',Boolean(valor&&valor!=='—'));
+                }
+                filasActualizadas++;
+            });
+            const nota=document.getElementById('notaResumenAnualDatosV6B');
+            if(nota)nota.textContent=`Año ${anioResumenDatosAcumuladosV6B} · Mes: ${mes}. “0” = período existente con resultado cero; “—” = período ausente/no disponible. INDIVIDUAL se reconstruye dinámicamente por código + enfermedad.`;
+            window.auditoriaFiltroMesDatosAcumulados={
+                estrategia:'actualización DOM sobre celdas mensuales precalculadas',
+                mes,
+                filasActualizadas,
+                duracionMs:Number((performance.now()-inicio).toFixed(3)),
+                consultaBase:false,
+                renderCompleto:false
+            };
         }
 
         function obtenerRegistrosFiltradosDatosAcumulados(evento) {
@@ -4717,41 +4746,30 @@
             return filas;
         }
 
-        function cambiarAnioResumenDatosAcumuladosV6B(valor) {
-            const anio = Number(valor);
-            if (!Number.isInteger(anio)) return;
-            anioResumenDatosAcumuladosV6B = anio;
-            if (matrizDatosAcumuladosAbiertaV6B) {
-                renderResumenAnualDatosAcumuladosV6B();
-                matrizDatosAcumuladosPendienteV6B = false;
-            } else {
-                matrizDatosAcumuladosPendienteV6B = true;
-            }
-        }
-
         function renderResumenAnualDatosAcumuladosV6B() {
-            const select = document.getElementById("selectAnioResumenDatosV6B");
             const tbody = document.getElementById("tablaResumenAnualDatosV6B");
             const nota = document.getElementById("notaResumenAnualDatosV6B");
-            if (!select || !tbody) return;
+            if (!tbody) return;
 
             const anios = obtenerAniosResumenAnualDatosV6B();
             if (!anios.length) {
                 anioResumenDatosAcumuladosV6B = null;
-                select.innerHTML = '<option value="">Sin años disponibles</option>';
-                select.disabled = true;
                 tbody.innerHTML = '<tr><td colspan="14" class="px-3 py-8 text-center text-slate-500">Sin datos cargados.</td></tr>';
                 if (nota) nota.textContent = "Sin datos cargados para construir el resumen anual.";
                 return;
             }
 
-            select.disabled = false;
-            if (!Number.isInteger(anioResumenDatosAcumuladosV6B) || !anios.includes(anioResumenDatosAcumuladosV6B)) {
-                anioResumenDatosAcumuladosV6B = anios[anios.length - 1];
+            const estadoTipos = obtenerEstadoDatosAcumuladosV6B();
+            const aniosSeleccionados = normalizarListaAniosVea(estadoTipos.anios || [])
+                .filter(anio => anios.includes(anio));
+            if (!aniosSeleccionados.length) {
+                anioResumenDatosAcumuladosV6B = null;
+                tbody.innerHTML = '<tr><td colspan="14" class="px-3 py-8 text-center text-slate-500">Seleccione al menos un año en “Años de Análisis / Comparar”.</td></tr>';
+                if (nota) nota.textContent = 'La matriz utiliza exclusivamente el filtro “Años de Análisis / Comparar”.';
+                return;
             }
-            select.innerHTML = anios.map(anio => `<option value="${anio}" ${anio === anioResumenDatosAcumuladosV6B ? "selected" : ""}>${anio}</option>`).join("");
+            anioResumenDatosAcumuladosV6B = Math.max(...aniosSeleccionados);
 
-            const estadoTipos=obtenerEstadoDatosAcumuladosV6B();
             const filas = construirModeloResumenAnualDatosV6B(anioResumenDatosAcumuladosV6B);
             const titulosGrupo = {
                 principal: "VIGILANCIA PRINCIPAL",
@@ -4788,8 +4806,9 @@
                     : (fila.serie[mesFiltro]?.presencia ? fila.serie[mesFiltro].valor : null);
                 const celdas = MESES_RESUMEN_ANUAL_V6B.map(mes => {
                     const dato = fila.serie[mes];
-                    if(mesFiltro!=='Todos'&&mes!==mesFiltro)return '<td class="vea-matriz-mes text-slate-700">—</td>';
-                    return `<td class="vea-matriz-mes ${dato.presencia ? "text-slate-200 font-semibold" : "text-slate-600"}">${dato.presencia ? formatoNumeroDatosAcumuladosV6B(dato.valor) : "—"}</td>`;
+                    const valorVisible=dato.presencia?formatoNumeroDatosAcumuladosV6B(dato.valor):'—';
+                    const mesVisible=mesFiltro==='Todos'||mes===mesFiltro;
+                    return `<td data-mes="${mes}" data-presencia="${dato.presencia?'1':'0'}" data-valor-visible="${valorVisible}" class="vea-matriz-mes ${mesVisible?(dato.presencia?'text-slate-200 font-semibold':'text-slate-600'):'text-slate-700'}">${mesVisible?valorVisible:'—'}</td>`;
                 }).join("");
 
                 let metaIndividual = "";
@@ -4811,7 +4830,7 @@
                         ${metaIndividual}
                     </td>
                     ${celdas}
-                    <td class="vea-matriz-total font-black bg-slate-900/70 ${total === null ? "text-slate-600" : "text-slate-100"}">${total === null ? "—" : formatoNumeroDatosAcumuladosV6B(total)}</td>
+                    <td data-total-anual="${totalSerieResumenAnualV6B(fila.serie)===null?'—':formatoNumeroDatosAcumuladosV6B(totalSerieResumenAnualV6B(fila.serie))}" class="vea-matriz-total font-black bg-slate-900/70 ${total === null ? "text-slate-600" : "text-slate-100"}">${total === null ? "—" : formatoNumeroDatosAcumuladosV6B(total)}</td>
                 </tr>`);
             });
             const cantidadVisible=filas.filter(fila=>!estadoTipos.tiposInicializados||estadoTipos.tipos.includes(fila.tipoFiltro)).length;
@@ -4819,7 +4838,8 @@
             tbody.innerHTML = html.join("");
 
             if (nota) {
-                nota.textContent = `Año ${anioResumenDatosAcumuladosV6B} · Mes: ${estadoTipos.mes || 'Todos'}. “0” = período existente con resultado cero; “—” = período ausente/no disponible. INDIVIDUAL se reconstruye dinámicamente por código + enfermedad.`;
+                const comparados = aniosSeleccionados.slice().sort((a,b)=>a-b).join(', ');
+                nota.textContent = `Año activo de la matriz: ${anioResumenDatosAcumuladosV6B} · Años seleccionados: ${comparados} · Mes: ${estadoTipos.mes || 'Todos'}. “0” = período existente con resultado cero; “—” = período ausente/no disponible.`;
             }
         }
 
@@ -6202,10 +6222,15 @@
 
         function veaEjecutarTareasCooperativasF323(tab, tareas) {
             if (tabActiva !== tab) return;
-            tareas.forEach(tarea => {
-                if (tabActiva !== tab) return;
+            const token = ++veaRenderCoopTokenF323;
+            let indice = 0;
+            const ejecutarSiguiente = () => {
+                if (token !== veaRenderCoopTokenF323 || tabActiva !== tab || indice >= tareas.length) return;
+                const tarea = tareas[indice++];
                 try { tarea(); } catch (e) { console.warn('[VEA Render F4.48]', tab, e); }
-            });
+                if (indice < tareas.length) requestAnimationFrame(ejecutarSiguiente);
+            };
+            requestAnimationFrame(ejecutarSiguiente);
         }
 
         function ejecutarRenderModuloNavegacionVea(tab) {
@@ -6265,9 +6290,20 @@
         const veaRenderOriginalModuloF466 = ejecutarRenderModuloNavegacionVea;
         ejecutarRenderModuloNavegacionVea = function(tab) {
             if (tab === 'datos') {
+                sincronizarControlesDatosAcumuladosV6B();
                 matrizDatosAcumuladosAbiertaV6B = true;
-                matrizDatosAcumuladosPendienteV6B = false;
-                renderResumenAnualDatosAcumuladosV6B();
+                matrizDatosAcumuladosPendienteV6B = true;
+                const modelo = window.__veaModeloDatosF326 || construirModeloDatosAcumuladosV6B();
+                actualizarKpisDatosAcumuladosV6B(modelo);
+                const semanasEje = obtenerSemanasEjeDatosAcumuladosV6B(modelo);
+                veaEjecutarTareasCooperativasF323('datos', [
+                    () => { renderResumenAnualDatosAcumuladosV6B(); matrizDatosAcumuladosPendienteV6B = false; },
+                    () => renderG1DatosAcumuladosV6B(modelo),
+                    () => renderG2DatosAcumuladosV6B(modelo),
+                    ...EVENTOS_DATOS_ACUMULADOS_V6B.map(evento => () => renderMiniMensualDatosAcumuladosV6B(evento, modelo)),
+                    ...EVENTOS_DATOS_ACUMULADOS_V6B.map(evento => () => renderMiniSemanalDatosAcumuladosV6B(evento, modelo, semanasEje)),
+                    () => renderG5DatosAcumuladosV6B()
+                ]);
                 return;
             }
             return veaRenderOriginalModuloF466(tab);
@@ -6276,7 +6312,7 @@
         function programarRenderModuloNavegacionVea(tab) {
             if (!Object.prototype.hasOwnProperty.call(cacheRenderNavegacionVea, tab)) return;
             const firma = obtenerFirmaModuloNavegacionVea(tab);
-            if (cacheRenderNavegacionVea[tab] === firma) return;
+            if (!['datos','hospitalizados'].includes(tab) && cacheRenderNavegacionVea[tab] === firma) return;
             if (tabActiva !== tab) return;
             ejecutarRenderModuloNavegacionVea(tab);
             sincronizarVisualModuloInmediatoVea();
@@ -6861,7 +6897,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 renderTablaMinsaDinamica([], '');
                 renderCanalEndemicoChart('');
                 actualizarGraficosMensualesYTimelineContinuo();
-                if (selectedEvent !== 'SOBA') actualizarGraficosHospitalizados();
+                // No construir gráficos de un módulo oculto durante la apertura.
+                if (selectedEvent !== 'SOBA' && tabActiva === 'hospitalizados') actualizarGraficosHospitalizados();
                 actualizarTablaMatrizSemanas();
                 return;
             }
@@ -6873,7 +6910,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 if (topRecomendacion) topRecomendacion.innerHTML = 'Seleccione uno o más años para calcular el período activo.';
                 renderTablaMinsaDinamica([], '');
                 actualizarGraficosMensualesYTimelineContinuo();
-                if (selectedEvent !== 'SOBA') actualizarGraficosHospitalizados();
+                if (selectedEvent !== 'SOBA' && tabActiva === 'hospitalizados') actualizarGraficosHospitalizados();
                 if (tabActiva === 'dashboard' || tabActiva === 'canal') renderCanalEndemicoChart('');
                 if (tabActiva === 'dashboard' || tabActiva === 'tabla') actualizarTablaMatrizSemanas();
                 return;
@@ -6895,7 +6932,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             }
             renderTablaMinsaDinamica(registrosFiltrados, anioPrincipal);
             actualizarGraficosMensualesYTimelineContinuo();
-            if (selectedEvent !== 'SOBA') actualizarGraficosHospitalizados();
+            if (selectedEvent !== 'SOBA' && tabActiva === 'hospitalizados') actualizarGraficosHospitalizados();
 
             if (tabActiva === 'dashboard' || tabActiva === 'canal') {
                 renderCanalEndemicoChart(anioPrincipal);
@@ -8358,6 +8395,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const opcionesBase = {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: false,
+                normalized: true,
                 interaction: { intersect: false, mode: 'index' },
                 plugins: {
                     legend: { labels: { color: '#cbd5e1', boxWidth: 12, boxHeight: 12 } }
@@ -9868,6 +9907,23 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             return !!window.supabase?.createClient;
         }
 
+        async function veaSupabaseObtenerFirmaLiviana() {
+            const lista = await esperarSupabaseVea();
+            if (!lista) throw new Error('Supabase no disponible');
+            veaSupabaseClient ||= window.supabase.createClient(VEA_SUPABASE_URL, VEA_SUPABASE_PUBLISHABLE_KEY);
+            const tablas = ['edas','iras','febriles','individual','soat','vih','tbc'];
+            const partes = await Promise.all(tablas.map(async tabla => {
+                const respuesta = await veaSupabaseClient
+                    .from(tabla)
+                    .select('_row_id', { count:'exact' })
+                    .order('_row_id', { ascending:false })
+                    .limit(1);
+                if (respuesta.error) throw respuesta.error;
+                return `${tabla}:${Number(respuesta.count) || 0}:${respuesta.data?.[0]?._row_id ?? ''}`;
+            }));
+            return partes.join('|');
+        }
+
 
         // =========================================================
         // FASE 3.6 — CACHÉ INTELIGENTE INDEXEDDB (stale-while-revalidate)
@@ -9877,6 +9933,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         const VEA_CACHE_DB = 'VEA_CACHE_DB_V1';
         const VEA_CACHE_STORE = 'repositorio';
         const VEA_CACHE_KEY = 'dataset_procesado';
+        let veaFirmaRemotaActual = null;
 
         function veaCacheAbrirDB() {
             return new Promise((resolve, reject) => {
@@ -9931,6 +9988,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                     ts: Date.now(),
                     ultimaActualizacionDatos: veaUltimaActualizacionDatos || Date.now(),
                     totalRemoto,
+                    firmaRemota: veaFirmaRemotaActual,
                     databaseActiva: {
                         EDAs: databaseActiva.EDAs || [],
                         IRAs: databaseActiva.IRAs || [],
@@ -9966,6 +10024,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 });
                 db.close();
                 if (!payload?.databaseActiva || !payload?.modulos) return null;
+
+                veaFirmaRemotaActual = payload.firmaRemota || null;
 
                 veaUltimaActualizacionDatos = payload.ultimaActualizacionDatos || payload.ts || null;
                 actualizarMetadatosGraficosVea();
@@ -10076,6 +10136,18 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         });
 
         async function cargarRepositorioVeaDesdeSupabase() {
+            // La carga remota se prepara de forma transaccional: si una tabla falla,
+            // se restaura el último repositorio válido que ya estaba visible.
+            const respaldoRepositorioVea = {
+                EDAs: databaseActiva.EDAs || [],
+                IRAs: databaseActiva.IRAs || [],
+                Febriles: databaseActiva.Febriles || [],
+                SOBA: databaseActiva.SOBA || [],
+                casos: datosModulosIndependientes.casos || [],
+                soat: datosModulosIndependientes.soat || [],
+                vih: datosModulosIndependientes.vih || [],
+                tbc: datosModulosIndependientes.tbc || []
+            };
             // Nueva carga: invalidar modelos anteriores y reconstruirlos una sola vez al finalizar.
             window.__veaModelosListosF401 = false;
             window.__veaModeloDatosF326 = null;
@@ -10096,6 +10168,10 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             }
 
             veaSupabaseClient ||= window.supabase.createClient(VEA_SUPABASE_URL, VEA_SUPABASE_PUBLISHABLE_KEY);
+            if (!veaFirmaRemotaActual) {
+                try { veaFirmaRemotaActual = await veaSupabaseObtenerFirmaLiviana(); }
+                catch (_) { /* La carga completa mantiene su propio control de errores. */ }
+            }
             if (txtEstadoSupabase) txtEstadoSupabase.textContent = 'Sincronizando automáticamente con Supabase…';
             if (barraSupabase) barraSupabase.style.width = '35%';
             const mapa = [
@@ -10186,22 +10262,34 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const totalRemoto = databaseActiva.EDAs.length + databaseActiva.IRAs.length + databaseActiva.Febriles.length
                 + (datosModulosIndependientes.casos || []).length + (datosModulosIndependientes.soat || []).length
                 + (datosModulosIndependientes.vih || []).length + (datosModulosIndependientes.tbc || []).length;
+            if (errores.length || protegidas.length || totalRemoto === 0) {
+                databaseActiva.EDAs = respaldoRepositorioVea.EDAs;
+                databaseActiva.IRAs = respaldoRepositorioVea.IRAs;
+                databaseActiva.Febriles = respaldoRepositorioVea.Febriles;
+                databaseActiva.SOBA = respaldoRepositorioVea.SOBA;
+                datosModulosIndependientes.casos = respaldoRepositorioVea.casos;
+                datosModulosIndependientes.soat = respaldoRepositorioVea.soat;
+                datosModulosIndependientes.vih = respaldoRepositorioVea.vih;
+                datosModulosIndependientes.tbc = respaldoRepositorioVea.tbc;
+                reinicializarEstadosFiltrosTrasCargaVea();
+                if (txtEstadoSupabase) {
+                    txtEstadoSupabase.textContent = respaldoRepositorioVea.EDAs.length
+                        ? 'Sin conexión estable · usando la última base disponible en caché'
+                        : 'No se pudo completar la sincronización con Supabase';
+                }
+                if (barraSupabase) barraSupabase.style.width = respaldoRepositorioVea.EDAs.length ? '100%' : '0%';
+                return { cargadas, protegidas, errores, totalRemoto: 0, cacheConservada: true };
+            }
+
+            veaUltimaActualizacionDatos = Date.now();
+            actualizarMetadatosGraficosVea();
             if (txtEstadoSupabase) {
-                txtEstadoSupabase.textContent = errores.length
-                    ? `Supabase conectado con ${errores.length} observación(es)`
-                    : `Supabase sincronizado automáticamente · ${totalRemoto.toLocaleString('es-PE')} registros`;
+                txtEstadoSupabase.textContent = `Datos actualizados correctamente · ${totalRemoto.toLocaleString('es-PE')} registros · Última sincronización: ${formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos)}`;
             }
             if (barraSupabase) barraSupabase.style.width = '100%';
             console.info('[VEA Supabase]', { cargadas, protegidas, errores, totalRemoto });
-            if (totalRemoto > 0 && errores.length === 0) {
-                if (!veaDispositivoLimitadoF321()) {
-                    veaCacheGuardarProcesado(totalRemoto);
-                } else {
-                    // FASE 3.24: no clonar/escribir decenas de miles de objetos durante
-                    // una sesión móvil activa. La prioridad es que el menú nunca se congele.
-                    console.info('[VEA Cache móvil 3.24] Escritura diferida omitida para priorizar interacción.');
-                }
-            }
+            // Guardar también en móvil, pero después del pintado para no bloquear la apertura.
+            setTimeout(() => veaCacheGuardarProcesado(totalRemoto), veaDispositivoLimitadoF321() ? 1800 : 0);
             return { cargadas, protegidas, errores, totalRemoto };
         }
         window.cargarRepositorioVeaDesdeSupabase = cargarRepositorioVeaDesdeSupabase;
@@ -10221,23 +10309,40 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             // En la primera ejecución (sin caché) continúa con la carga remota normal.
             const cacheVeaDisponible = await veaCacheRestaurarProcesado();
 
-            // FASE 3.8: con caché validada, la apertura termina aquí.
-            // Supabase se refresca después, en tiempo ocioso, sin bloquear el primer uso.
+            // Con caché validada la interfaz queda utilizable de inmediato, pero la
+            // verificación remota SIEMPRE se ejecuta al abrir VEA.
             if (cacheVeaDisponible) {
                 // FASE 3.20: el warmup simultáneo bloqueaba el hilo principal en móviles.
                 if (window.innerWidth >= 768) programarWarmupModulosF311();
 
-                // F4.57 — PRIORIDAD ABSOLUTA A LA INTERACCIÓN.
-                // Se elimina el refresco remoto automático temporizado de 60/180 s.
-                // Ese trabajo podía arrancar justo después de un periodo sin actividad
-                // y competir con el primer clic del usuario. Con caché validada, VEA
-                // permanece completamente interactivo; la sincronización remota sigue
-                // disponible por los flujos explícitos existentes del sistema.
                 document.documentElement.dataset.veaInteraccion = 'prioritaria';
-                return;
+                const txt = document.getElementById('textoProgresoVea');
+                if (txt) txt.textContent = 'Consultando base VEA…';
+                // Ceder dos cuadros permite que la caché se pinte antes de iniciar red/parsers.
+                await veaCederInterfazF321();
+                await veaCederInterfazF321();
+
+                // Verificación liviana: si conteo y última fila de cada tabla coinciden,
+                // no descargar ni reprocesar nuevamente las siete tablas completas.
+                try {
+                    const firmaRemota = await veaSupabaseObtenerFirmaLiviana();
+                    if (firmaRemota && cacheVeaDisponible.firmaRemota === firmaRemota) {
+                        veaFirmaRemotaActual = firmaRemota;
+                        const total = Number(cacheVeaDisponible.totalRemoto) || 0;
+                        if (txt) txt.textContent = `Base VEA al día · ${total.toLocaleString('es-PE')} registros · Última sincronización: ${formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos)}`;
+                        const barra = document.getElementById('barraProgresoVea');
+                        if (barra) barra.style.width = '100%';
+                        return;
+                    }
+                    veaFirmaRemotaActual = firmaRemota;
+                } catch (err) {
+                    if (txt) txt.textContent = `Sin conexión · usando la última base disponible · ${formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos)}`;
+                    console.warn('[VEA Supabase] Verificación liviana no disponible:', err);
+                    return;
+                }
             }
 
-            // Primera ejecución sin caché: carga automática real desde Supabase.
+            // Primera ejecución o revalidación automática de la caché desde Supabase.
             try {
                 const resultadoSupabase = await cargarRepositorioVeaDesdeSupabase();
                 if (!resultadoSupabase.totalRemoto && resultadoSupabase.errores?.length) {

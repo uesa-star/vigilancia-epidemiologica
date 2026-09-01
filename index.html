@@ -1274,6 +1274,20 @@
 /* F4.95 reemplazado por F4.96 dentro del CSS real del boletín. */
 
 </style>
+<style>
+/* F4.68 — Pie informativo uniforme para todos los gráficos VEA. */
+.vea-chart-meta{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  width:100%;margin-top:12px;padding-top:10px;border-top:1px solid rgba(51,65,85,.72);
+  color:#64748b;font-size:10px;font-weight:600;line-height:1.35;
+}
+.vea-chart-meta-fuente{min-width:0;text-align:left}
+.vea-chart-meta-actualizacion{min-width:0;text-align:right}
+@media(max-width:640px){
+  .vea-chart-meta{flex-direction:column;align-items:stretch;gap:4px}
+  .vea-chart-meta-fuente,.vea-chart-meta-actualizacion{text-align:left}
+}
+</style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
 
@@ -1641,7 +1655,7 @@
             <!-- Gráficos principales del Dashboard: 4 comparativos -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                 <!-- GRÁFICO 1: COMPARATIVO POR AÑO -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
+                <div class="order-1 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 left-0 right-0 h-1 bg-red-650"></div>
                     <div class="mb-4 mt-2">
                         <h3 class="text-sm font-bold text-slate-200">Comparativo por Año</h3>
@@ -1656,7 +1670,7 @@
                 </div>
 
                 <!-- GRÁFICO 2: DISTRIBUCIÓN POR EDADES -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
+                <div class="order-4 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 left-0 right-0 h-1 bg-indigo-600"></div>
                     <div class="mb-4 mt-2 flex items-start justify-between gap-4">
                         <div class="min-w-0">
@@ -1676,7 +1690,7 @@
                 </div>
 
                 <!-- GRÁFICO 3: COMPARATIVO POR SEMANA EPIDEMIOLÓGICA -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
+                <div class="order-3 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                     <div class="flex justify-between items-start gap-3 mb-4 mt-2">
                         <div>
@@ -1699,7 +1713,7 @@
                 </div>
 
                 <!-- GRÁFICO 4: COMPARATIVO POR MES -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
+                <div class="order-2 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-600"></div>
                     <div class="flex justify-between items-start gap-3 mb-4 mt-2">
                         <div>
@@ -2187,51 +2201,52 @@
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
-                    <h4 class="text-sm font-black text-slate-100">G1 · Casos Notificados por Año Epidemiológico</h4>
-                    <p class="text-[10px] text-slate-500 mt-1">Una barra independiente por cada año epidemiológico seleccionado.</p>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm border-t-2 border-t-blue-600">
+                    <h4 class="text-sm font-black text-slate-100">Comparativo por Año</h4>
+                    <p class="text-[10px] text-slate-500 mt-1">Casos registrados por cada año seleccionado según los filtros activos.</p>
                     <div class="relative h-72 mt-4">
                         <canvas id="ciChartG1Anual"></canvas>
                         <div id="ciEstadoG1" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
                     </div>
                 </div>
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
-                    <h4 class="text-sm font-black text-slate-100">G2 · Tendencia por Semana Epidemiológica</h4>
-                    <p class="text-[10px] text-slate-500 mt-1">Una línea por año seleccionado. Las semanas inexistentes se conservan como ausentes.</p>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm border-t-2 border-t-emerald-500">
+                    <div class="flex items-start justify-between gap-3"><div><h4 class="text-sm font-black text-slate-100">Comparativo por Mes</h4><p class="text-[10px] text-slate-500 mt-1">Enero a diciembre; una línea por año y sin completar meses inexistentes.</p></div><div class="text-right text-[10px] font-black text-slate-400">AÑOS: <span id="ciGraficoMensualAnios" class="text-red-400">—</span></div></div>
                     <div class="relative h-72 mt-4">
-                        <canvas id="ciChartG2Semanal"></canvas>
-                        <div id="ciEstadoG2" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
+                        <canvas id="ciChartG4Mensual"></canvas>
+                        <div id="ciEstadoG4" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
                     </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
-                <h4 class="text-sm font-black text-slate-100">G3 · Casos por Diagnóstico</h4>
-                <p class="text-[10px] text-slate-500 mt-1">Código + nombre completo del diagnóstico · orden acumulado descendente · sin recorte Top-N.</p>
-                <div class="relative min-h-[360px] mt-4" id="ciContenedorG3">
-                    <canvas id="ciChartG3Diagnostico"></canvas>
-                    <div id="ciEstadoG3" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
+                    <div id="ciUltimaActualizacionGraficos" class="mt-3 border-t border-slate-800 pt-3 text-right text-[9px] text-slate-500">Última actualización: —</div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
-                    <h4 class="text-sm font-black text-slate-100">G4 · Casos por Sexo</h4>
-                    <p class="text-[10px] text-slate-500 mt-1">Comparación multianual por sexo registrado en INDIVIDUAL.</p>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm border-t-2 border-t-indigo-500">
+                    <div class="flex items-start justify-between gap-3"><div><h4 class="text-sm font-black text-slate-100">Comparativo por Semana Epidemiológica</h4><p class="text-[10px] text-slate-500 mt-1">Una línea por año seleccionado; solo se representan semanas existentes.</p></div><div class="text-right text-[10px] font-black text-slate-400">AÑOS: <span id="ciGraficoSemanalAnios" class="text-red-400">—</span></div></div>
                     <div class="relative h-72 mt-4">
-                        <canvas id="ciChartG4Sexo"></canvas>
-                        <div id="ciEstadoG4" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
+                        <canvas id="ciChartG2Semanal"></canvas>
+                        <div id="ciEstadoG2" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
                     </div>
+                    <div class="mt-3 border-t border-slate-800 pt-3 text-[9px] text-slate-500">Fuente: INDIVIDUAL — Repositorio VEA</div>
                 </div>
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
-                    <h4 class="text-sm font-black text-slate-100">G5 · Casos por Grupo de Edad</h4>
-                    <p class="text-[10px] text-slate-500 mt-1">Clasificación epidemiológica a partir de edad + tipo_edad; dataset independiente por año.</p>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm border-t-2 border-t-violet-600">
+                    <div class="flex items-start justify-between gap-3"><div><h4 class="text-sm font-black text-slate-100">Distribución por Edades</h4><p class="text-[10px] text-slate-500 mt-1">Distribución por grupos etarios del año activo.</p></div><div class="text-[10px] font-black text-slate-400">AÑO: <span id="ciGraficoEdadAnio" class="text-red-400">—</span></div></div>
                     <div class="relative h-72 mt-4">
                         <canvas id="ciChartG5Edad"></canvas>
                         <div id="ciEstadoG5" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
                     </div>
                 </div>
             </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm border-t-2 border-t-cyan-500">
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between"><div><h4 class="text-sm font-black text-slate-100">Casos por Diagnóstico</h4><p class="text-[10px] text-slate-500 mt-1">Código + nombre completo · orden acumulado descendente · sin lista fija.</p></div><div class="text-[10px] font-black text-slate-400">AÑOS: <span id="ciGraficoDiagnosticoAnios" class="text-red-400">—</span></div></div>
+                <div class="relative min-h-[360px] mt-4" id="ciContenedorG3">
+                    <canvas id="ciChartG3Diagnostico"></canvas>
+                    <div id="ciEstadoG3" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
+                </div>
+                <div class="mt-3 border-t border-slate-800 pt-3 text-[9px] text-slate-500">Fuente: INDIVIDUAL — Repositorio VEA</div>
+            </div>
+
+            <button type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba" class="fixed bottom-6 right-6 z-30 grid h-11 w-11 place-items-center rounded-full border border-slate-700 bg-slate-950/95 text-xl font-black text-slate-100 shadow-2xl hover:border-cyan-500">↑</button>
         </div>
 
         <!-- TAB 2: CANAL ENDÉMICO -->
@@ -2409,7 +2424,7 @@
 
             <!-- GRÁFICOS EXCLUSIVOS DE HOSPITALIZADOS -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 mb-6">
-            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
+            <div class="order-1 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
                 <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                 <div class="flex justify-between items-start gap-3 mb-4 mt-2">
                     <div><h3 class="text-sm font-bold text-slate-200">Comparativo por Año</h3><p class="text-[10px] text-slate-400">Hospitalizaciones registradas por cada año seleccionado según los filtros activos.</p></div>
@@ -2417,7 +2432,7 @@
                 </div>
                 <div class="h-[320px] w-full relative"><canvas id="chartHospComparativoAnual"></canvas><div id="estadoChartHospAnual" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">Sin datos hospitalarios para la selección.</div></div>
             </div>
-            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
+            <div class="order-4 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
                 <div class="absolute top-0 left-0 right-0 h-1 bg-violet-600"></div>
                 <div class="flex justify-between items-start gap-3 mb-4 mt-2">
                     <div><h3 class="text-sm font-bold text-slate-200">Distribución por Edades</h3><p class="text-[10px] text-slate-400">Distribución de hospitalizados por los grupos etarios disponibles en el repositorio activo.</p></div>
@@ -2425,11 +2440,9 @@
                 </div>
                 <div class="h-[320px] w-full relative"><canvas id="chartHospDistribucionEdades"></canvas><div id="estadoChartHospEdades" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">Sin datos hospitalarios por edad para la selección.</div></div>
             </div>
-        </div>
-                <!-- F4.26 — Segunda fila de gráficos Hospitalizados -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <!-- F4.26 — Continuación del orden estándar de gráficos Hospitalizados -->
                 <!-- Línea de Tiempo Hospitalizados -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
+                <div class="order-3 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
                     <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                     <div class="flex justify-between items-start mb-4 mt-2">
                         <div>
@@ -2455,7 +2468,7 @@
                     </div>
                 </div>
                 <!-- Comparativo Mensual Hospitalizados -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
+                <div class="order-2 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
                     <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-600"></div>
                     <div class="flex justify-between items-start mb-4 mt-2">
                         <div>
@@ -6105,35 +6118,33 @@
         }
 
         function ciV21RenderG4(registros) {
-            const canvas = document.getElementById('ciChartG4Sexo');
+            const canvas = document.getElementById('ciChartG4Mensual');
             if (!canvas || typeof Chart === 'undefined') return;
             if (ciChartG4Instance) ciChartG4Instance.destroy();
 
             const anios = [...estadoCasosIndividualesV21.anios].sort((a,b)=>a-b);
-            const hayOtros = registros.some(r => !['F','M'].includes(ciV21Sexo(r)));
-            const claves = ['F','M', ...(hayOtros ? ['OTRO'] : [])];
-            const labels = ['Femenino','Masculino', ...(hayOtros ? ['No especificado'] : [])];
-
+            const labels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct','Nov','Dic'];
             const datasets = anios.map((anio,i)=>({
                 label:String(anio),
-                data: claves.map(clave => registros.filter(r => {
-                    if (ciV21Anio(r) !== anio) return false;
-                    const sx = ciV21Sexo(r);
-                    return clave === 'OTRO' ? !['F','M'].includes(sx) : sx === clave;
-                }).length),
-                backgroundColor:ciV21Color(i,.72), borderColor:ciV21Color(i,1), borderWidth:1
+                data:labels.map((_,indiceMes) => {
+                    const mes = indiceMes + 1;
+                    const cantidad = registros.filter(r => ciV21Anio(r) === anio && ciV21Mes(r) === mes).length;
+                    return cantidad > 0 ? cantidad : null;
+                }),
+                borderColor:ciV21Color(i,1), backgroundColor:ciV21Color(i,.16),
+                borderWidth:2, pointRadius:3, pointHoverRadius:5, tension:.22, spanGaps:false
             }));
             const hay = datasets.some(ds=>ds.data.some(v=>v>0));
-            ciV21MostrarEstado('ciEstadoG4', !hay, 'Sin datos de sexo para los filtros activos.');
+            ciV21MostrarEstado('ciEstadoG4', !hay, 'Sin datos mensuales para los filtros activos.');
             if (!hay) { ciChartG4Instance = null; return; }
 
             ciChartG4Instance = new Chart(canvas, {
-                type:'bar', data:{labels,datasets},
+                type:'line', data:{labels,datasets},
                 options:{
                     responsive:true, maintainAspectRatio:false,
                     plugins:{legend:{labels:{color:'#cbd5e1'}}},
                     scales:{
-                        x:{ticks:{color:'#94a3b8'},grid:{display:false}},
+                        x:{ticks:{color:'#94a3b8'},grid:{color:'rgba(148,163,184,.05)'}},
                         y:{beginAtZero:true,ticks:{precision:0,color:'#94a3b8'},grid:{color:'rgba(148,163,184,.08)'}}
                     }
                 }
@@ -6146,13 +6157,15 @@
             if (ciChartG5Instance) ciChartG5Instance.destroy();
 
             const anios = [...estadoCasosIndividualesV21.anios].sort((a,b)=>a-b);
-            const hayNoEsp = registros.some(r => ciV21GrupoEdad(r) === 'No especificado');
+            const anioActivo = anios.length ? anios[anios.length - 1] : null;
+            const registrosActivos = registros.filter(r => ciV21Anio(r) === anioActivo);
+            const hayNoEsp = registrosActivos.some(r => ciV21GrupoEdad(r) === 'No especificado');
             const grupos = [...GRUPOS_EDAD_CI_V21, ...(hayNoEsp ? ['No especificado'] : [])];
-            const datasets = anios.map((anio,i)=>({
-                label:String(anio),
-                data:grupos.map(g => registros.filter(r => ciV21Anio(r) === anio && ciV21GrupoEdad(r) === g).length),
-                backgroundColor:ciV21Color(i,.72), borderColor:ciV21Color(i,1), borderWidth:1
-            }));
+            const datasets = [{
+                label:String(anioActivo ?? 'Año activo'),
+                data:grupos.map(g => registrosActivos.filter(r => ciV21GrupoEdad(r) === g).length),
+                backgroundColor:'rgba(6,182,212,.82)', borderColor:'rgba(34,211,238,1)', borderWidth:1
+            }];
             const hay = datasets.some(ds=>ds.data.some(v=>v>0));
             ciV21MostrarEstado('ciEstadoG5', !hay, 'Sin datos etarios para los filtros activos.');
             if (!hay) { ciChartG5Instance = null; return; }
@@ -6168,6 +6181,24 @@
                     }
                 }
             });
+        }
+
+        function ciV21ActualizarMetaGraficos() {
+            const anios = [...estadoCasosIndividualesV21.anios].sort((a,b)=>a-b);
+            const aniosTexto = anios.length ? anios.join(', ') : '—';
+            ['ciGraficoSemanalAnios','ciGraficoMensualAnios','ciGraficoDiagnosticoAnios'].forEach(id => {
+                const nodo = document.getElementById(id);
+                if (nodo) nodo.textContent = aniosTexto;
+            });
+            const edadAnio = document.getElementById('ciGraficoEdadAnio');
+            if (edadAnio) edadAnio.textContent = anios.length ? String(anios[anios.length - 1]) : '—';
+            const actualizado = document.getElementById('ciUltimaActualizacionGraficos');
+            if (actualizado) {
+                const fecha = new Intl.DateTimeFormat('es-PE', {
+                    dateStyle:'long', timeStyle:'short', timeZone:'America/Lima'
+                }).format(new Date());
+                actualizado.textContent = `Última actualización: ${fecha}`;
+            }
         }
 
         let ciV21UltimaFirmaRenderF318 = null;
@@ -6187,6 +6218,7 @@
             if (!forzar && ciV21UltimaFirmaRenderF318 === firmaF318) return;
             ciV21UltimaFirmaRenderF318 = firmaF318;
             ciV21SincronizarControles();
+            ciV21ActualizarMetaGraficos();
 
             const dataset = ciV21Dataset();
             if (!dataset.length) {
@@ -6462,10 +6494,19 @@
         function programarRenderModuloNavegacionVea(tab) {
             if (!Object.prototype.hasOwnProperty.call(cacheRenderNavegacionVea, tab)) return;
             const firma = obtenerFirmaModuloNavegacionVea(tab);
+            // F4.67: Datos Acumulados conserva su DOM y sus gráficos al ocultarse.
+            // Si la firma no cambió, volver al Módulo 03 no debe reconstruir
+            // modelo, matriz ni gráficos: solo se reutiliza el resultado visible.
+            if (tab === 'datos' && cacheRenderNavegacionVea[tab] === firma) {
+                if (typeof sincronizarVisualModuloInmediatoVea === 'function') sincronizarVisualModuloInmediatoVea();
+                return;
+            }
             if (!['datos','hospitalizados'].includes(tab) && cacheRenderNavegacionVea[tab] === firma) return;
             if (tabActiva !== tab) return;
             ejecutarRenderModuloNavegacionVea(tab);
-            sincronizarVisualModuloInmediatoVea();
+            // Compatibilidad con versiones que incluyen el sincronizador visual.
+            // Si no existe, no se interrumpe el guardado de la firma de caché.
+            if (typeof sincronizarVisualModuloInmediatoVea === 'function') sincronizarVisualModuloInmediatoVea();
             cacheRenderNavegacionVea[tab] = obtenerFirmaModuloNavegacionVea(tab);
         }
 
@@ -6606,12 +6647,23 @@
         const veaRenderPendienteF311 = new Map();
         let veaTimerRenderMovilF322 = null;
 
-        function diferirRenderNavegacionF311(tab, tarea, espera = 0) {
+        function diferirRenderNavegacionF311(tab, tarea, espera = 32) {
             const token = Symbol(tab);
             veaRenderPendienteF311.set(tab, token);
-            if (tabActiva !== tab) return;
-            veaRenderPendienteF311.delete(tab);
-            try { tarea(); } catch (err) { console.warn('[VEA Navegación F4.48]', tab, err); }
+            const ejecutar = () => {
+                if (veaRenderPendienteF311.get(tab) !== token || tabActiva !== tab) return;
+                veaRenderPendienteF311.delete(tab);
+                try { tarea(); } catch (err) { console.warn('[VEA Navegación F4.67]', tab, err); }
+            };
+
+            // F4.67: dos frames garantizan que el navegador pinte el botón y
+            // el panel seleccionado antes de iniciar cualquier agrupación.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    if (espera > 0) setTimeout(ejecutar, espera);
+                    else ejecutar();
+                });
+            });
         }
 
 
@@ -6762,6 +6814,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                                     if (ciV21UltimaFirmaRenderF318 !== firmaF323) {
                                         ciV21UltimaFirmaRenderF318 = firmaF323;
                                         ciV21SincronizarControles();
+                                        ciV21ActualizarMetaGraficos();
                                         const filtradosF323 = window.__veaCasosFiltradosF401 || ciV21Filtrados();
                                         // FASE 4.02: KPIs primero; gráficos después.
                                         ciV21RenderKPIs(filtradosF323);
@@ -10124,11 +10177,85 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             return `${diaSemana} ${dia}.${mes}.${anio} - ${hora}:${minutos} ${periodo}`;
         }
 
+        function veaFuenteParaGraficoF468(canvas) {
+            if (canvas.closest('#contentCasos')) return 'INDIVIDUAL — Repositorio VEA';
+            if (canvas.closest('#contentSoat')) return 'SOAT — Repositorio VEA';
+            if (canvas.closest('#contentVih')) return 'VIH — Repositorio VEA';
+            if (canvas.closest('#contentTbc')) return 'TBC — Repositorio VEA';
+            if (canvas.closest('#contentDatos')) return 'Repositorio VEA consolidado';
+            if (canvas.closest('#contentHospitalizados')) return 'HOSPITALIZADOS — Repositorio VEA';
+            return VEA_FUENTE_VIGILANCIA;
+        }
+
+        function veaTarjetaParaGraficoF468(canvas) {
+            let nodo = canvas.parentElement;
+            while (nodo && nodo !== document.body) {
+                const esTarjeta = nodo.matches('article, section') || nodo.classList.contains('rounded-2xl') || nodo.classList.contains('rounded-xl');
+                if (esTarjeta && nodo.querySelectorAll('canvas').length === 1 && nodo.querySelector('h3, h4')) return nodo;
+                nodo = nodo.parentElement;
+            }
+            return null;
+        }
+
+        function veaRetirarMetaAnteriorF468(tarjeta) {
+            const candidatos = [...tarjeta.querySelectorAll('p, div')].filter(nodo => {
+                if (nodo.closest('.vea-chart-meta') || nodo.children.length) return false;
+                const texto = String(nodo.textContent || '').trim();
+                return texto.startsWith('Fuente:') || texto.startsWith('Última actualización');
+            });
+            candidatos.forEach(nodo => {
+                const padre = nodo.parentElement;
+                if (padre && padre !== tarjeta && padre.children.length === 1) padre.remove();
+                else nodo.remove();
+            });
+        }
+
+        function veaActualizarPiesInformativosGraficosF468() {
+            const fecha = formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos);
+            document.querySelectorAll('.vea-chart-meta').forEach(pie => {
+                const canvas = document.getElementById(pie.dataset.canvasId || '');
+                const fuente = pie.querySelector('.vea-chart-meta-fuente');
+                const actualizacion = pie.querySelector('.vea-chart-meta-actualizacion');
+                if (fuente && canvas) fuente.textContent = `Fuente: ${veaFuenteParaGraficoF468(canvas)}`;
+                if (actualizacion) actualizacion.textContent = `Última actualización: ${fecha}`;
+            });
+        }
+
+        function veaInstalarPiesInformativosGraficosF468() {
+            document.querySelectorAll('canvas[id]').forEach(canvas => {
+                if (canvas.dataset.veaPieF468 === '1') return;
+                const tarjeta = veaTarjetaParaGraficoF468(canvas);
+                if (!tarjeta) return;
+                canvas.dataset.veaPieF468 = '1';
+                veaRetirarMetaAnteriorF468(tarjeta);
+
+                const pie = document.createElement('div');
+                pie.className = 'vea-chart-meta';
+                pie.dataset.canvasId = canvas.id;
+                pie.setAttribute('aria-label', 'Fuente y última actualización del gráfico');
+
+                const fuente = document.createElement('span');
+                fuente.className = 'vea-chart-meta-fuente';
+                const actualizacion = document.createElement('span');
+                actualizacion.className = 'vea-chart-meta-actualizacion';
+                pie.append(fuente, actualizacion);
+                tarjeta.appendChild(pie);
+            });
+            veaActualizarPiesInformativosGraficosF468();
+        }
+
         function actualizarMetadatosGraficosVea() {
             const fuente = document.getElementById('fuenteGraficoSemanalVea');
             const actualizado = document.getElementById('actualizacionGraficoMensualVea');
             if (fuente) fuente.textContent = `Fuente: ${VEA_FUENTE_VIGILANCIA}`;
             if (actualizado) actualizado.textContent = `Última actualización de datos: ${formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos)}`;
+            veaInstalarPiesInformativosGraficosF468();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', veaInstalarPiesInformativosGraficosF468, { once:true });
+        } else {
+            veaInstalarPiesInformativosGraficosF468();
         }
 
         async function veaCacheGuardarProcesado(totalRemoto) {

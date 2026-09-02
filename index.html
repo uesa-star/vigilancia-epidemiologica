@@ -1312,12 +1312,12 @@ html[data-vea-theme="light"] .vea-chart-meta{color:#475569;border-color:#cbd5e1}
 html[data-vea-theme="light"] .vea-menu-item-inactive{color:#334155!important}
 html[data-vea-theme="light"] table{color:#0f172a}
 html[data-vea-theme="light"] .vea-btn-descargar-graficos{background:#ecfeff!important;color:#0e7490!important;border-color:#22d3ee!important}
-.vea-theme-switch{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:5px 9px;border:1px solid rgba(245,158,11,.35);border-radius:999px;background:rgba(245,158,11,.08);color:#fbbf24;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s}
-.vea-theme-switch-track{position:relative;width:42px;height:22px;flex:none;border-radius:999px;background:#334155;box-shadow:inset 0 0 0 1px rgba(148,163,184,.25);transition:background-color .2s}
-.vea-theme-switch-knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#f8fafc;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .2s}
+.vea-theme-switch{position:relative;display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:3px 6px;border:1px solid rgba(245,158,11,.35);border-radius:999px;background:rgba(245,158,11,.08);color:#fbbf24;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s}
+.vea-theme-switch-track{position:relative;width:34px;height:18px;flex:none;border-radius:999px;background:#334155;box-shadow:inset 0 0 0 1px rgba(148,163,184,.25);transition:background-color .2s}
+.vea-theme-switch-knob{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#f8fafc;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .2s}
 .vea-theme-switch[aria-checked="true"] .vea-theme-switch-track{background:#f59e0b}
-.vea-theme-switch[aria-checked="true"] .vea-theme-switch-knob{transform:translateX(20px)}
-.vea-theme-switch-icon{font-size:15px;line-height:1;opacity:.45;transition:opacity .2s,transform .2s}
+.vea-theme-switch[aria-checked="true"] .vea-theme-switch-knob{transform:translateX(16px)}
+.vea-theme-switch-icon{font-size:13px;line-height:1;opacity:.45;transition:opacity .2s,transform .2s}
 .vea-theme-switch[aria-checked="false"] .vea-theme-switch-icon-dark,
 .vea-theme-switch[aria-checked="true"] .vea-theme-switch-icon-light{opacity:1;transform:scale(1.08)}
 .vea-theme-switch:focus-visible{outline:2px solid #38bdf8;outline-offset:2px}
@@ -1373,8 +1373,10 @@ html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#conte
 .vea-alertas-marca{display:inline-flex;align-items:center;gap:7px;color:#67e8f9;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .vea-alertas-pulso{width:8px;height:8px;border-radius:50%;background:#22d3ee;box-shadow:0 0 0 5px rgba(34,211,238,.12)}
 .vea-alerta-viewport{min-width:0;overflow:hidden;mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%)}
-.vea-alerta-contenido{display:flex;align-items:center;gap:9px;width:max-content;min-width:max-content;padding-inline:16px;will-change:transform;animation:veaAlertaDesplazaF476 22s linear infinite}
-@keyframes veaAlertaDesplazaF476{from{transform:translateX(85vw)}to{transform:translateX(-100%)}}
+.vea-alerta-contenido{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:veaAlertaDesplazaF478 58s linear infinite}
+@keyframes veaAlertaDesplazaF478{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.vea-alerta-grupo{display:flex;align-items:center;gap:42px;padding-right:42px}
+.vea-alerta-item{display:flex;align-items:center;gap:9px;min-width:max-content;white-space:nowrap}
 .vea-alerta-ambito{flex:none;padding:4px 7px;border-radius:999px;background:rgba(59,130,246,.16);color:#93c5fd;font-size:9px;font-weight:900;text-transform:uppercase}
 .vea-alerta-enlace{min-width:0;color:#f8fafc;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vea-alerta-enlace:hover{text-decoration:underline;color:#67e8f9}
@@ -1383,6 +1385,8 @@ html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#conte
 .vea-alertas-control{display:grid;place-items:center;width:28px;height:28px;border:1px solid rgba(148,163,184,.25);border-radius:8px;background:rgba(15,23,42,.65);color:#cbd5e1;font-size:12px;transition:.2s}
 .vea-alertas-control:hover{border-color:#22d3ee;color:#67e8f9;background:rgba(8,145,178,.15)}
 .vea-alertas-detalle{width:auto;min-width:78px;padding:0 9px;font-size:9px;font-weight:900;text-transform:uppercase;white-space:nowrap}
+.vea-alerta-fuente-visible{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 11px;border:1px solid rgba(34,211,238,.35);border-radius:9px;background:rgba(8,145,178,.12);color:#67e8f9;font-size:10px;font-weight:900;text-decoration:none}
+.vea-alerta-fuente-visible:hover{border-color:#22d3ee;background:rgba(8,145,178,.2);color:#cffafe}
 .vea-alerta-modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}
 .vea-alerta-modal-fila{display:block;padding:12px 0;border-bottom:1px solid rgba(51,65,85,.65)}
 .vea-alerta-modal-fila-principal,.vea-alerta-modal-fila-laboratorio{grid-column:1/-1}
@@ -1423,8 +1427,9 @@ html[data-vea-theme="light"] .vea-alerta-enlace{color:#0f172a}
 html[data-vea-theme="light"] .vea-alerta-enlace:hover{color:#0369a1}
 html[data-vea-theme="light"] .vea-alerta-fecha{color:#52657a}
 html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#334155;border-color:#cbd5e1}
+html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;border-color:#0891b2;color:#0e7490}
 @media(max-width:900px){.vea-alertas-carrusel{grid-template-columns:minmax(0,1fr) auto}.vea-alertas-marca{display:none}.vea-alerta-fecha{display:none}}
-@media(max-width:560px){.vea-alerta-ambito{display:none}.vea-alertas-carrusel{gap:6px;padding:6px 8px}.vea-alerta-enlace{font-size:11px}.vea-alertas-control{width:26px;height:26px}.vea-alertas-control-anterior,.vea-alertas-control-siguiente,.vea-alertas-control-pausa{display:none}.vea-alertas-detalle{display:grid;min-width:64px}}
+@media(max-width:560px){.vea-alerta-ambito{display:none}.vea-alertas-carrusel{gap:6px;padding:6px 8px}.vea-alerta-enlace{font-size:11px}.vea-alertas-control{width:26px;height:26px}.vea-alertas-detalle{display:grid;min-width:64px}}
 @media(max-width:720px){.vea-alertas-centro{grid-template-columns:1fr}.vea-alertas-lista{display:flex;gap:7px;overflow-x:auto;border-right:0;border-bottom:1px solid #1e293b}.vea-alerta-lista-boton{min-width:210px;margin-bottom:0}.vea-alerta-modal-grid{grid-template-columns:1fr}.vea-alerta-modal-fila-principal,.vea-alerta-modal-fila-laboratorio{grid-column:auto}}
 @media(max-width:480px){.vea-alertas-tabs{padding:8px;gap:4px}.vea-alertas-tab{font-size:9px;padding:6px 4px}.vea-alertas-panel-detalle{padding-inline:12px}}
 </style>
@@ -1604,16 +1609,9 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
         <section id="carruselAlertasVea" class="vea-alertas-carrusel" aria-label="Alertas epidemiológicas oficiales recientes" aria-roledescription="carrusel">
             <div class="vea-alertas-marca"><span class="vea-alertas-pulso" aria-hidden="true"></span>Alertas oficiales</div>
             <div class="vea-alerta-viewport" aria-live="off">
-                <div class="vea-alerta-contenido">
-                    <span id="veaAlertaAmbito" class="vea-alerta-ambito">PERÚ</span>
-                    <a id="veaAlertaEnlace" class="vea-alerta-enlace" href="https://www.dge.gob.pe/portalnuevo/informacion-publica/avisos-y-alertas-epidemiologicas/" target="_blank" rel="noopener noreferrer">Consultar alertas epidemiológicas oficiales del CDC Perú</a>
-                    <span id="veaAlertaFecha" class="vea-alerta-fecha">CDC Perú</span>
-                </div>
+                <div id="veaAlertaContenidoF478" class="vea-alerta-contenido"></div>
             </div>
-            <div class="vea-alertas-controles" aria-label="Controles del carrusel">
-                <button type="button" class="vea-alertas-control vea-alertas-control-anterior" onclick="veaMoverAlertaF474(-1)" aria-label="Alerta anterior">‹</button>
-                <button id="veaAlertaPausa" type="button" class="vea-alertas-control vea-alertas-control-pausa" onclick="veaAlternarPausaAlertasF474()" aria-label="Pausar alertas" aria-pressed="false">Ⅱ</button>
-                <button type="button" class="vea-alertas-control vea-alertas-control-siguiente" onclick="veaMoverAlertaF474(1)" aria-label="Alerta siguiente">›</button>
+            <div class="vea-alertas-controles">
                 <button type="button" class="vea-alertas-control vea-alertas-detalle" onclick="veaAbrirDetalleAlertaF475()" aria-label="Ver detalle de la alerta actual">Ver detalle</button>
             </div>
         </section>
@@ -1631,7 +1629,7 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
                 <div class="vea-alertas-centro">
                     <aside id="veaListaAlertasF477" class="vea-alertas-lista" aria-label="Alertas disponibles"></aside>
                     <article class="vea-alertas-panel-detalle">
-                        <div class="border-b border-slate-800 py-4"><div id="veaDetalleAmbito" class="text-[10px] font-black uppercase tracking-widest text-cyan-400">Alerta oficial</div><h3 id="veaDetalleTitulo" class="mt-1 text-base font-black text-white">Selecciona una alerta</h3><p id="veaDetalleFecha" class="mt-1 text-[10px] font-bold text-slate-500"></p></div>
+                        <div class="border-b border-slate-800 py-4"><div id="veaDetalleAmbito" class="text-[10px] font-black uppercase tracking-widest text-cyan-400">Alerta oficial</div><h3 id="veaDetalleTitulo" class="mt-1 text-base font-black text-white">Selecciona una alerta</h3><p id="veaDetalleFecha" class="mt-1 text-[10px] font-bold text-slate-500"></p><a id="veaDetalleFuenteVisible" href="#" target="_blank" rel="noopener noreferrer" class="vea-alerta-fuente-visible">↗ Abrir publicación oficial actualizada</a></div>
                         <div class="vea-alerta-modal-grid py-2">
                             <div class="vea-alerta-modal-fila vea-alerta-modal-fila-principal"><div class="vea-alerta-modal-etiqueta">01 · Evento y situación</div><div id="veaDetalleSituacion" class="vea-alerta-modal-valor"></div></div>
                             <div class="vea-alerta-modal-fila"><div class="vea-alerta-modal-etiqueta">02 · Área afectada</div><div id="veaDetalleArea" class="vea-alerta-modal-valor"></div></div>
@@ -1641,10 +1639,6 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
                             <p class="col-span-full mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-[10px] font-bold leading-relaxed text-amber-300">Resumen informativo. Antes de actuar, confirme requisitos, definiciones y procedimientos en la publicación oficial vigente.</p>
                         </div>
                     </article>
-                </div>
-                <div class="flex flex-col-reverse gap-2 border-t border-slate-800 px-5 py-4 sm:flex-row sm:justify-end">
-                    <button type="button" onclick="veaCerrarDetalleAlertaF475()" class="rounded-lg border border-slate-700 px-4 py-2 text-xs font-black text-slate-300">Cerrar</button>
-                    <a id="veaDetalleFuente" href="#" target="_blank" rel="noopener noreferrer" class="rounded-lg bg-cyan-600 px-4 py-2 text-center text-xs font-black text-white hover:bg-cyan-500">Abrir fuente oficial</a>
                 </div>
             </div>
         </div>
@@ -1888,7 +1882,7 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
                     <div class="flex justify-between items-start gap-3 mb-4 mt-2">
                         <div>
                             <h3 class="text-sm font-bold text-slate-200">Comparativo por Semana Epidemiológica</h3>
-                            <p class="text-[10px] text-slate-400">Una línea por año seleccionado; solo se representan semanas existentes.</p>
+                            <p class="text-[10px] text-slate-400">S.E. 1–53 por bloques anuales; total y avance calculados con datos reales.</p>
                         </div>
                         <div class="text-right text-xs leading-normal shrink-0">
                             <div class="font-extrabold text-slate-400 uppercase">AÑOS: <span id="txtSemanalGraficoAño" class="text-red-500 font-black">--</span></div>
@@ -2418,7 +2412,7 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm border-t-2 border-t-indigo-500">
-                    <div class="flex items-start justify-between gap-3"><div><h4 class="text-sm font-black text-slate-100">Comparativo por Semana Epidemiológica</h4><p class="text-[10px] text-slate-500 mt-1">Una línea por año seleccionado; solo se representan semanas existentes.</p></div><div class="text-right text-[10px] font-black text-slate-400">AÑOS: <span id="ciGraficoSemanalAnios" class="text-red-400">—</span></div></div>
+                    <div class="flex items-start justify-between gap-3"><div><h4 class="text-sm font-black text-slate-100">Comparativo por Semana Epidemiológica</h4><p class="text-[10px] text-slate-500 mt-1">S.E. 1–53 por bloques anuales; total y avance calculados con datos reales.</p></div><div class="text-right text-[10px] font-black text-slate-400">AÑOS: <span id="ciGraficoSemanalAnios" class="text-red-400">—</span></div></div>
                     <div class="relative h-72 mt-4">
                         <canvas id="ciChartG2Semanal"></canvas>
                         <div id="ciEstadoG2" class="absolute inset-0 hidden items-center justify-center text-center px-5 text-xs text-slate-500">Sin datos.</div>
@@ -2644,7 +2638,7 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
                     <div class="flex justify-between items-start mb-4 mt-2">
                         <div>
                             <h3 class="text-sm font-bold text-slate-200">Comparativo por Semana Epidemiológica (Hospitalizados)</h3>
-                            <p class="text-[10px] text-slate-400">Una línea por año seleccionado; solo se representan semanas existentes.</p>
+                            <p class="text-[10px] text-slate-400">S.E. 1–53 por bloques anuales; total y avance calculados con datos reales.</p>
                         </div>
                         <div class="text-right text-xs leading-normal select-none shrink-0 font-sans">
                             <div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑOS: <span id="txtHospGrafSemanalAnios" class="text-red-500 font-black">--</span></div>
@@ -4542,7 +4536,70 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
             };
         }
 
-        function actualizarOCrearChartDatosAcumuladosV6B(instancia, canvas, tipo, data, options) {
+        // F4.80 — S.E. por bloques anuales: 53 posiciones, total, avance y separadores.
+        const VEA_PALETA_SE_BLOQUES_F480 = ['#3157b7','#1685c7','#08a9c5','#10b981','#f59e0b','#a855f7'];
+        function veaCrearModeloBloquesSEF480(anios, obtenerValor, obtenerColor = null) {
+            const labels = [], valores = [], colores = [], metadatos = [], bloques = [];
+            const listaAnios = [...new Set((anios || []).map(Number).filter(Number.isFinite))].sort((a,b)=>a-b);
+            listaAnios.forEach((anio, indiceAnio) => {
+                const inicio = labels.length;
+                const color = obtenerColor ? obtenerColor(anio, indiceAnio) : VEA_PALETA_SE_BLOQUES_F480[indiceAnio % VEA_PALETA_SE_BLOQUES_F480.length];
+                let total = 0, avance = 0;
+                for (let se = 1; se <= 53; se++) {
+                    const bruto = obtenerValor(anio, se);
+                    const valor = bruto === null || bruto === undefined || !Number.isFinite(Number(bruto)) ? null : Number(bruto);
+                    labels.push(`S.E. ${se}`); valores.push(valor); colores.push(color); metadatos.push({anio,se});
+                    if (valor !== null) { total += valor; avance = se; }
+                }
+                bloques.push({anio,inicio,fin:labels.length-1,total,avance,color});
+                if (indiceAnio < listaAnios.length - 1) {
+                    for (let espacio = 0; espacio < 3; espacio++) { labels.push(''); valores.push(null); colores.push('transparent'); metadatos.push(null); }
+                }
+            });
+            return {labels,valores,colores,metadatos,bloques};
+        }
+
+        const VEA_PLUGIN_BLOQUES_SE_F480 = {
+            id: 'veaBloquesSemanasF480',
+            afterDraw(chart, _args, opciones) {
+                const bloques = opciones?.bloques || [];
+                const escalaX = chart.scales?.x;
+                if (!escalaX || !bloques.length) return;
+                const {ctx, chartArea} = chart;
+                ctx.save();
+                ctx.textAlign = 'center';
+                bloques.forEach((bloque, indice) => {
+                    const centro = (escalaX.getPixelForValue(bloque.inicio) + escalaX.getPixelForValue(bloque.fin)) / 2;
+                    ctx.fillStyle = bloque.color; ctx.font = '800 11px Plus Jakarta Sans, sans-serif';
+                    ctx.fillText(`AÑO ${bloque.anio}`, centro, chartArea.top - 27);
+                    ctx.fillStyle = '#94a3b8'; ctx.font = '700 9px Plus Jakarta Sans, sans-serif';
+                    ctx.fillText(`TOTAL: ${bloque.total.toLocaleString('es-PE')} · AVANCE: S.E. ${bloque.avance || 0}/53`, centro, chartArea.top - 12);
+                    if (indice < bloques.length - 1) {
+                        const siguiente = bloques[indice + 1];
+                        const separador = (escalaX.getPixelForValue(bloque.fin) + escalaX.getPixelForValue(siguiente.inicio)) / 2;
+                        ctx.beginPath(); ctx.moveTo(separador, chartArea.top - 36); ctx.lineTo(separador, chartArea.bottom);
+                        ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 1.5; ctx.stroke();
+                    }
+                });
+                ctx.restore();
+            }
+        };
+
+        function veaOpcionesBloquesSEF480(base, modelo) {
+            const opciones = base || {};
+            const plugins = {...(opciones.plugins || {})};
+            plugins.legend = {display:false};
+            plugins.veaBloquesSemanasF480 = {bloques:modelo.bloques};
+            plugins.tooltip = {callbacks:{
+                title: items => { const meta = modelo.metadatos[items?.[0]?.dataIndex]; return meta ? `AÑO ${meta.anio} · S.E. ${meta.se}` : ''; },
+                label: contexto => contexto.raw === null ? 'Sin información reportada' : `Casos: ${Number(contexto.raw).toLocaleString('es-PE')}`
+            }};
+            const escalas = {...(opciones.scales || {})};
+            escalas.x = {...(escalas.x || {}), grid:{display:false}, ticks:{color:'#94a3b8',autoSkip:false,maxRotation:90,minRotation:90,font:{size:6},callback:function(valor){ const texto=this.getLabelForValue(valor); const se=Number(String(texto).replace(/\D/g,'')); return se===1||se===53||se%5===0?texto:''; }}};
+            return {...opciones,layout:{padding:{top:42}},interaction:{mode:'index',intersect:false},plugins,scales:escalas};
+        }
+
+        function actualizarOCrearChartDatosAcumuladosV6B(instancia, canvas, tipo, data, options, plugins = []) {
             auditoriaRendimientoDatosAcumuladosV6B.actualizacionesGraficos += 1;
             if (instancia) {
                 instancia.data = data;
@@ -4550,7 +4607,7 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
                 instancia.update('none');
                 return instancia;
             }
-            return new Chart(canvas, { type: tipo, data, options });
+            return new Chart(canvas, { type: tipo, data, options, plugins });
         }
 
         function renderG1DatosAcumuladosV6B(modelo) {
@@ -4700,26 +4757,28 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
             }
             const canvas = document.getElementById(canvasId);
             if (!canvas) return;
-            const paleta = ['rgb(239,68,68)','rgb(59,130,246)','rgb(245,158,11)','rgb(16,185,129)','rgb(168,85,247)','rgb(236,72,153)'];
-            const datasets = modelo.anios.map((anio, i) => ({
-                label: String(anio),
-                data: semanasEje.map(se => {
+            const modeloBloques = veaCrearModeloBloquesSEF480(modelo.anios, (anio, se) => {
                     const dato = modelo.porSemana[evento].get(`${anio}|${se}`);
                     return dato?.presencia ? dato.valor : null;
-                }),
-                borderColor: paleta[i % paleta.length],
-                backgroundColor: paleta[i % paleta.length],
-                borderWidth: 2,
-                pointRadius: 1.5,
-                tension: 0.2,
-                spanGaps: false
-            }));
+                });
+            const datasets = [{
+                label: 'Casos',
+                data: modeloBloques.valores,
+                borderColor: modeloBloques.colores,
+                backgroundColor: modeloBloques.colores,
+                borderWidth: 1,
+                borderRadius: 2,
+                maxBarThickness: 12,
+                categoryPercentage: .88,
+                barPercentage: .96
+            }];
             chartsDatosSemanalesV6B[evento] = actualizarOCrearChartDatosAcumuladosV6B(
                 chartsDatosSemanalesV6B[evento],
                 canvas,
-                'line',
-                { labels: semanasEje.map(se => `S.E.${se}`), datasets },
-                opcionesBaseChartDatosAcumuladosV6B()
+                'bar',
+                { labels: modeloBloques.labels, datasets },
+                veaOpcionesBloquesSEF480(opcionesBaseChartDatosAcumuladosV6B(), modeloBloques),
+                [VEA_PLUGIN_BLOQUES_SE_F480]
             );
         }
 
@@ -6238,41 +6297,41 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
 
             const anios = [...estadoCasosIndividualesV21.anios].sort((a,b)=>a-b);
             const baseAnios = ciV21RegistrosPorAnios();
-            const labels = Array.from({length:53},(_,i)=>i+1);
-            const datasets = anios.map((anio,i) => {
+            const modeloPorAnio = new Map();
+            anios.forEach(anio => {
                 const semanasObservadas = new Set(baseAnios.filter(r => ciV21Anio(r) === anio).map(ciV21Semana).filter(Number.isInteger));
                 const conteos = new Map();
                 registros.filter(r => ciV21Anio(r) === anio).forEach(r => {
                     const s = ciV21Semana(r);
                     if (Number.isInteger(s)) conteos.set(s, (conteos.get(s) || 0) + 1);
                 });
-                return {
-                    label: String(anio),
-                    data: labels.map(s => estadoCasosIndividualesV21.semana !== 'Todas' && Number(estadoCasosIndividualesV21.semana) !== s ? null : (semanasObservadas.has(s) ? (conteos.get(s) || 0) : null)),
-                    borderColor: ciV21Color(i,1),
-                    backgroundColor: ciV21Color(i,.2),
-                    pointRadius: 2,
-                    pointHoverRadius: 4,
-                    tension: .18,
-                    spanGaps: false
-                };
+                modeloPorAnio.set(anio, {semanasObservadas, conteos});
             });
-            const hay = datasets.some(ds => ds.data.some(v => Number(v) > 0));
+            const modeloBloques = veaCrearModeloBloquesSEF480(anios, (anio, se) => {
+                if (estadoCasosIndividualesV21.semana !== 'Todas' && Number(estadoCasosIndividualesV21.semana) !== se) return null;
+                const info = modeloPorAnio.get(anio);
+                return info?.semanasObservadas.has(se) ? (info.conteos.get(se) || 0) : null;
+            }, (_anio, i) => ciV21Color(i, 1));
+            const datasets = [{
+                label: 'Casos', data: modeloBloques.valores,
+                borderColor: modeloBloques.colores, backgroundColor: modeloBloques.colores,
+                borderWidth: 1, borderRadius: 2, maxBarThickness: 12,
+                categoryPercentage: .88, barPercentage: .96
+            }];
+            const hay = modeloBloques.valores.some(v => v !== null);
             ciV21MostrarEstado('ciEstadoG2', !hay, 'Sin casos para los filtros activos.');
             if (!hay) { ciChartG2Instance = null; return; }
 
             ciChartG2Instance = new Chart(canvas, {
-                type: 'line',
-                data: { labels, datasets },
-                options: {
+                type: 'bar',
+                data: { labels: modeloBloques.labels, datasets },
+                options: veaOpcionesBloquesSEF480({
                     responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'nearest', intersect: false },
-                    plugins: { legend: { labels: { color: '#cbd5e1' } } },
                     scales: {
-                        x: { title: {display:true,text:'Semana Epidemiológica',color:'#94a3b8'}, ticks:{color:'#94a3b8',maxTicksLimit:14}, grid:{color:'rgba(148,163,184,.05)'} },
                         y: { beginAtZero:true, ticks:{precision:0,color:'#94a3b8'}, grid:{color:'rgba(148,163,184,.08)'} }
                     }
-                }
+                }, modeloBloques),
+                plugins: [VEA_PLUGIN_BLOQUES_SE_F480]
             });
         }
 
@@ -8853,25 +8912,39 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 });
             }
 
-            // G3 — TENDENCIA POR SEMANA EPIDEMIOLÓGICA (líneas).
+            // G3 — COMPARATIVO POR SEMANA EPIDEMIOLÓGICA (bloques anuales S.E. 1–53).
             const ctxSemanal = document.getElementById('chartSemanalMultianualMinsa');
             if (ctxSemanal) {
+                const seriesPorAnio = new Map(datos.semanal.series.map(serie => {
+                    const valores = new Map();
+                    datos.semanal.labels.forEach((etiqueta, indice) => {
+                        const se = Number(String(etiqueta).replace(/\D/g, ''));
+                        if (Number.isInteger(se)) valores.set(se, serie.valores[indice]);
+                    });
+                    return [Number(serie.anio), valores];
+                }));
+                const modeloBloques = veaCrearModeloBloquesSEF480(datos.anios, (anio, se) => {
+                    const valor = seriesPorAnio.get(Number(anio))?.get(se);
+                    return valor === undefined ? null : valor;
+                }, (_anio, i) => colorPorIndiceAnio(i));
                 chartSemanalMultianualMinsaInstance = new Chart(ctxSemanal.getContext('2d'), {
-                    type: 'line',
+                    type: 'bar',
                     data: {
-                        labels: datos.semanal.labels,
-                        datasets: datos.semanal.series.map((serie, i) => ({
-                            label: String(serie.anio),
-                            data: serie.valores,
-                            borderColor: colorPorIndiceAnio(i),
-                            backgroundColor: colorPorIndiceAnio(i),
-                            borderWidth: 2.5,
-                            pointRadius: 2.5,
-                            tension: 0.15,
-                            spanGaps: false
-                        }))
+                        labels: modeloBloques.labels,
+                        datasets: [{
+                            label: 'Casos',
+                            data: modeloBloques.valores,
+                            borderColor: modeloBloques.colores,
+                            backgroundColor: modeloBloques.colores,
+                            borderWidth: 1,
+                            borderRadius: 2,
+                            maxBarThickness: 12,
+                            categoryPercentage: .88,
+                            barPercentage: .96
+                        }]
                     },
-                    options: opcionesBase
+                    options: veaOpcionesBloquesSEF480(opcionesBase, modeloBloques),
+                    plugins: [VEA_PLUGIN_BLOQUES_SE_F480]
                 });
             }
 
@@ -9291,24 +9364,18 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 });
             }
 
-            // Comparativo semanal: una sola observación por Año + S.E.; missing permanece null.
+            // Comparativo semanal: bloques anuales S.E. 1–53; missing permanece null.
             const semanas = [...new Set(observacionesSemanales.map(d => d.semana))].sort((a, b) => a - b);
-            const datasetsSemanales = aniosSeleccionados.map((anio, idx) => {
-                const data = semanas.map(semana => {
-                    const registro = mapaSemanalFiltrado.get(`${anio}|${semana}`);
-                    return registro ? registro.hospitalizados : null;
-                });
-                return {
-                    label: String(anio),
-                    data,
-                    borderColor: colorPorAnioHosp.get(anio),
-                    backgroundColor: 'transparent',
-                    borderWidth: 2.5,
-                    pointRadius: 2.5,
-                    tension: 0.1,
-                    spanGaps: false
-                };
-            });
+            const modeloBloquesSemanalHosp = veaCrearModeloBloquesSEF480(aniosSeleccionados, (anio, se) => {
+                const registro = mapaSemanalFiltrado.get(`${anio}|${se}`);
+                return registro ? registro.hospitalizados : null;
+            }, anio => colorPorAnioHosp.get(anio));
+            const datasetsSemanales = [{
+                label: 'Hospitalizados', data: modeloBloquesSemanalHosp.valores,
+                borderColor: modeloBloquesSemanalHosp.colores, backgroundColor: modeloBloquesSemanalHosp.colores,
+                borderWidth: 1, borderRadius: 2, maxBarThickness: 12,
+                categoryPercentage: .88, barPercentage: .96
+            }];
 
             const actualizacionHospMensual = document.getElementById('actualizacionGraficoHospMensualVea');
             if (actualizacionHospMensual) {
@@ -9322,17 +9389,16 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             setEstadoGraficoHospitalVea('estadoChartHospSemanal', !haySemanal, 'Sin datos hospitalarios para los filtros activos.');
             if (ctxSemanal && haySemanal) {
                 chartHospSemanalMultianualInstance = new Chart(ctxSemanal.getContext('2d'), {
-                    type: 'line',
-                    data: { labels: semanas.map(s => `S.E. ${s}`), datasets: datasetsSemanales },
-                    options: {
+                    type: 'bar',
+                    data: { labels: modeloBloquesSemanalHosp.labels, datasets: datasetsSemanales },
+                    options: veaOpcionesBloquesSEF480({
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: true, labels: { color: '#cbd5e1' } } },
                         scales: {
-                            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', precision: 0 } },
-                            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 8 }, maxRotation: 0, autoSkip: true } }
+                            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', precision: 0 } }
                         }
-                    }
+                    }, modeloBloquesSemanalHosp),
+                    plugins: [VEA_PLUGIN_BLOQUES_SE_F480]
                 });
             }
 
@@ -10477,36 +10543,31 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         let veaIndiceDetalleF477 = 0;
         let veaPausaPreviaCentroF477 = false;
 
-        function veaRenderAlertaF474(indice) {
-            const total = VEA_ALERTAS_OFICIALES_F474.length;
-            veaIndiceAlertaF474 = (indice + total) % total;
-            const alerta = VEA_ALERTAS_OFICIALES_F474[veaIndiceAlertaF474];
-            const ambito = document.getElementById('veaAlertaAmbito');
-            const enlace = document.getElementById('veaAlertaEnlace');
-            const fecha = document.getElementById('veaAlertaFecha');
-            if (ambito) ambito.textContent = alerta.ambito;
-            if (enlace) { enlace.textContent = alerta.titulo; enlace.href = alerta.url; enlace.title = `${alerta.titulo} — abrir fuente oficial`; }
-            if (fecha) fecha.textContent = alerta.fecha;
-            veaReiniciarMovimientoAlertaF476();
+        function veaCrearGrupoCarruselF478(oculto = false) {
+            const grupo = document.createElement('div');
+            grupo.className = 'vea-alerta-grupo';
+            if (oculto) grupo.setAttribute('aria-hidden', 'true');
+            VEA_ALERTAS_OFICIALES_F474.forEach((alerta, indice) => {
+                const item = document.createElement('span'); item.className = 'vea-alerta-item';
+                const ambito = document.createElement('span'); ambito.className = 'vea-alerta-ambito'; ambito.textContent = alerta.ambito;
+                const enlace = document.createElement('a'); enlace.className = 'vea-alerta-enlace'; enlace.href = alerta.url; enlace.target = '_blank'; enlace.rel = 'noopener noreferrer'; enlace.textContent = alerta.titulo; enlace.title = `${alerta.titulo} — abrir fuente oficial`;
+                enlace.addEventListener('focus', () => { veaIndiceAlertaF474 = indice; });
+                enlace.addEventListener('mouseenter', () => { veaIndiceAlertaF474 = indice; });
+                const fecha = document.createElement('span'); fecha.className = 'vea-alerta-fecha'; fecha.textContent = alerta.fecha;
+                item.append(ambito, enlace, fecha); grupo.appendChild(item);
+            });
+            return grupo;
+        }
+
+        function veaConstruirCarruselContinuoF478() {
+            const contenido = document.getElementById('veaAlertaContenidoF478');
+            if (!contenido) return;
+            contenido.replaceChildren(veaCrearGrupoCarruselF478(false), veaCrearGrupoCarruselF478(true));
         }
 
         function veaProgramarAlertasF474() {
             const contenido = document.querySelector('#carruselAlertasVea .vea-alerta-contenido');
             if (contenido) contenido.style.animationPlayState = (!veaAlertasPausadasF474 && !document.hidden) ? 'running' : 'paused';
-        }
-
-        function veaReiniciarMovimientoAlertaF476() {
-            const contenido = document.querySelector('#carruselAlertasVea .vea-alerta-contenido');
-            if (!contenido) return;
-            contenido.style.animation = 'none';
-            void contenido.offsetWidth;
-            contenido.style.animation = 'veaAlertaDesplazaF476 22s linear infinite';
-            veaProgramarAlertasF474();
-        }
-
-        function veaMoverAlertaF474(paso) {
-            veaRenderAlertaF474(veaIndiceAlertaF474 + paso);
-            veaProgramarAlertasF474();
         }
 
         function veaCategoriaAlertaF477(alerta) {
@@ -10533,7 +10594,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             asignar('veaDetalleAcciones', alerta.acciones);
             asignar('veaDetalleVigilancia', alerta.vigilancia);
             asignar('veaDetalleLaboratorio', alerta.laboratorio);
-            const fuente = document.getElementById('veaDetalleFuente'); if (fuente) fuente.href = alerta.url;
+            ['veaDetalleFuente','veaDetalleFuenteVisible'].forEach(id => { const fuente = document.getElementById(id); if (fuente) { fuente.href = alerta.url; fuente.setAttribute('aria-label', `Abrir fuente oficial: ${alerta.titulo}`); } });
             document.querySelectorAll('.vea-alerta-lista-boton').forEach(boton => boton.setAttribute('aria-current', String(Number(boton.dataset.indice) === indice)));
         }
 
@@ -10582,20 +10643,12 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
 
         function veaAlternarPausaAlertasF474() {
             veaAlertasPausadasF474 = !veaAlertasPausadasF474;
-            const boton = document.getElementById('veaAlertaPausa');
-            if (boton) {
-                boton.textContent = veaAlertasPausadasF474 ? '▶' : 'Ⅱ';
-                boton.setAttribute('aria-pressed', String(veaAlertasPausadasF474));
-                boton.setAttribute('aria-label', veaAlertasPausadasF474 ? 'Reanudar alertas' : 'Pausar alertas');
-            }
             veaProgramarAlertasF474();
         }
 
         document.addEventListener('visibilitychange', veaProgramarAlertasF474);
         (() => {
-            veaRenderAlertaF474(0);
-            const contenido = document.querySelector('#carruselAlertasVea .vea-alerta-contenido');
-            if (contenido) contenido.addEventListener('animationiteration', () => veaRenderAlertaF474(veaIndiceAlertaF474 + 1));
+            veaConstruirCarruselContinuoF478();
             veaProgramarAlertasF474();
         })();
 
@@ -11645,12 +11698,10 @@ function obtenerSemanaBoletinVea(){
   }
   return '';
 }
+// F4.81 — el acceso conserva una etiqueta breve y estable al entrar y salir.
 function actualizarTextoBoletinSEVea(){
   const el=document.getElementById('textoBtnBoletinSEVea');
-  if(!el)return;
-  const se=obtenerSemanaBoletinVea();
-  const anio=window.__veaBoletinSeleccion?.anio;
-  el.textContent=(anio&&se) ? (`Boletín ${anio} · S.E. ${se}`) : 'Boletín S.E.';
+  if(el)el.textContent='Boletín S.E.';
 }
 function abrirAvisoBoletinSEVea(){
   /* F4.70 — BOLETÍN EPIDEMIOLÓGICO SEMANAL COMPLETO

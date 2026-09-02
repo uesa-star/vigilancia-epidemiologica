@@ -1375,6 +1375,31 @@ html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#conte
 html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#contentDatos,#contentCasos,#contentSoat,#contentVih,#contentTbc) input{background:#f8fafc!important;border-color:#b9c8d9!important;color:#0f172a!important}
 html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#contentDatos,#contentCasos,#contentSoat,#contentVih,#contentTbc) ::placeholder{color:#64748b!important}
 html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#contentDatos,#contentCasos,#contentSoat,#contentVih,#contentTbc) [role="tooltip"]{background:#ffffff!important;border-color:#cbd8e6!important;color:#0f172a!important}
+/* F4.91 — Canal Endémico legible en ambos temas, sin superficies blancas fundidas. */
+#canalPanelCompartido{background:#020817;border-color:#23324a;box-shadow:0 10px 28px rgba(2,8,23,.22)}
+#canalGraficoSuperficie{padding:14px;border:1px solid #22314a;border-radius:14px;background:#071225}
+#canalLeyendaInterpretacion{background:#0b162a;border-color:#2a3a54}
+#canalSituacionActual{box-shadow:inset 0 0 0 1px rgba(148,163,184,.04)}
+html[data-vea-theme="light"] #canalPanelCompartido{background:#e7eef7!important;border-color:#9fb1c6!important;box-shadow:0 8px 24px rgba(15,23,42,.12)!important;color:#172033!important}
+html[data-vea-theme="light"] #canalGraficoSuperficie{background:#f7f9fc!important;border-color:#aebed0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+html[data-vea-theme="light"] #canalLeyendaInterpretacion{background:#dbe6f2!important;border-color:#9fb1c6!important;box-shadow:none!important}
+html[data-vea-theme="light"] #canalPanelCompartido #canalTitleText{color:#10213b!important}
+html[data-vea-theme="light"] #canalPanelCompartido :is(.text-slate-400,.text-slate-500){color:#40546c!important}
+html[data-vea-theme="light"] #canalPanelCompartido :is(.text-slate-100,.text-slate-200,.text-slate-300){color:#172033!important}
+html[data-vea-theme="light"] #canalPanelCompartido select{background:#f7f9fc!important;border-color:#8fa3ba!important;color:#172033!important}
+html[data-vea-theme="light"] #canalPanelCompartido .text-emerald-400{color:#047857!important}
+html[data-vea-theme="light"] #canalPanelCompartido .text-blue-400{color:#1d4ed8!important}
+html[data-vea-theme="light"] #canalPanelCompartido .text-amber-400{color:#a16207!important}
+html[data-vea-theme="light"] #canalPanelCompartido .text-red-400{color:#b91c1c!important}
+html[data-vea-theme="light"] #canalSituacionActual{background:#edf2f7!important;border-color:#8fa3ba!important;color:#172033!important}
+html[data-vea-theme="light"] #canalSituacionActual[class*="bg-blue-950"]{background:#dbeafe!important;border-color:#2563eb!important}
+html[data-vea-theme="light"] #canalSituacionActual[class*="bg-emerald-950"]{background:#d1fae5!important;border-color:#059669!important}
+html[data-vea-theme="light"] #canalSituacionActual[class*="bg-amber-950"]{background:#fef3c7!important;border-color:#d97706!important}
+html[data-vea-theme="light"] #canalSituacionActual[class*="bg-red-950"]{background:#fee2e2!important;border-color:#dc2626!important}
+html[data-vea-theme="light"] #canalSituacionZona.text-blue-300{color:#1e40af!important}
+html[data-vea-theme="light"] #canalSituacionZona.text-emerald-300{color:#065f46!important}
+html[data-vea-theme="light"] #canalSituacionZona.text-amber-300{color:#92400e!important}
+html[data-vea-theme="light"] #canalSituacionZona.text-red-300{color:#991b1b!important}
 /* F4.74 — Carrusel superior de alertas epidemiológicas oficiales. */
 .vea-alertas-carrusel{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;min-height:46px;padding:7px 10px;border:1px solid rgba(56,189,248,.3);border-radius:14px;background:linear-gradient(90deg,rgba(14,116,144,.15),rgba(15,23,42,.72));box-shadow:0 4px 16px rgba(2,8,23,.2);overflow:hidden}
 .vea-alertas-marca{display:inline-flex;align-items:center;gap:7px;color:#67e8f9;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
@@ -1396,6 +1421,7 @@ html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#conte
 .vea-alertas-detalle{width:auto;min-width:78px;padding:0 9px;font-size:9px;font-weight:900;text-transform:uppercase;white-space:nowrap}
 .vea-alertas-estado{max-width:150px;color:#64748b;font-size:8px;font-weight:750;line-height:1.2;text-align:right}
 .vea-alerta-fuente-visible{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 11px;border:1px solid rgba(34,211,238,.35);border-radius:9px;background:rgba(8,145,178,.12);color:#67e8f9;font-size:10px;font-weight:900;text-decoration:none}
+.vea-alerta-fuente-visible[hidden]{display:none}
 .vea-alerta-fuente-visible:hover{border-color:#22d3ee;background:rgba(8,145,178,.2);color:#cffafe}
 .vea-alerta-modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}
 .vea-alerta-modal-fila{display:block;padding:12px 0;border-bottom:1px solid rgba(51,65,85,.65)}
@@ -1407,13 +1433,7 @@ html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#conte
 .vea-alertas-tab[aria-selected="true"][data-categoria="peru"]{background:rgba(239,68,68,.16);border-color:#ef4444;color:#fca5a5}
 .vea-alertas-tab[aria-selected="true"][data-categoria="region"]{background:rgba(245,158,11,.15);border-color:#f59e0b;color:#fcd34d}
 .vea-alertas-tab[aria-selected="true"][data-categoria="mundo"]{background:rgba(59,130,246,.16);border-color:#3b82f6;color:#93c5fd}
-.vea-alertas-centro{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:420px}
-.vea-alertas-lista{padding:12px;border-right:1px solid #1e293b;background:rgba(15,23,42,.32)}
-.vea-alerta-lista-boton{width:100%;margin-bottom:7px;padding:10px;border:1px solid #334155;border-radius:10px;color:#cbd5e1;text-align:left;transition:.2s}
-.vea-alerta-lista-boton:hover{border-color:#64748b;background:rgba(51,65,85,.45)}
-.vea-alerta-lista-boton[aria-current="true"]{border-color:#22d3ee;background:rgba(8,145,178,.14);box-shadow:inset 3px 0 #22d3ee}
-.vea-alerta-lista-titulo{display:block;font-size:10px;font-weight:900;line-height:1.35}
-.vea-alerta-lista-fecha{display:block;margin-top:5px;color:#64748b;font-size:8px;font-weight:800}
+.vea-alertas-centro{display:block;min-height:420px}
 .vea-alertas-panel-detalle{min-width:0;padding:0 18px 14px}
 .vea-alerta-modal-fila:nth-child(2){border-left:3px solid #f59e0b;padding-left:10px}
 .vea-alerta-modal-fila:nth-child(3){border-left:3px solid #10b981;padding-left:10px}
@@ -1426,10 +1446,6 @@ html[data-vea-theme="light"] .vea-alerta-modal-valor{color:#0f172a}
 html[data-vea-theme="light"] .vea-alertas-tabs{background:#f8fafc;border-color:#d7e0eb}
 html[data-vea-theme="light"] .vea-alertas-tab{background:#ffffff;border-color:#cbd5e1;color:#475569}
 html[data-vea-theme="light"] .vea-alertas-centro{background:#ffffff}
-html[data-vea-theme="light"] .vea-alertas-lista{background:#f8fafc;border-color:#d7e0eb}
-html[data-vea-theme="light"] .vea-alerta-lista-boton{background:#ffffff;border-color:#cbd5e1;color:#0f172a}
-html[data-vea-theme="light"] .vea-alerta-lista-boton[aria-current="true"]{background:#ecfeff;border-color:#0891b2}
-html[data-vea-theme="light"] .vea-alerta-lista-fecha{color:#52657a}
 html[data-vea-theme="light"] .vea-alertas-carrusel{background:linear-gradient(90deg,#ecfeff,#ffffff)!important;border-color:#67e8f9!important;box-shadow:0 4px 14px rgba(15,23,42,.07)}
 html[data-vea-theme="light"] .vea-alertas-marca{color:#0e7490}
 html[data-vea-theme="light"] .vea-alerta-ambito{background:#dbeafe;color:#1d4ed8}
@@ -1441,7 +1457,7 @@ html[data-vea-theme="light"] .vea-alertas-control{background:#ffffff;color:#3341
 html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;border-color:#0891b2;color:#0e7490}
 @media(max-width:900px){.vea-alertas-carrusel{grid-template-columns:minmax(0,1fr) auto}.vea-alertas-marca{display:none}.vea-alerta-fecha{display:none}}
 @media(max-width:560px){.vea-alerta-ambito{display:none}.vea-alertas-carrusel{gap:6px;padding:6px 8px}.vea-alerta-enlace{font-size:11px}.vea-alertas-control{width:26px;height:26px}.vea-alertas-detalle{display:grid;min-width:64px}}
-@media(max-width:720px){.vea-alertas-centro{grid-template-columns:1fr}.vea-alertas-lista{display:flex;gap:7px;overflow-x:auto;border-right:0;border-bottom:1px solid #1e293b}.vea-alerta-lista-boton{min-width:210px;margin-bottom:0}.vea-alerta-modal-grid{grid-template-columns:1fr}.vea-alerta-modal-fila-principal,.vea-alerta-modal-fila-laboratorio{grid-column:auto}}
+@media(max-width:720px){.vea-alerta-modal-grid{grid-template-columns:1fr}.vea-alerta-modal-fila-principal,.vea-alerta-modal-fila-laboratorio{grid-column:auto}}
 @media(max-width:480px){.vea-alertas-tabs{padding:8px;gap:4px}.vea-alertas-tab{font-size:9px;padding:6px 4px}.vea-alertas-panel-detalle{padding-inline:12px}}
 </style>
 </head>
@@ -1639,7 +1655,6 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                     <button id="veaTabAlertasMundo" data-categoria="mundo" class="vea-alertas-tab" role="tab" aria-selected="false" onclick="veaSeleccionarCategoriaAlertasF477('mundo')">🌐 Mundo <span id="veaConteoAlertasMundo">(0)</span></button>
                 </div>
                 <div class="vea-alertas-centro">
-                    <aside id="veaListaAlertasF477" class="vea-alertas-lista" aria-label="Alertas disponibles"></aside>
                     <article class="vea-alertas-panel-detalle">
                         <div class="border-b border-slate-800 py-4"><div id="veaDetalleAmbito" class="text-[10px] font-black uppercase tracking-widest text-cyan-400">Alerta oficial</div><h3 id="veaDetalleTitulo" class="mt-1 text-base font-black text-white">Selecciona una alerta</h3><p id="veaDetalleFecha" class="mt-1 text-[10px] font-bold text-slate-500"></p><a id="veaDetalleFuenteVisible" href="#" target="_blank" rel="noopener noreferrer" class="vea-alerta-fuente-visible">↗ Abrir publicación oficial actualizada</a></div>
                         <div class="vea-alerta-modal-grid py-2">
@@ -2475,7 +2490,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 
             <!-- F4.21 — Presentación institucional del Canal Endémico -->
             <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_300px] gap-5 items-stretch">
-                <div class="min-w-0">
+                <div id="canalGraficoSuperficie" class="min-w-0">
                     <div class="h-96 w-full relative">
                         <canvas id="chartCanalEndemico"></canvas>
                         <div id="estadoChartCanalEndemico" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500"></div>
@@ -2486,7 +2501,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                     </div>
                 </div>
 
-                <aside class="bg-slate-900/45 border border-slate-800 rounded-xl p-4 flex flex-col gap-3">
+                <aside id="canalLeyendaInterpretacion" class="bg-slate-900/45 border border-slate-800 rounded-xl p-4 flex flex-col gap-3">
                     <div>
                         <h4 class="text-[11px] font-black uppercase tracking-wider text-cyan-300">¿Cómo interpretar el canal endémico?</h4>
                     </div>
@@ -2720,23 +2735,29 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
         <!-- MÓDULOS INDEPENDIENTES PREPARADOS PARA DESARROLLO POSTERIOR -->
         <div id="contentSoat" class="hidden space-y-5">
             <section data-vea-module-identity="05" class="vea-module-identity bg-gradient-to-br from-cyan-950/70 via-slate-950 to-slate-950 border border-cyan-900/50 rounded-2xl p-5 shadow-sm">
-                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div>
                     <div>
                         <div class="text-[10px] uppercase tracking-[0.22em] font-black text-cyan-400">Módulo 05 · Vigilancia de accidentes</div>
                         <h3 class="text-xl font-black text-slate-100 mt-1">Dashboard SOAT</h3>
                         <p id="estadoModuloSoat" class="text-xs text-slate-400 mt-2">Sin datos cargados</p>
                     </div>
-                    <div class="flex flex-col sm:flex-row gap-2 self-start lg:self-auto">
-                        <button type="button" onclick="limpiarFiltrosSoatV1()" class="px-4 py-2 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-xs font-black text-slate-200 transition-colors">LIMPIAR FILTROS</button>
-                        <button type="button" onclick="descargarGraficosModuloVeaF469()" class="vea-btn-descargar-graficos px-4 py-2 rounded-xl border border-cyan-600/50 bg-cyan-950/30 hover:bg-cyan-900/40 text-xs font-black text-cyan-300 transition-colors">⬇ DESCARGAR GRÁFICOS</button>
-                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mt-5" aria-label="Filtros SOAT">
-                    <fieldset id="soatFiltroAniosControl" class="block relative"><legend class="text-[10px] font-black uppercase tracking-wider text-slate-500">Años</legend><button id="soatFiltroAniosBoton" type="button" onclick="soatToggleAniosV1()" aria-expanded="false" aria-controls="soatFiltroAniosPanel" class="mt-1 w-full min-h-9 bg-slate-950 border border-slate-700 hover:border-cyan-700 rounded-xl px-3 py-2 flex items-center justify-between gap-2 text-xs font-bold text-slate-200 focus:border-cyan-500 outline-none"><span id="soatFiltroAniosResumen" class="truncate">AÑOS: —</span><span id="soatFiltroAniosFlecha" class="text-cyan-400 shrink-0">▾</span></button><div id="soatFiltroAniosPanel" class="hidden absolute left-0 right-0 z-30 mt-1 bg-slate-950 border border-slate-700 rounded-xl shadow-2xl p-2"><div id="soatFiltroAnios" class="max-h-52 overflow-y-auto grid grid-cols-1 gap-1" aria-label="Años SOAT"></div></div></fieldset>
-                    <label class="block"><span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Mes</span><select id="soatFiltroMes" onchange="actualizarFiltroSoatV1()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500 outline-none"><option value="Todos">Todos los meses</option></select></label>
-                    <label class="block"><span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Sexo</span><select id="soatFiltroSexo" onchange="actualizarFiltroSoatV1()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500 outline-none"><option value="Todos">Todos</option></select></label>
-                    <label class="block"><span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Grupo de edad</span><select id="soatFiltroEdad" onchange="actualizarFiltroSoatV1()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500 outline-none"><option value="Todos">Todos</option></select></label>
+                <div id="soatPanelFiltrosProfesionales" class="mt-5 rounded-2xl border border-slate-800 bg-slate-950/55 p-4" aria-label="Filtros de segmentación SOAT">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 text-xl text-violet-400" aria-hidden="true">▽</span>
+                        <div><h4 class="text-base font-black text-slate-100">Filtros de Segmentación</h4><p class="mt-0.5 text-[10px] font-semibold text-cyan-300">Seleccione los parámetros para el recálculo automático del análisis de accidentes.</p></div>
+                    </div>
+                    <div id="soatGridFiltrosProfesionales" class="mt-5 grid grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-[repeat(3,minmax(0,1fr))_auto]">
+                        <fieldset id="soatFiltroAniosControl" class="block relative"><legend class="text-[10px] font-black uppercase tracking-wider text-slate-500">Años de análisis / Comparar</legend><button id="soatFiltroAniosBoton" type="button" onclick="soatToggleAniosV1()" aria-expanded="false" aria-controls="soatFiltroAniosPanel" class="mt-1 w-full min-h-10 bg-slate-950 border border-slate-700 hover:border-cyan-700 rounded-xl px-3 py-2 flex items-center justify-between gap-2 text-xs font-bold text-slate-200 focus:border-cyan-500 outline-none"><span id="soatFiltroAniosResumen" class="truncate">AÑOS: —</span><span id="soatFiltroAniosFlecha" class="text-cyan-400 shrink-0">▾</span></button><div id="soatFiltroAniosPanel" class="hidden absolute left-0 right-0 z-30 mt-1 bg-slate-950 border border-slate-700 rounded-xl shadow-2xl p-2"><div id="soatFiltroAnios" class="max-h-52 overflow-y-auto grid grid-cols-1 gap-1" aria-label="Años SOAT"></div></div></fieldset>
+                        <label class="block"><span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Mes</span><select id="soatFiltroMes" onchange="actualizarFiltroSoatV1()" class="mt-1 min-h-10 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500 outline-none"><option value="Todos">Todos los meses</option></select></label>
+                        <label class="block"><span class="text-[10px] font-black uppercase tracking-wider text-slate-500">Semana Epidemiológica</span><select id="soatFiltroSemana" onchange="actualizarFiltroSoatV1()" class="mt-1 min-h-10 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500 outline-none"><option value="Todas">Todas las semanas</option></select></label>
+                        <div class="flex gap-2 sm:col-span-2 xl:col-span-1">
+                            <button id="soatBtnLimpiarFiltros" type="button" onclick="limpiarFiltrosSoatV1()" class="min-h-10 flex-1 whitespace-nowrap rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-black text-slate-200 transition-colors hover:bg-slate-800">⌫ Limpiar filtros</button>
+                            <button id="soatBtnDescargarGraficos" type="button" onclick="descargarGraficosModuloVeaF469()" class="vea-btn-descargar-graficos min-h-10 flex-1 whitespace-nowrap rounded-xl border border-cyan-600/50 bg-cyan-950/30 px-3 py-2 text-xs font-black text-cyan-300 transition-colors hover:bg-cyan-900/40">⬇ Gráficos</button>
+                        </div>
+                    </div>
+                    <p id="soatResumenFiltrosProfesionales" class="mt-3 text-[10px] font-semibold text-slate-500">Filtros activos · Sin datos disponibles</p>
                 </div>
             </section>
 
@@ -10131,7 +10152,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         const SOAT_MESES_V1 = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SET','OCT','NOV','DIC'];
         const SOAT_GRUPOS_EDAD_V1 = ['<1 año','1–5 años','6–11 años','12–17 años','18–29 años','30–59 años','60+ años','Sin dato'];
         const SOAT_RANGOS_HORA_V1 = ['00:00–05:59','06:00–11:59','12:00–17:59','18:00–23:59','Sin dato'];
-        const soatEstadoV1 = { datasetRef:null, filas:[], aniosDisponibles:[], sexosDisponibles:[], seleccionAnios:[], mes:'Todos', sexo:'Todos', edad:'Todos', firmaVisual:null, frameVisual:null, duplicadosExactos:0 };
+        const soatEstadoV1 = { datasetRef:null, filas:[], aniosDisponibles:[], semanasDisponibles:[], seleccionAnios:[], mes:'Todos', semana:'Todas', firmaVisual:null, frameVisual:null, duplicadosExactos:0 };
         const soatChartsV1 = { anual:null, mensual:null, edad:null, sexo:null, hora:null };
         const soatAuditoriaRendimientoV1 = { preparaciones:0, renders:0, actualizacionesGraficos:0, ultimoPreparadoMs:0, ultimoRenderMs:0 };
         window.auditoriaRendimientoSoat = soatAuditoriaRendimientoV1;
@@ -10141,6 +10162,13 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         function soatEscaparV1(valor) { return String(valor ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
         function soatNormalizarV1(valor) { return soatTextoV1(valor).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/\s+/g,' '); }
         function soatValorV1(row, cabecera) { return valorExactoVea(row, cabecera); }
+        function soatValorPrimeroV92(row, cabeceras) {
+            for (const cabecera of cabeceras) {
+                const valor = soatTextoV1(soatValorV1(row, cabecera));
+                if (valor) return valor;
+            }
+            return 'Sin dato';
+        }
 
         function soatFechaV1(valor) {
             if (valor instanceof Date && !Number.isNaN(valor.getTime())) return new Date(valor.getFullYear(), valor.getMonth(), valor.getDate());
@@ -10238,7 +10266,11 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 const mes = soatMesV1(row,fecha);
                 const hora = soatTextoV1(soatValorV1(row,'HOR_ACCID')) || '—';
                 const sexo = soatTextoV1(soatValorV1(row,'SEXO')) || 'Sin dato';
-                salida.push({ row, indice, anio, mes, fecha, semana:soatSemanaV1(fecha), semanaClave:soatClaveSemanaV1(fecha), hora, rangoHora:soatRangoHoraV1(hora), grupoEdad:soatGrupoEdadV1(row), sexo });
+                const momento = soatValorPrimeroV92(row,['MOMENTO','MOMEN_ACCD','MOM_ACCD','MOMENTO_ACCD','TIPO_MOMENTO']);
+                const distrito = soatValorPrimeroV92(row,['DISTRITO','DISTRI','DIST_ACCD','DISTRITO_ACCD','DISTRITO_ACCIDENTE']);
+                const diagnostico = soatValorPrimeroV92(row,['DIAGNOSTICO','DIAGNÓSTICO','DX','DIAG_CIE10','CIE10','DIAGNOSTICO1']);
+                const categoriaDx = soatValorPrimeroV92(row,['CATEGORIA_DX','CATEGORÍA DX','CAT_DX','CATEGORIA','CATEGORIA_DIAGNOSTICA']);
+                salida.push({ row, indice, anio, mes, fecha, semana:soatSemanaV1(fecha), semanaClave:soatClaveSemanaV1(fecha), hora, rangoHora:soatRangoHoraV1(hora), grupoEdad:soatGrupoEdadV1(row), sexo, momento, distrito, diagnostico, categoriaDx });
                 return salida;
             },[]).sort((a,b) => {
                 const ta = a.fecha ? a.fecha.getTime() : -Infinity, tb = b.fecha ? b.fecha.getTime() : -Infinity;
@@ -10247,9 +10279,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 return b.indice-a.indice;
             });
             soatEstadoV1.aniosDisponibles = [...new Set(soatEstadoV1.filas.map(f=>f.anio).filter(Number.isFinite))].sort((a,b)=>a-b);
-            soatEstadoV1.sexosDisponibles = [...new Set(soatEstadoV1.filas.map(f=>f.sexo))].sort();
+            soatEstadoV1.semanasDisponibles = [...new Set(soatEstadoV1.filas.map(f=>f.semana).filter(Number.isInteger))].sort((a,b)=>a-b);
             soatEstadoV1.seleccionAnios = soatEstadoV1.aniosDisponibles.slice(-3);
-            soatEstadoV1.mes = 'Todos'; soatEstadoV1.sexo = 'Todos'; soatEstadoV1.edad = 'Todos';
+            soatEstadoV1.mes = 'Todos'; soatEstadoV1.semana = 'Todas';
             soatEstadoV1.firmaVisual = null;
             soatAuditoriaRendimientoV1.preparaciones++;
             soatAuditoriaRendimientoV1.ultimoPreparadoMs = performance.now()-inicio;
@@ -10259,18 +10291,19 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         function soatFiltrarV1() {
             const anios = new Set(soatEstadoV1.seleccionAnios.map(Number));
             if (!anios.size) return [];
-            return soatEstadoV1.filas.filter(f => anios.has(f.anio) && (soatEstadoV1.mes === 'Todos' || f.mes === Number(soatEstadoV1.mes)) && (soatEstadoV1.sexo === 'Todos' || f.sexo === soatEstadoV1.sexo) && (soatEstadoV1.edad === 'Todos' || f.grupoEdad === soatEstadoV1.edad));
+            return soatEstadoV1.filas.filter(f => anios.has(f.anio) &&
+                (soatEstadoV1.mes === 'Todos' || f.mes === Number(soatEstadoV1.mes)) &&
+                (soatEstadoV1.semana === 'Todas' || f.semana === Number(soatEstadoV1.semana)));
         }
 
         function soatLlenarControlesV1() {
             const anios = soatEstadoV1.aniosDisponibles.slice().sort((a,b)=>b-a);
-            const sexos = soatEstadoV1.sexosDisponibles;
-            const contAnios=document.getElementById('soatFiltroAnios'), selMes=document.getElementById('soatFiltroMes'), selSexo=document.getElementById('soatFiltroSexo'), selEdad=document.getElementById('soatFiltroEdad');
+            const contAnios=document.getElementById('soatFiltroAnios'), selMes=document.getElementById('soatFiltroMes'), selSemana=document.getElementById('soatFiltroSemana');
             if (contAnios) contAnios.innerHTML=anios.map(a=>`<label class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-slate-900 cursor-pointer text-xs text-slate-300"><input type="checkbox" value="${a}" ${soatEstadoV1.seleccionAnios.includes(a)?'checked':''} class="accent-cyan-500"> <span>${a}</span></label>`).join('');
             soatActualizarResumenAniosV1();
             if (selMes) { selMes.innerHTML='<option value="Todos">Todos los meses</option>'+SOAT_MESES_V1.map((m,i)=>`<option value="${i+1}">${m}</option>`).join(''); selMes.value=soatEstadoV1.mes; }
-            if (selSexo) { selSexo.innerHTML='<option value="Todos">Todos</option>'+sexos.map(s=>`<option value="${soatEscaparV1(s)}">${soatEscaparV1(s)}</option>`).join(''); selSexo.value=soatEstadoV1.sexo; }
-            if (selEdad) { selEdad.innerHTML='<option value="Todos">Todos</option>'+SOAT_GRUPOS_EDAD_V1.map(s=>`<option value="${s}">${s}</option>`).join(''); selEdad.value=soatEstadoV1.edad; }
+            if (selSemana) { selSemana.innerHTML='<option value="Todas">Todas las semanas</option>'+soatEstadoV1.semanasDisponibles.map(s=>`<option value="${s}">S.E. ${s}</option>`).join(''); selSemana.value=soatEstadoV1.semana; }
+            soatActualizarResumenFiltrosV92();
         }
 
         function soatConteoV1(filas,campo,orden=[]) {
@@ -10323,8 +10356,15 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const rangosHora=categorias('hora',SOAT_RANGOS_HORA_V1);soatChartV1('hora','soatChartHora','soatEstadoHora','bar',{labels:rangosHora,datasets:datasets('hora',rangosHora)});
         }
 
-        function soatFirmaVisualV1() { return [soatEstadoV1.seleccionAnios.slice().sort((a,b)=>a-b).join(','),soatEstadoV1.mes,soatEstadoV1.sexo,soatEstadoV1.edad].join('|'); }
+        function soatFirmaVisualV1() { return [soatEstadoV1.seleccionAnios.slice().sort((a,b)=>a-b).join(','),soatEstadoV1.mes,soatEstadoV1.semana].join('|'); }
         function soatActualizarResumenAniosV1() { const r=document.getElementById('soatFiltroAniosResumen');if(r){const a=soatEstadoV1.seleccionAnios.slice().sort((x,y)=>x-y);r.textContent=`AÑOS: ${a.length?a.join(', '):'Ninguno'}`;} }
+        function soatActualizarResumenFiltrosV92() {
+            const el=document.getElementById('soatResumenFiltrosProfesionales');if(!el)return;
+            const anios=soatEstadoV1.seleccionAnios.slice().sort((a,b)=>a-b).join(', ')||'Ninguno';
+            const mes=soatEstadoV1.mes==='Todos'?'Todos':(SOAT_MESES_V1[Number(soatEstadoV1.mes)-1]||soatEstadoV1.mes);
+            const semana=soatEstadoV1.semana==='Todas'?'Todas':`S.E. ${soatEstadoV1.semana}`;
+            el.textContent=`Filtros activos · Años: ${anios} · Mes: ${mes} · Semana: ${semana}`;
+        }
         function soatCerrarAniosV1() { const p=document.getElementById('soatFiltroAniosPanel'),b=document.getElementById('soatFiltroAniosBoton'),f=document.getElementById('soatFiltroAniosFlecha');if(p)p.classList.add('hidden');if(b)b.setAttribute('aria-expanded','false');if(f)f.textContent='▾'; }
         function soatToggleAniosV1() { const p=document.getElementById('soatFiltroAniosPanel'),b=document.getElementById('soatFiltroAniosBoton'),f=document.getElementById('soatFiltroAniosFlecha');if(!p||!b)return;const abrir=p.classList.contains('hidden');p.classList.toggle('hidden',!abrir);b.setAttribute('aria-expanded',String(abrir));if(f)f.textContent=abrir?'▴':'▾'; }
         function soatActualizarVisualV1(forzar=false) {
@@ -10337,13 +10377,15 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
 
         function actualizarFiltroSoatV1() {
             const contAnios=document.getElementById('soatFiltroAnios'); soatEstadoV1.seleccionAnios=contAnios?[...contAnios.querySelectorAll('input[type="checkbox"]:checked')].map(o=>Number(o.value)).filter(Number.isFinite):[];
-            soatEstadoV1.mes=document.getElementById('soatFiltroMes')?.value||'Todos'; soatEstadoV1.sexo=document.getElementById('soatFiltroSexo')?.value||'Todos'; soatEstadoV1.edad=document.getElementById('soatFiltroEdad')?.value||'Todos';
+            soatEstadoV1.mes=document.getElementById('soatFiltroMes')?.value||'Todos';
+            soatEstadoV1.semana=document.getElementById('soatFiltroSemana')?.value||'Todas';
             soatActualizarResumenAniosV1();
+            soatActualizarResumenFiltrosV92();
             soatProgramarVisualV1();
         }
 
         function limpiarFiltrosSoatV1() {
-            soatEstadoV1.seleccionAnios=soatEstadoV1.aniosDisponibles.slice(-3);soatEstadoV1.mes='Todos';soatEstadoV1.sexo='Todos';soatEstadoV1.edad='Todos';soatLlenarControlesV1();soatCerrarAniosV1();soatActualizarVisualV1(true);
+            soatEstadoV1.seleccionAnios=soatEstadoV1.aniosDisponibles.slice(-3);soatEstadoV1.mes='Todos';soatEstadoV1.semana='Todas';soatLlenarControlesV1();soatCerrarAniosV1();soatActualizarVisualV1(true);
         }
 
         function actualizarSoatV1() {
@@ -10578,12 +10620,55 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             {ambito:'MUNDO', titulo:'Noticias oficiales recientes sobre brotes y emergencias sanitarias', fecha:'OMS · actualización continua', area:'Eventos internacionales publicados por la OMS; consultar cada comunicación para conocer países y zonas afectadas.', situacion:'Repositorio oficial de noticias sobre eventos agudos de salud pública confirmados o potenciales.', acciones:'Abrir la comunicación específica y evaluar su relevancia para la vigilancia nacional e institucional.', vigilancia:'Aplicar las disposiciones de la autoridad sanitaria nacional ante eventos internacionales de interés.', laboratorio:'La toma de muestras depende del evento. No realizar procedimientos basándose solo en este resumen; consultar la guía oficial específica.', url:'https://www.who.int/emergencies/disease-outbreak-news'},
             {ambito:'MUNDO', titulo:'Panel público de emergencias sanitarias de la Organización Mundial de la Salud', fecha:'OMS · consulta oficial', area:'Panel internacional de eventos y emergencias de salud pública.', situacion:'Fuente de consulta para revisar eventos sanitarios internacionales reportados por la OMS.', acciones:'Consultar el evento de interés, su fecha de actualización y las recomendaciones oficiales disponibles.', vigilancia:'Valorar señales internacionales junto con CDC Perú y los canales nacionales oficiales.', laboratorio:'Cada evento requiere un protocolo específico. Verificar siempre la guía de la OMS y la normativa nacional antes de tomar o enviar muestras.', url:'https://extranet.who.int/publicemergency'}
         ];
+        const VEA_ALERTAS_RESPALDO_F488 = VEA_ALERTAS_OFICIALES_F474.map(alerta => ({...alerta}));
         let veaIndiceAlertaF474 = 0;
         let veaAlertasPausadasF474 = false;
         let veaCategoriaActivaF477 = 'peru';
         let veaIndiceDetalleF477 = 0;
         let veaPausaPreviaCentroF477 = false;
         let veaUltimaConsultaAlertasF486 = 0;
+
+        function veaFechaOrdenAlertaF488(alerta) {
+            const directa = Date.parse(alerta?.fechaIso || '');
+            if (Number.isFinite(directa)) return directa;
+            const meses = {ene:0,feb:1,mar:2,abr:3,may:4,jun:5,jul:6,ago:7,set:8,sep:8,oct:9,nov:10,dic:11};
+            const partes = String(alerta?.fecha || '').toLowerCase().match(/(\d{1,2})\s+([a-záéíóú]{3})\s+(20\d{2})/);
+            return partes ? Date.UTC(Number(partes[3]), meses[partes[2]] ?? 0, Number(partes[1])) : 0;
+        }
+
+        function veaEsAlertaVigente2026F489(alerta) {
+            const fecha = veaFechaOrdenAlertaF488(alerta);
+            if (!fecha) return false;
+            const inicio2026 = Date.UTC(2026, 0, 1);
+            const ahora = new Date();
+            const finHoy = Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate() + 1) - 1;
+            return fecha >= inicio2026 && fecha <= finHoy;
+        }
+
+        function veaOrdenarAlertasF488(alertas) {
+            const prioridadAmbito = { PERÚ:0, REGIÓN:1, AMÉRICAS:1, MUNDO:2 };
+            const revisadas = veaAlertasRevisadasF486();
+            return [...alertas].sort((a, b) => {
+                const diferenciaFecha = veaFechaOrdenAlertaF488(b) - veaFechaOrdenAlertaF488(a);
+                if (diferenciaFecha) return diferenciaFecha;
+                const nuevaA = a.nueva && !revisadas.has(a.url) ? 1 : 0;
+                const nuevaB = b.nueva && !revisadas.has(b.url) ? 1 : 0;
+                if (nuevaA !== nuevaB) return nuevaB - nuevaA;
+                const diferenciaAmbito = (prioridadAmbito[a.ambito] ?? 3) - (prioridadAmbito[b.ambito] ?? 3);
+                if (diferenciaAmbito) return diferenciaAmbito;
+                return String(a.titulo || '').localeCompare(String(b.titulo || ''), 'es');
+            });
+        }
+
+        function veaCombinarAlertasF488(automaticas) {
+            const combinadas = [...(Array.isArray(automaticas) ? automaticas : []), ...VEA_ALERTAS_RESPALDO_F488];
+            const unicas = combinadas.filter((alerta, indice, lista) =>
+                alerta?.url &&
+                veaEsAlertaVigente2026F489(alerta) &&
+                lista.findIndex(item => item?.url === alerta.url) === indice
+            );
+            return veaOrdenarAlertasF488(unicas);
+        }
 
         function veaAlertasRevisadasF486() {
             try { return new Set(JSON.parse(localStorage.getItem('VEA_ALERTAS_REVISADAS_F486') || '[]')); }
@@ -10654,8 +10739,22 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             asignar('veaDetalleAcciones', alerta.acciones);
             asignar('veaDetalleVigilancia', alerta.vigilancia);
             asignar('veaDetalleLaboratorio', alerta.laboratorio);
-            ['veaDetalleFuente','veaDetalleFuenteVisible'].forEach(id => { const fuente = document.getElementById(id); if (fuente) { fuente.href = alerta.url; fuente.setAttribute('aria-label', `Abrir fuente oficial: ${alerta.titulo}`); } });
-            document.querySelectorAll('.vea-alerta-lista-boton').forEach(boton => boton.setAttribute('aria-current', String(Number(boton.dataset.indice) === indice)));
+            ['veaDetalleFuente','veaDetalleFuenteVisible'].forEach(id => { const fuente = document.getElementById(id); if (fuente) { fuente.hidden = false; fuente.href = alerta.url; fuente.setAttribute('aria-label', `Abrir fuente oficial: ${alerta.titulo}`); } });
+        }
+
+        function veaMostrarCategoriaSinAlertasF490(categoria) {
+            const nombres = {peru:'Perú',region:'Región / Vecinos',mundo:'Mundo'};
+            const asignar = (id, valor) => { const el = document.getElementById(id); if (el) el.textContent = valor; };
+            asignar('veaDetalleAmbito', String(nombres[categoria] || 'Ámbito').toUpperCase());
+            asignar('veaDetalleTitulo', 'Sin alertas oficiales registradas en 2026');
+            asignar('veaDetalleFecha', 'Periodo revisado: enero de 2026 hasta la fecha actual');
+            asignar('veaDetalleSituacion', `No existen alertas oficiales de ${nombres[categoria] || 'este ámbito'} registradas para el periodo vigente.`);
+            asignar('veaDetalleArea', 'Sin áreas afectadas registradas.');
+            asignar('veaDetalleAcciones', 'Mantener la vigilancia de las fuentes oficiales.');
+            asignar('veaDetalleVigilancia', 'La revisión automática continuará según la programación establecida.');
+            asignar('veaDetalleLaboratorio', 'No corresponde mientras no exista una alerta oficial activa.');
+            const fuente = document.getElementById('veaDetalleFuenteVisible');
+            if (fuente) { fuente.hidden = true; fuente.removeAttribute('href'); }
         }
 
         function veaSeleccionarCategoriaAlertasF477(categoria, indicePreferido = null) {
@@ -10663,20 +10762,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const mapaTabs = {peru:'veaTabAlertasPeru',region:'veaTabAlertasRegion',mundo:'veaTabAlertasMundo'};
             Object.entries(mapaTabs).forEach(([clave,id]) => document.getElementById(id)?.setAttribute('aria-selected', String(clave === veaCategoriaActivaF477)));
             const items = veaIndicesCategoriaF477(veaCategoriaActivaF477);
-            const lista = document.getElementById('veaListaAlertasF477');
-            if (lista) {
-                lista.replaceChildren();
-                items.forEach(({alerta, indice}) => {
-                    const boton = document.createElement('button');
-                    boton.type = 'button'; boton.className = 'vea-alerta-lista-boton'; boton.dataset.indice = String(indice);
-                    boton.setAttribute('aria-current', 'false'); boton.addEventListener('click', () => veaMostrarDetalleSeleccionadoF477(indice));
-                    const titulo = document.createElement('span'); titulo.className = 'vea-alerta-lista-titulo'; titulo.textContent = alerta.titulo;
-                    const fecha = document.createElement('span'); fecha.className = 'vea-alerta-lista-fecha'; fecha.textContent = alerta.fecha;
-                    boton.append(titulo, fecha); lista.appendChild(boton);
-                });
-            }
             const seleccionado = items.some(item => item.indice === indicePreferido) ? indicePreferido : items[0]?.indice;
             if (Number.isInteger(seleccionado)) veaMostrarDetalleSeleccionadoF477(seleccionado);
+            else veaMostrarCategoriaSinAlertasF490(veaCategoriaActivaF477);
         }
 
         function veaActualizarConteosCentroF477() {
@@ -10718,7 +10806,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
                 const datos = await respuesta.json();
                 if (Array.isArray(datos.alertas) && datos.alertas.length) {
-                    VEA_ALERTAS_OFICIALES_F474 = datos.alertas;
+                    VEA_ALERTAS_OFICIALES_F474 = veaCombinarAlertasF488(datos.alertas);
                     veaIndiceAlertaF474 = 0;
                     veaConstruirCarruselContinuoF478();
                     veaActualizarConteosCentroF477();
@@ -10726,6 +10814,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 const hora = new Intl.DateTimeFormat('es-PE', { hour:'2-digit', minute:'2-digit', timeZone:'America/Lima' }).format(new Date(datos.actualizadoEn || Date.now()));
                 if (estado) estado.textContent = `Actualizado hoy · ${hora}`;
             } catch (_) {
+                VEA_ALERTAS_OFICIALES_F474 = veaCombinarAlertasF488([]);
+                veaConstruirCarruselContinuoF478();
+                veaActualizarConteosCentroF477();
                 if (estado) estado.textContent = 'Respaldo verificado activo';
             }
         }
@@ -10733,6 +10824,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             if (!document.hidden) veaActualizarAlertasAutomaticasF486();
         });
         (() => {
+            VEA_ALERTAS_OFICIALES_F474 = veaCombinarAlertasF488([]);
             veaConstruirCarruselContinuoF478();
             veaProgramarAlertasF474();
             veaActualizarAlertasAutomaticasF486(true);

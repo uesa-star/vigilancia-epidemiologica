@@ -1322,6 +1322,13 @@ html[data-vea-theme="light"] .vea-btn-descargar-graficos{background:#ecfeff!impo
 .vea-theme-switch[aria-checked="true"] .vea-theme-switch-icon-light{opacity:1;transform:scale(1.08)}
 .vea-theme-switch:focus-visible{outline:2px solid #38bdf8;outline-offset:2px}
 html[data-vea-theme="light"] .vea-theme-switch{background:#fff7ed;color:#92400e;border-color:#f59e0b}
+.vea-module-identity{background:#020817;border:1px solid #1e293b;border-radius:1rem;padding:1.15rem 1.25rem;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.vea-module-identity-kicker{font-size:.625rem;font-weight:900;text-transform:uppercase;letter-spacing:.22em;color:#fb7185}
+.vea-module-identity-title{margin-top:.3rem;font-size:1.25rem;line-height:1.5rem;font-weight:900;color:#f1f5f9}
+.vea-module-identity-description{margin-top:.5rem;max-width:56rem;font-size:.75rem;line-height:1.1rem;color:#94a3b8}
+html[data-vea-theme="light"] .vea-module-identity{background:#fff!important;border-color:#d5dfeb!important;box-shadow:0 4px 14px rgba(15,23,42,.055)!important}
+html[data-vea-theme="light"] .vea-module-identity-title{color:#0f172a!important}
+html[data-vea-theme="light"] .vea-module-identity-description{color:#475569!important}
 /* F4.72 — Tema claro profesional: contraste AA, profundidad y estados epidemiológicos legibles. */
 html[data-vea-theme="light"] body{background:linear-gradient(180deg,#f8fafc 0,#eaf0f7 220px,#e7edf5 100%)!important;color:#0f172a!important}
 html[data-vea-theme="light"] header{background:rgba(255,255,255,.96)!important;border-color:#d6e0eb!important;box-shadow:0 8px 24px rgba(15,23,42,.09)!important}
@@ -1373,10 +1380,12 @@ html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#conte
 .vea-alertas-marca{display:inline-flex;align-items:center;gap:7px;color:#67e8f9;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .vea-alertas-pulso{width:8px;height:8px;border-radius:50%;background:#22d3ee;box-shadow:0 0 0 5px rgba(34,211,238,.12)}
 .vea-alerta-viewport{min-width:0;overflow:hidden;mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%)}
-.vea-alerta-contenido{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:veaAlertaDesplazaF478 58s linear infinite}
+.vea-alerta-contenido{display:flex;align-items:center;width:max-content;min-width:max-content;will-change:transform;animation:veaAlertaDesplazaF478 100s linear infinite}
 @keyframes veaAlertaDesplazaF478{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .vea-alerta-grupo{display:flex;align-items:center;gap:42px;padding-right:42px}
 .vea-alerta-item{display:flex;align-items:center;gap:9px;min-width:max-content;white-space:nowrap}
+.vea-alerta-nueva{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border:1px solid rgba(248,113,113,.55);border-radius:999px;background:rgba(220,38,38,.2);color:#fecaca;font-size:9px;font-weight:950;letter-spacing:.04em;animation:veaNuevaAlertaPulsoF486 1.8s ease-in-out infinite}
+@keyframes veaNuevaAlertaPulsoF486{50%{box-shadow:0 0 0 5px rgba(239,68,68,.09);background:rgba(220,38,38,.32)}}
 .vea-alerta-ambito{flex:none;padding:4px 7px;border-radius:999px;background:rgba(59,130,246,.16);color:#93c5fd;font-size:9px;font-weight:900;text-transform:uppercase}
 .vea-alerta-enlace{min-width:0;color:#f8fafc;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vea-alerta-enlace:hover{text-decoration:underline;color:#67e8f9}
@@ -1385,6 +1394,7 @@ html[data-vea-theme="light"] :is(#contentDashboard,#contentHospitalizados,#conte
 .vea-alertas-control{display:grid;place-items:center;width:28px;height:28px;border:1px solid rgba(148,163,184,.25);border-radius:8px;background:rgba(15,23,42,.65);color:#cbd5e1;font-size:12px;transition:.2s}
 .vea-alertas-control:hover{border-color:#22d3ee;color:#67e8f9;background:rgba(8,145,178,.15)}
 .vea-alertas-detalle{width:auto;min-width:78px;padding:0 9px;font-size:9px;font-weight:900;text-transform:uppercase;white-space:nowrap}
+.vea-alertas-estado{max-width:150px;color:#64748b;font-size:8px;font-weight:750;line-height:1.2;text-align:right}
 .vea-alerta-fuente-visible{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 11px;border:1px solid rgba(34,211,238,.35);border-radius:9px;background:rgba(8,145,178,.12);color:#67e8f9;font-size:10px;font-weight:900;text-decoration:none}
 .vea-alerta-fuente-visible:hover{border-color:#22d3ee;background:rgba(8,145,178,.2);color:#cffafe}
 .vea-alerta-modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}
@@ -1423,6 +1433,7 @@ html[data-vea-theme="light"] .vea-alerta-lista-fecha{color:#52657a}
 html[data-vea-theme="light"] .vea-alertas-carrusel{background:linear-gradient(90deg,#ecfeff,#ffffff)!important;border-color:#67e8f9!important;box-shadow:0 4px 14px rgba(15,23,42,.07)}
 html[data-vea-theme="light"] .vea-alertas-marca{color:#0e7490}
 html[data-vea-theme="light"] .vea-alerta-ambito{background:#dbeafe;color:#1d4ed8}
+html[data-vea-theme="light"] .vea-alerta-nueva{background:#fee2e2;border-color:#f87171;color:#b91c1c}
 html[data-vea-theme="light"] .vea-alerta-enlace{color:#0f172a}
 html[data-vea-theme="light"] .vea-alerta-enlace:hover{color:#0369a1}
 html[data-vea-theme="light"] .vea-alerta-fecha{color:#52657a}
@@ -1612,7 +1623,8 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 <div id="veaAlertaContenidoF478" class="vea-alerta-contenido"></div>
             </div>
             <div class="vea-alertas-controles">
-                <button type="button" class="vea-alertas-control vea-alertas-detalle" onclick="veaAbrirDetalleAlertaF475()" aria-label="Ver detalle de la alerta actual">Ver detalle</button>
+                <span id="veaAlertasEstadoF486" class="vea-alertas-estado" aria-live="polite">Verificando fuentes oficiales…</span>
+                <button type="button" class="vea-alertas-control vea-alertas-detalle" onclick="veaAbrirDetalleAlertaF475()" aria-label="Ver alerta oficial actual">Ver alerta</button>
             </div>
         </section>
         <div id="modalDetalleAlertaVea" class="hidden fixed inset-0 z-[100001] bg-slate-950/80 backdrop-blur-sm p-4 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="tituloCentroAlertasF477" onclick="if(event.target===this)veaCerrarDetalleAlertaF475()">
@@ -1643,22 +1655,13 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             </div>
         </div>
         <!-- Banda de Alerta y Semáforo Clínico -->
-        <div id="edaTipoActivoBadge" class="hidden -mb-3">
-            <div class="inline-flex items-center gap-2 rounded-xl border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-xs font-extrabold text-blue-300">
-                <span id="edaTipoActivoIcono">💧</span><span>ANÁLISIS: <span id="edaTipoActivoTexto">EDA ACUOSA</span></span>
-            </div>
-        </div>
-
         <div id="bandaSituacionCompleta" class="w-full p-4 rounded-2xl border flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6 shadow-lg bg-slate-900 border-slate-800 text-slate-400 transition-all duration-300">
             <div class="flex items-center gap-3">
                 <div class="relative flex h-3 w-3 shrink-0">
                     <span id="ledParpadeantePing" class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-slate-500"></span>
                     <span id="ledParpadeanteStatic" class="relative inline-flex rounded-full h-3 w-3 bg-slate-500"></span>
                 </div>
-                <div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest block opacity-70">Nivel de Vigilancia y Alerta Temprana</span>
-                    <h2 id="bandaTextSituacion" class="text-base md:text-lg font-black tracking-tight text-white uppercase font-bold">SIN DATOS CARGADOS</h2>
-                </div>
+                <h2 id="bandaTextSituacion" class="text-base md:text-lg font-black tracking-tight text-white uppercase font-bold">SIN DATOS CARGADOS</h2>
             </div>
             <div class="relative shrink-0 flex items-center gap-2 ml-4 lg:ml-10">
                 <button id="bandaInfoBtn" type="button" class="w-8 h-8 rounded-xl bg-black/20 border border-white/10 text-white flex items-center justify-center hover:bg-black/40 focus:outline-none focus:ring-2 focus:ring-white/30 shrink-0" aria-label="Ver interpretación de la zona epidemiológica" aria-expanded="false">
@@ -1674,6 +1677,12 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 
         <!-- Filtros de Segmentación Independientes (Fieles a image_08c2c7.png) -->
         <div id="filtrosVigilancia" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm">
+            <!-- F4.84 — identidad dinámica integrada en el panel de filtros. -->
+            <div id="identidadVigilanciaFiltros" class="mb-5 border-b border-slate-800 pb-5">
+                <div id="bandaModuloKickerVea" class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-rose-400">MÓDULO 01 · VIGILANCIA EPIDEMIOLÓGICA ACTIVA</div>
+                <h2 id="bandaModuloEventoVea" class="mt-2 text-xl font-black tracking-tight text-white">Vigilancia VEA · EDA ACUOSA</h2>
+                <p id="bandaDescripcionEventoVea" class="mt-1 text-xs font-medium text-slate-400">Análisis epidemiológico de EDA Acuosa.</p>
+            </div>
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <div class="flex items-center gap-2.5">
                     <svg class="h-5 w-5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -1930,10 +1939,10 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 
         <!-- MÓDULO: DATOS ACUMULADOS — FASE 6B -->
         <div id="contentDatos" class="hidden flex flex-col gap-4">
-            <div id="panelCabeceraDatosAcumuladosV6B" class="bg-slate-950 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-sm">
+            <div id="panelCabeceraDatosAcumuladosV6B" data-vea-module-identity="03" class="vea-module-identity bg-slate-950 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-sm">
                 <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-5">
                     <div>
-                        <div class="text-[10px] font-black uppercase tracking-[0.22em] text-red-400">Consulta Consolidada VEA</div>
+                        <div class="text-[10px] font-black uppercase tracking-[0.22em] text-red-400">Módulo 03 · Consulta Consolidada VEA</div>
                         <h3 class="text-xl font-black text-slate-100 mt-1">Datos Acumulados</h3>
                         <p class="text-xs text-slate-400 mt-2 max-w-3xl">Lectura anual consolidada de las vigilancias epidemiológicas registradas en el repositorio activo.</p>
                     </div>
@@ -2263,10 +2272,10 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 
         <!-- MÓDULO: CASOS INDIVIDUALES — FASE 2.1 MULTIANUAL COMPARATIVO -->
         <div id="contentCasos" class="hidden space-y-6">
-            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-sm">
+            <div data-vea-module-identity="04" class="vea-module-identity bg-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-sm">
                 <div>
                     <div>
-                        <div class="text-[10px] font-black uppercase tracking-[0.22em] text-red-400">Vigilancia agregada · INDIVIDUAL</div>
+                        <div class="text-[10px] font-black uppercase tracking-[0.22em] text-red-400">Módulo 04 · Vigilancia agregada · INDIVIDUAL</div>
                         <h3 class="text-xl font-black text-slate-100 mt-1">Casos Individuales</h3>
                         <p class="text-xs text-slate-400 mt-2 max-w-3xl">Análisis epidemiológico agregado multianual de notificaciones individuales. Esta vista no expone información nominal ni identificadores personales.</p>
                     </div>
@@ -2710,7 +2719,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 
         <!-- MÓDULOS INDEPENDIENTES PREPARADOS PARA DESARROLLO POSTERIOR -->
         <div id="contentSoat" class="hidden space-y-5">
-            <section class="bg-gradient-to-br from-cyan-950/70 via-slate-950 to-slate-950 border border-cyan-900/50 rounded-2xl p-5 shadow-sm">
+            <section data-vea-module-identity="05" class="vea-module-identity bg-gradient-to-br from-cyan-950/70 via-slate-950 to-slate-950 border border-cyan-900/50 rounded-2xl p-5 shadow-sm">
                 <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
                     <div>
                         <div class="text-[10px] uppercase tracking-[0.22em] font-black text-cyan-400">Módulo 05 · Vigilancia de accidentes</div>
@@ -2749,14 +2758,22 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             </section>
         </div>
 
-        <div id="contentVih" class="hidden bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-sm">
-            <h3 class="text-lg font-bold text-slate-100">VIH</h3>
-            <p id="estadoModuloVih" class="text-xs text-slate-400 mt-2">Sin datos cargados</p>
+        <div id="contentVih" class="hidden space-y-6">
+            <section data-vea-module-identity="06" class="vea-module-identity">
+                <div class="vea-module-identity-kicker">Módulo 06 · Vigilancia Individual</div>
+                <h2 class="vea-module-identity-title">VIH</h2>
+                <p class="vea-module-identity-description">Seguimiento epidemiológico de los registros de VIH disponibles en el repositorio activo.</p>
+            </section>
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-sm"><p id="estadoModuloVih" class="text-xs text-slate-400">Sin datos cargados</p></div>
         </div>
 
-        <div id="contentTbc" class="hidden bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-sm">
-            <h3 class="text-lg font-bold text-slate-100">TBC</h3>
-            <p id="estadoModuloTbc" class="text-xs text-slate-400 mt-2">Sin datos cargados</p>
+        <div id="contentTbc" class="hidden space-y-6">
+            <section data-vea-module-identity="07" class="vea-module-identity">
+                <div class="vea-module-identity-kicker">Módulo 07 · Vigilancia Individual</div>
+                <h2 class="vea-module-identity-title">TBC</h2>
+                <p class="vea-module-identity-description">Seguimiento epidemiológico de los registros de tuberculosis disponibles en el repositorio activo.</p>
+            </section>
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-sm"><p id="estadoModuloTbc" class="text-xs text-slate-400">Sin datos cargados</p></div>
         </div>
 
         <div id="contentConfiguracion" class="hidden bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-sm">
@@ -3126,12 +3143,35 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
         }
 
         function actualizarIdentidadTipoEdaVea() {
-            const badge = document.getElementById('edaTipoActivoBadge');
-            const txt = document.getElementById('edaTipoActivoTexto');
-            const ico = document.getElementById('edaTipoActivoIcono');
-            if (badge) badge.classList.toggle('hidden', selectedEvent !== 'EDAs');
-            if (txt) txt.textContent = edaTipoActivo === 'Disenterica' ? 'EDA DISENTÉRICA' : 'EDA ACUOSA';
-            if (ico) ico.textContent = edaTipoActivo === 'Disenterica' ? '🔴' : '💧';
+            actualizarCabeceraDinamicaVeaF483();
+        }
+
+        // F4.83 — cabecera compacta que identifica el ámbito y la vigilancia activa.
+        function actualizarCabeceraDinamicaVeaF483() {
+            const kicker = document.getElementById('bandaModuloKickerVea');
+            const moduloEvento = document.getElementById('bandaModuloEventoVea');
+            const descripcion = document.getElementById('bandaDescripcionEventoVea');
+            if (!kicker || !moduloEvento || !descripcion) return;
+
+            const perfiles = {
+                EDAs: edaTipoActivo === 'Disenterica'
+                    ? { vea: 'EDA DISENTÉRICA', hospital: 'EDAs', descripcion: 'EDA Disentérica' }
+                    : { vea: 'EDA ACUOSA', hospital: 'EDAs', descripcion: 'EDA Acuosa' },
+                IRAs: { vea: 'IRAs', hospital: 'IRAs', descripcion: 'IRAs' },
+                SOBA: { vea: 'SOBA / ASMA', hospital: 'SOBA / ASMA', descripcion: 'SOBA / Asma' },
+                Febriles: { vea: 'FEBRILES', hospital: 'FEBRILES', descripcion: 'Febriles' }
+            };
+            const perfil = perfiles[selectedEvent] || perfiles.EDAs;
+            const esHospitalizados = tabActiva === 'hospitalizados';
+            kicker.textContent = esHospitalizados
+                ? 'MÓDULO 02 · VIGILANCIA HOSPITALARIA'
+                : 'MÓDULO 01 · VIGILANCIA EPIDEMIOLÓGICA ACTIVA';
+            moduloEvento.textContent = esHospitalizados
+                ? `Hospitalizados · ${perfil.hospital}`
+                : `Vigilancia VEA · ${perfil.vea}`;
+            descripcion.textContent = esHospitalizados
+                ? `Análisis epidemiológico de hospitalizaciones por ${perfil.descripcion}.`
+                : `Análisis epidemiológico de ${perfil.descripcion}.`;
         }
 
         function seleccionarTipoEdaVea(tipo) {
@@ -7041,6 +7081,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const filtros = document.getElementById('filtrosVigilancia');
             if (banda) banda.classList.toggle('hidden', !mostrarControlesVigilancia);
             if (filtros) filtros.classList.toggle('hidden', !mostrarControlesVigilancia);
+            actualizarCabeceraDinamicaVeaF483();
 
             cerrarVeaSidebarMovil();
 
@@ -7496,7 +7537,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 EPIDEMIA: 'Comportamiento superior al umbral esperado; requiere evaluación epidemiológica.'
             };
 
-            txtSituacion.textContent = `ZONA ${zonaVisible} · ${evento} · ${anioObservado} · S.E. ${ultimaSE}`;
+            txtSituacion.textContent = `ZONA ${zonaVisible} · ${anioObservado} · S.E. ${ultimaSE}`;
             if (infoTitulo) infoTitulo.textContent = `Zona ${zonaVisible.toLowerCase()}`;
             const resumenVisible = resumenZonaF411[zona] || 'Situación epidemiológica evaluada';
             recomendacion.textContent = explicacionesZonaF410[zona] || 'Situación epidemiológica calculada con la información histórica disponible.';
@@ -10529,7 +10570,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             });
         }
 
-        const VEA_ALERTAS_OFICIALES_F474 = [
+        let VEA_ALERTAS_OFICIALES_F474 = [
             {ambito:'PERÚ', titulo:'Incremento de casos de sarampión — Alerta Epidemiológica AE-CDC N.° 007-2026', fecha:'21 ago 2026 · MINSA/CDC Perú', area:'Ámbito nacional. La publicación oficial identifica la situación y las áreas que requieren vigilancia reforzada.', situacion:'Alerta epidemiológica emitida ante el incremento de casos de sarampión.', acciones:'Reforzar la detección oportuna, revisar el estado de preparación institucional y aplicar las acciones indicadas por MINSA/CDC Perú.', vigilancia:'Notificar e investigar conforme a la normativa nacional vigente y a los plazos establecidos para sarampión.', laboratorio:'Aplicar el protocolo nacional vigente para sarampión. Confirmar tipo de muestra, momento, conservación, embalaje y envío en el documento oficial antes de realizar la toma.', url:'https://www.gob.pe/institucion/minsa/noticias/1433490-ministerio-de-salud-emite-alerta-epidemiologica-por-incremento-de-casos-de-sarampion'},
             {ambito:'PERÚ', titulo:'Riesgo de brotes nosocomiales de sarampión en establecimientos de salud', fecha:'24 ago 2026 · MINSA', area:'Establecimientos de salud del ámbito nacional; revisar el documento para la delimitación y disposiciones completas.', situacion:'Alerta dirigida a los establecimientos de salud por el riesgo elevado de brotes nosocomiales de sarampión.', acciones:'Fortalecer triaje, identificación oportuna, medidas de prevención y respuesta institucional según la alerta oficial.', vigilancia:'Activar la vigilancia y comunicación institucional conforme a las disposiciones de MINSA/CDC Perú.', laboratorio:'Seguir el protocolo oficial de sarampión y coordinar con el laboratorio de referencia. Verificar requisitos de muestra y transporte en la fuente oficial.', url:'https://www.gob.pe/institucion/minsa/informes-publicaciones/8516521-alerta-epidemiologica-ante-el-brote-nosocomial-de-sarampion'},
             {ambito:'REGIÓN', titulo:'Fiebre amarilla: transmisión sostenida en Bolivia, Colombia, Perú y Venezuela', fecha:'13 mar 2026 · OPS/OMS', area:'Bolivia, Colombia, Perú y Venezuela, según la comunicación regional de OPS/OMS.', situacion:'OPS informó transmisión sostenida de fiebre amarilla en partes de América del Sur.', acciones:'Revisar preparación, vigilancia, vacunación y respuesta conforme a las recomendaciones oficiales aplicables a cada país.', vigilancia:'Fortalecer vigilancia epidemiológica y coordinación transfronteriza según el documento de OPS/OMS.', laboratorio:'Aplicar el algoritmo y protocolo nacional vigente para fiebre amarilla; confirmar requisitos de laboratorio en la autoridad sanitaria correspondiente.', url:'https://www.paho.org/en/news/13-3-2026-paho-reports-sustained-yellow-fever-transmission-parts-south-america'},
@@ -10542,6 +10583,21 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         let veaCategoriaActivaF477 = 'peru';
         let veaIndiceDetalleF477 = 0;
         let veaPausaPreviaCentroF477 = false;
+        let veaUltimaConsultaAlertasF486 = 0;
+
+        function veaAlertasRevisadasF486() {
+            try { return new Set(JSON.parse(localStorage.getItem('VEA_ALERTAS_REVISADAS_F486') || '[]')); }
+            catch (_) { return new Set(); }
+        }
+
+        function veaMarcarAlertaRevisadaF486(alerta) {
+            if (!alerta?.url) return;
+            const revisadas = veaAlertasRevisadasF486();
+            revisadas.add(alerta.url);
+            try { localStorage.setItem('VEA_ALERTAS_REVISADAS_F486', JSON.stringify([...revisadas].slice(-100))); } catch (_) {}
+            alerta.nueva = false;
+            veaConstruirCarruselContinuoF478();
+        }
 
         function veaCrearGrupoCarruselF478(oculto = false) {
             const grupo = document.createElement('div');
@@ -10549,6 +10605,10 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             if (oculto) grupo.setAttribute('aria-hidden', 'true');
             VEA_ALERTAS_OFICIALES_F474.forEach((alerta, indice) => {
                 const item = document.createElement('span'); item.className = 'vea-alerta-item';
+                if (alerta.nueva && !veaAlertasRevisadasF486().has(alerta.url)) {
+                    const nueva = document.createElement('span'); nueva.className = 'vea-alerta-nueva'; nueva.textContent = '⚠ NUEVA ALERTA';
+                    item.appendChild(nueva);
+                }
                 const ambito = document.createElement('span'); ambito.className = 'vea-alerta-ambito'; ambito.textContent = alerta.ambito;
                 const enlace = document.createElement('a'); enlace.className = 'vea-alerta-enlace'; enlace.href = alerta.url; enlace.target = '_blank'; enlace.rel = 'noopener noreferrer'; enlace.textContent = alerta.titulo; enlace.title = `${alerta.titulo} — abrir fuente oficial`;
                 enlace.addEventListener('focus', () => { veaIndiceAlertaF474 = indice; });
@@ -10627,6 +10687,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
 
         function veaAbrirDetalleAlertaF475() {
             const alertaActual = VEA_ALERTAS_OFICIALES_F474[veaIndiceAlertaF474];
+            veaMarcarAlertaRevisadaF486(alertaActual);
             veaPausaPreviaCentroF477 = veaAlertasPausadasF474;
             veaActualizarConteosCentroF477();
             veaSeleccionarCategoriaAlertasF477(veaCategoriaAlertaF477(alertaActual), veaIndiceAlertaF474);
@@ -10647,9 +10708,35 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         }
 
         document.addEventListener('visibilitychange', veaProgramarAlertasF474);
+        async function veaActualizarAlertasAutomaticasF486(forzar = false) {
+            if (!forzar && Date.now() - veaUltimaConsultaAlertasF486 < 30 * 60 * 1000) return;
+            veaUltimaConsultaAlertasF486 = Date.now();
+            const estado = document.getElementById('veaAlertasEstadoF486');
+            if (estado) estado.textContent = 'Verificando fuentes oficiales…';
+            try {
+                const respuesta = await fetch('/api/alerts', { headers: { Accept: 'application/json' } });
+                if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
+                const datos = await respuesta.json();
+                if (Array.isArray(datos.alertas) && datos.alertas.length) {
+                    VEA_ALERTAS_OFICIALES_F474 = datos.alertas;
+                    veaIndiceAlertaF474 = 0;
+                    veaConstruirCarruselContinuoF478();
+                    veaActualizarConteosCentroF477();
+                }
+                const hora = new Intl.DateTimeFormat('es-PE', { hour:'2-digit', minute:'2-digit', timeZone:'America/Lima' }).format(new Date(datos.actualizadoEn || Date.now()));
+                if (estado) estado.textContent = `Actualizado hoy · ${hora}`;
+            } catch (_) {
+                if (estado) estado.textContent = 'Respaldo verificado activo';
+            }
+        }
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) veaActualizarAlertasAutomaticasF486();
+        });
         (() => {
             veaConstruirCarruselContinuoF478();
             veaProgramarAlertasF474();
+            veaActualizarAlertasAutomaticasF486(true);
+            setInterval(() => veaActualizarAlertasAutomaticasF486(true), 6 * 60 * 60 * 1000);
         })();
 
         function aplicarTemaVeaF469(tema, guardar = true) {

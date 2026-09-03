@@ -1276,11 +1276,11 @@
 
 </style>
 <style>
-/* F4.68 — Pie informativo uniforme para todos los gráficos VEA. */
+/* VEA010 — Pie de fuente uniforme para todos los gráficos y módulos. */
 .vea-chart-meta{
   display:flex;align-items:center;justify-content:space-between;gap:16px;
-  width:100%;margin-top:12px;padding-top:10px;border-top:1px solid rgba(51,65,85,.72);
-  color:#64748b;font-size:10px;font-weight:600;line-height:1.35;
+  width:100%;margin-top:10px;padding-top:8px;border-top:1px solid rgba(51,65,85,.72);
+  color:#64748b;font-size:9px;font-weight:600;line-height:1.35;letter-spacing:.01em;
 }
 .vea-chart-meta-fuente{min-width:0;text-align:left}
 .vea-chart-meta-actualizacion{min-width:0;text-align:right}
@@ -1473,6 +1473,17 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             border-top-color: #2563eb !important;
             box-shadow: 0 -1px 0 rgba(37,99,235,.14), 0 8px 22px rgba(15,23,42,.08);
         }
+</style>
+    <style>
+        /* VEA008 — indicador de carga visible sobre los módulos */
+        #veaIndicadorCargaMaster{display:flex;align-items:center;justify-content:space-between;gap:.75rem;width:100%;padding:.38rem .15rem .42rem;border:0;border-top:2px solid #2f6bff;border-radius:.65rem  .65rem 0 0;background:transparent;box-shadow:none}
+        #veaIndicadorCargaMaster .vea-carga-punto{width:.65rem;height:.65rem;border-radius:999px;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.13),0 0 14px rgba(34,197,94,.75);flex:none}
+        #veaIndicadorCargaMaster .vea-carga-titulo{font-size:.64rem;font-weight:900;letter-spacing:.1em;color:#4ade80;text-transform:uppercase}
+        #veaIndicadorCargaMaster .vea-carga-fecha{font-size:.62rem;color:#cbd5e1;margin-top:.08rem}
+        #veaIndicadorCargaMaster .vea-carga-accion{color:#60a5fa;font-size:.62rem;font-weight:900;white-space:nowrap}
+        html[data-vea-theme="light"] #veaIndicadorCargaMaster{background:transparent;border-top-color:#2563eb;box-shadow:none}
+        html[data-vea-theme="light"] #veaIndicadorCargaMaster .vea-carga-fecha{color:#475569}
+        @media(max-width:560px){#veaIndicadorCargaMaster{padding-inline:0}.vea-carga-accion{display:none}}
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -1523,6 +1534,13 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 <span>MENÚ DE VIGILANCIA</span>
             </button>
 
+            <div class="w-full xl:w-auto flex flex-col items-stretch gap-1">
+            <div id="veaIndicadorCargaMaster" role="status" aria-live="polite" aria-label="Estado de carga del Excel Master">
+                <span class="vea-carga-punto" aria-hidden="true"></span>
+                <div class="min-w-0 flex-1"><div id="veaCargaTituloMaster" class="vea-carga-titulo">Carga actualizada</div><div id="veaCargaFechaMaster" class="vea-carga-fecha">Verificando última sincronización…</div></div>
+                <span class="vea-carga-accion">Excel Master · Supabase</span>
+            </div>
+
             <!-- Selectores de Evento Epidemiológico -->
             <div id="selectorEventosVea" class="bg-slate-900 p-1.5 rounded-xl border border-slate-800 flex gap-1 w-full sm:w-auto overflow-x-auto">
                 <div id="wrapEventEDAs" class="relative flex-1 sm:flex-none flex">
@@ -1558,6 +1576,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                     <span class="vea-theme-switch-track" aria-hidden="true"><span class="vea-theme-switch-knob"></span></span>
                     <span class="vea-theme-switch-icon vea-theme-switch-icon-light" aria-hidden="true">☀️</span>
                 </button>
+            </div>
             </div>
 
         </div>
@@ -10649,12 +10668,12 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         }
 
         function veaFuenteParaGraficoF468(canvas) {
-            if (canvas.closest('#contentCasos')) return 'INDIVIDUAL — Repositorio VEA';
-            if (canvas.closest('#contentSoat')) return 'SOAT — Repositorio VEA';
+            if (canvas.closest('#contentCasos')) return 'NOTIWEB — CDC Perú / MINSA';
+            if (canvas.closest('#contentSoat')) return 'NOTIWEB SOAT— CDC Perú / MINSA';
             if (canvas.closest('#contentVih')) return 'VIH — Repositorio VEA';
             if (canvas.closest('#contentTbc')) return 'TBC — Repositorio VEA';
             if (canvas.closest('#contentDatos')) return 'Repositorio VEA consolidado';
-            if (canvas.closest('#contentHospitalizados')) return 'HOSPITALIZADOS — Repositorio VEA';
+            if (canvas.closest('#contentHospitalizados')) return 'NOTIWEB — CDC Perú / MINSA';
             return VEA_FUENTE_VIGILANCIA;
         }
 
@@ -10683,6 +10702,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
 
         function veaActualizarPiesInformativosGraficosF468() {
             const fecha = formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos);
+            const estadoCarga = document.getElementById('veaCargaFechaMaster');
+            if (estadoCarga) estadoCarga.textContent = veaUltimaActualizacionDatos ? `Última sincronización: ${fecha}` : 'Verificando última sincronización…';
             document.querySelectorAll('.vea-chart-meta').forEach(pie => {
                 const canvas = document.getElementById(pie.dataset.canvasId || '');
                 const fuente = pie.querySelector('.vea-chart-meta-fuente');

@@ -1463,14 +1463,13 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 </style>
     <style>
         /* VEA003 — borde institucional uniforme en tarjetas de gráficos VEA y Hospitalizados */
-        #contentDashboard .vea-card-borde-azul,
-        #contentHospitalizados .vea-card-borde-azul {
+        /* VEA006 — regla global para gráficos actuales y módulos futuros */
+        .vea-card-borde-azul {
             border-top: 3px solid #2f6bff !important;
             border-radius: 1rem !important;
             box-shadow: 0 -1px 0 rgba(47,107,255,.18), 0 8px 24px rgba(2,8,23,.18);
         }
-        html[data-vea-theme="light"] #contentDashboard .vea-card-borde-azul,
-        html[data-vea-theme="light"] #contentHospitalizados .vea-card-borde-azul {
+        html[data-vea-theme="light"] .vea-card-borde-azul {
             border-top-color: #2563eb !important;
             box-shadow: 0 -1px 0 rgba(37,99,235,.14), 0 8px 22px rgba(15,23,42,.08);
         }
@@ -1882,7 +1881,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                 <!-- GRÁFICO 1: COMPARATIVO POR AÑO -->
                 <div class="order-1 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-                    <div class="absolute top-0 left-0 right-0 h-1 bg-red-650"></div>
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                     <div class="mb-4 mt-2">
                         <h3 class="text-sm font-bold text-slate-200">Comparativo por Año</h3>
                         <p class="text-[10px] text-slate-400">Casos registrados por cada año seleccionado según los filtros activos.</p>
@@ -1897,7 +1896,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 
                 <!-- GRÁFICO 2: DISTRIBUCIÓN POR EDADES -->
                 <div class="order-4 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-                    <div class="absolute top-0 left-0 right-0 h-1 bg-indigo-600"></div>
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                     <div class="mb-4 mt-2 flex items-start justify-between gap-4">
                         <div class="min-w-0">
                             <h3 class="text-sm font-bold text-slate-200">Distribución por Edades</h3>
@@ -1940,7 +1939,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 
                 <!-- GRÁFICO 4: COMPARATIVO POR MES -->
                 <div class="order-2 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-                    <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-600"></div>
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                     <div class="flex justify-between items-start gap-3 mb-4 mt-2">
                         <div>
                             <h3 class="text-sm font-bold text-slate-200">Comparativo por Mes</h3>
@@ -2541,7 +2540,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
         <div id="contentTabla" class="hidden">
           <div id="matrizSEHostModulo">
            <div id="matrizSEPanelCompartido" class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-indigo-600"></div>
+            <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                 <div>
                     <h3 id="matrizSETitulo" class="text-base font-bold text-slate-200">Matriz de Reporte por Semana Epidemiológica</h3>
@@ -2663,7 +2662,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 <div class="h-[320px] w-full relative"><canvas id="chartHospComparativoAnual"></canvas><div id="estadoChartHospAnual" class="absolute inset-0 hidden items-center justify-center text-center px-6 text-xs text-slate-500">Sin datos hospitalarios para la selección.</div></div>
             </div>
             <div class="order-4 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
-                <div class="absolute top-0 left-0 right-0 h-1 bg-violet-600"></div>
+                <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                 <div class="flex justify-between items-start gap-3 mb-4 mt-2">
                     <div><h3 class="text-sm font-bold text-slate-200">Distribución por Edades</h3><p class="text-[10px] text-slate-400">Distribución de hospitalizados por los grupos etarios disponibles en el repositorio activo.</p></div>
                     <div class="text-right text-xs leading-normal select-none shrink-0 font-sans"><div class="font-extrabold text-slate-400 uppercase tracking-wide">AÑO: <span id="txtHospGrafEdadesAnios" class="text-red-500 font-black">--</span></div></div>
@@ -2699,7 +2698,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 </div>
                 <!-- Comparativo Mensual Hospitalizados -->
                 <div class="order-2 bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden flex flex-col">
-                    <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-600"></div>
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-blue-600"></div>
                     <div class="flex justify-between items-start mb-4 mt-2">
                         <div>
                             <h3 class="text-sm font-bold text-slate-200">Comparativo por Mes (Hospitalizados)</h3>
@@ -2808,8 +2807,8 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             </section>
 
             <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><h4 class="text-sm font-black text-slate-100">Casos SOAT por Año</h4><p class="text-[10px] text-slate-500 mt-1">Evolución histórica de registros reales.</p><div class="relative h-64 mt-3"><canvas id="soatChartAnual"></canvas><div id="soatEstadoAnual" class="absolute inset-0 hidden items-center justify-center text-xs text-slate-500">Sin datos.</div></div></article>
-                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><h4 class="text-sm font-black text-slate-100">Casos SOAT por Mes</h4><p class="text-[10px] text-slate-500 mt-1">Un dataset por cada año seleccionado.</p><div class="relative h-64 mt-3"><canvas id="soatChartMensual"></canvas><div id="soatEstadoMensual" class="absolute inset-0 hidden items-center justify-center text-xs text-slate-500">Sin datos.</div></div></article>
+                <article class="vea-soat-grafico-principal bg-slate-950 border border-slate-800 rounded-2xl p-4"><h4 class="text-sm font-black text-slate-100">Comparativo por Año</h4><p class="text-[10px] text-slate-500 mt-1">Casos SOAT registrados por cada año seleccionado según los filtros activos.</p><div class="relative h-64 mt-3"><canvas id="soatChartAnual"></canvas><div id="soatEstadoAnual" class="absolute inset-0 hidden items-center justify-center text-xs text-slate-500">Sin datos.</div></div></article>
+                <article class="vea-soat-grafico-principal vea-soat-grafico-mensual bg-slate-950 border border-slate-800 rounded-2xl p-4"><div class="flex items-start justify-between gap-3"><div><h4 class="text-sm font-black text-slate-100">Comparativo por Mes</h4><p class="text-[10px] text-slate-500 mt-1">Enero a diciembre; una línea por año y sin completar meses inexistentes.</p></div><div class="text-right text-[10px] font-black text-slate-400">AÑOS: <span id="soatGraficoMensualAnios" class="text-red-400">—</span></div></div><div class="relative h-64 mt-3"><canvas id="soatChartMensual"></canvas><div id="soatEstadoMensual" class="absolute inset-0 hidden items-center justify-center text-xs text-slate-500">Sin datos.</div></div></article>
                 <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><h4 class="text-sm font-black text-slate-100">Casos SOAT por Grupo de Edad</h4><p class="text-[10px] text-slate-500 mt-1">Grupos derivados de EDAD + TIPO_EDAD: &lt;1, 1–5, 6–11, 12–17, 18–29, 30–59 y 60+.</p><div class="relative h-64 mt-3"><canvas id="soatChartEdad"></canvas><div id="soatEstadoEdad" class="absolute inset-0 hidden items-center justify-center text-xs text-slate-500">Sin datos.</div></div></article>
                 <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><h4 class="text-sm font-black text-slate-100">Casos SOAT por Sexo</h4><p class="text-[10px] text-slate-500 mt-1">Categorías presentes en SEXO.</p><div class="relative h-64 mt-3"><canvas id="soatChartSexo"></canvas><div id="soatEstadoSexo" class="absolute inset-0 hidden items-center justify-center text-xs text-slate-500">Sin datos.</div></div></article>
                 <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4 xl:col-span-2"><h4 class="text-sm font-black text-slate-100">Accidentes según Hora de Ocurrencia</h4><p class="text-[10px] text-slate-500 mt-1">Rangos calculados exclusivamente desde HOR_ACCID.</p><div class="relative h-64 mt-3"><canvas id="soatChartHora"></canvas><div id="soatEstadoHora" class="absolute inset-0 hidden items-center justify-center text-xs text-slate-500">Sin datos.</div></div></article>
@@ -10434,15 +10433,16 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         }
 
         function soatRenderChartsV1(filtrados) {
-            // VEA001 — Paleta institucional SOAT, apta para pantalla y PowerPoint.
-            const colores=['#FCA5A5','#EF5350','#C62828','#991B1B','#607D8B','#16324F'];
+            // VEA004 — Estructura institucional SOAT alineada con Casos Individuales.
+            const colores=['#7CB5E8','#35B7EE','#2F6BFF','#1E4DB7','#607D8B','#16324F'];
             const anios=soatEstadoV1.seleccionAnios.slice().sort((a,b)=>a-b);
             const resumen=new Map(anios.map(a=>[a,{total:0,mes:Array(12).fill(0),mesObservado:new Set(),edad:new Map(),sexo:new Map(),hora:new Map()}]));
             filtrados.forEach(f=>{const r=resumen.get(f.anio);if(!r)return;r.total++;if(f.mes>=1&&f.mes<=12){r.mes[f.mes-1]++;r.mesObservado.add(f.mes);}[['edad',f.grupoEdad],['sexo',f.sexo],['hora',f.rangoHora]].forEach(([k,v])=>r[k].set(v,(r[k].get(v)||0)+1));});
             const categorias=(campo,orden=[])=>{const valores=new Set();resumen.forEach(r=>r[campo].forEach((_,k)=>valores.add(k)));return orden.length?orden.filter(v=>valores.has(v)):[...valores].sort();};
             const datasets=(campo,cats)=>anios.map((a,i)=>({label:String(a),data:cats.map(c=>resumen.get(a)[campo].get(c)||0),backgroundColor:colores[i%colores.length],borderColor:colores[i%colores.length],borderWidth:1}));
-            soatChartV1('anual','soatChartAnual','soatEstadoAnual','bar',{labels:['Total de casos'],datasets:anios.map((a,i)=>({label:String(a),data:[resumen.get(a).total],backgroundColor:colores[i%colores.length],borderColor:colores[i%colores.length],borderWidth:1}))});
-            soatChartV1('mensual','soatChartMensual','soatEstadoMensual','bar',{labels:SOAT_MESES_V1,datasets:anios.map((a,i)=>({label:String(a),data:resumen.get(a).mes.map((v,m)=>resumen.get(a).mesObservado.has(m+1)?v:null),backgroundColor:colores[i%colores.length]}))});
+            soatChartV1('anual','soatChartAnual','soatEstadoAnual','bar',{labels:anios.map(String),datasets:[{label:'Casos SOAT',data:anios.map(a=>resumen.get(a).total),backgroundColor:anios.map((_,i)=>colores[i%colores.length]),borderColor:anios.map((_,i)=>colores[i%colores.length]),borderWidth:1}]});
+            soatChartV1('mensual','soatChartMensual','soatEstadoMensual','line',{labels:SOAT_MESES_V1,datasets:anios.map((a,i)=>({label:String(a),data:resumen.get(a).mes.map((v,m)=>resumen.get(a).mesObservado.has(m+1)?v:null),borderColor:colores[i%colores.length],backgroundColor:colores[i%colores.length]+'22',pointBackgroundColor:colores[i%colores.length],pointBorderColor:colores[i%colores.length],pointRadius:3,pointHoverRadius:5,borderWidth:2,tension:.28,spanGaps:false,fill:false}))});
+            const resumenAnios=document.getElementById('soatGraficoMensualAnios');if(resumenAnios)resumenAnios.textContent=anios.join(', ')||'—';
             const gruposEdad=categorias('edad',SOAT_GRUPOS_EDAD_V1);soatChartV1('edad','soatChartEdad','soatEstadoEdad','bar',{labels:gruposEdad,datasets:datasets('edad',gruposEdad)});
             const categoriasSexo=categorias('sexo');soatChartV1('sexo','soatChartSexo','soatEstadoSexo','bar',{labels:categoriasSexo,datasets:datasets('sexo',categoriasSexo)});
             const rangosHora=categorias('hora',SOAT_RANGOS_HORA_V1);soatChartV1('hora','soatChartHora','soatEstadoHora','bar',{labels:rangosHora,datasets:datasets('hora',rangosHora)});
@@ -10695,7 +10695,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         function veaInstalarPiesInformativosGraficosF468() {
             document.querySelectorAll('canvas[id]').forEach(canvas => {
                 const tarjeta = veaTarjetaParaGraficoF468(canvas);
-                if (tarjeta && canvas.closest('#contentDashboard, #contentHospitalizados')) {
+                if (tarjeta) {
                     tarjeta.classList.add('vea-card-borde-azul');
                 }
                 if (canvas.dataset.veaPieF468 === '1') return;

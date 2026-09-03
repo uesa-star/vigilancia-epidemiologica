@@ -1476,14 +1476,91 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 </style>
     <style>
         /* VEA008 — indicador de carga visible sobre los módulos */
-        #veaIndicadorCargaMaster{display:flex;align-items:center;justify-content:space-between;gap:.75rem;width:100%;padding:.38rem .15rem .42rem;border:0;border-top:2px solid #2f6bff;border-radius:.65rem  .65rem 0 0;background:transparent;box-shadow:none}
+        #veaIndicadorCargaMaster{display:flex;align-items:center;justify-content:flex-start;gap:.55rem;width:100%;padding:.38rem .15rem .42rem;border:0;border-top:2px solid #2f6bff;border-radius:.65rem .65rem 0 0;background:transparent;box-shadow:none;white-space:nowrap;overflow:hidden}
         #veaIndicadorCargaMaster .vea-carga-punto{width:.65rem;height:.65rem;border-radius:999px;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.13),0 0 14px rgba(34,197,94,.75);flex:none}
-        #veaIndicadorCargaMaster .vea-carga-titulo{font-size:.64rem;font-weight:900;letter-spacing:.1em;color:#4ade80;text-transform:uppercase}
-        #veaIndicadorCargaMaster .vea-carga-fecha{font-size:.62rem;color:#cbd5e1;margin-top:.08rem}
+        #veaIndicadorCargaMaster .vea-carga-linea{display:flex;align-items:center;gap:.3rem;min-width:0;overflow:hidden}
+        #veaIndicadorCargaMaster .vea-carga-titulo{font-size:.64rem;font-weight:900;letter-spacing:.1em;color:#4ade80;text-transform:uppercase;flex:none}
+        #veaIndicadorCargaMaster .vea-carga-separador{font-size:.62rem;color:#94a3b8;flex:none}
+        #veaIndicadorCargaMaster .vea-carga-fecha{font-size:.62rem;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         #veaIndicadorCargaMaster .vea-carga-accion{color:#60a5fa;font-size:.62rem;font-weight:900;white-space:nowrap}
         html[data-vea-theme="light"] #veaIndicadorCargaMaster{background:transparent;border-top-color:#2563eb;box-shadow:none}
         html[data-vea-theme="light"] #veaIndicadorCargaMaster .vea-carga-fecha{color:#475569}
         @media(max-width:560px){#veaIndicadorCargaMaster{padding-inline:0}.vea-carga-accion{display:none}}
+    </style>
+    <style>
+        /* VEA015 — KPIs compactos y regulares */
+        #contentDashboard .vea-kpis-regulares{gap:.75rem!important}
+        #contentDashboard .vea-kpis-regulares > div{padding:.875rem!important;min-width:0}
+        #contentDashboard .vea-kpis-regulares h3{line-height:1.15}
+        #contentDashboard .vea-kpis-regulares [id^="kpiDetalle"]{margin-top:.7rem!important}
+        /* VEA016 — período pegado al título en todos los KPI */
+        [id^="content"] p[id^="kpiPeriodo"],
+        [id^="content"] p[id^="kpiHospPeriodo"],
+        [id^="content"] p[id^="soatKpiPeriodo"]{margin-top:.15rem!important;line-height:1.1!important}
+        [id^="content"] [id^="kpiPeriodo"] + h3,
+        [id^="content"] [id^="kpiHospPeriodo"] + h3{margin-top:.45rem!important}
+        #contentHospitalizados > .grid:first-child [id^="kpiHospPeriodo"]{margin-top:.15rem!important;line-height:1.1!important}
+        #ciKpisModulo04 [id*="Periodo"]{margin-top:.2rem!important;line-height:1.1!important}
+        #soatKpisCuatro [id*="Periodo"]{margin-top:.2rem!important;line-height:1.1!important}
+        #ciKpisModulo04 [id*="Periodo"] + div,
+        #soatKpisCuatro [id*="Periodo"] + div{margin-top:.45rem!important}
+        /* VEA019 — título de KPI en una sola línea, como el modelo aprobado */
+        #contentDashboard .vea-kpis-regulares .flex.items-start.justify-between > p,
+        #contentHospitalizados > .grid:first-child .flex.items-start.justify-between > p,
+        #ciKpisModulo04 article > div:first-child,
+        #soatKpisCuatro article > div:first-child{white-space:nowrap!important;line-height:1.1!important;font-size:.58rem!important;letter-spacing:.055em!important}
+        #contentDashboard .vea-kpis-regulares .flex.items-start.justify-between,
+        #contentHospitalizados > .grid:first-child .flex.items-start.justify-between{align-items:flex-start}
+        /* VEA020 — cabecera KPI compacta: título y período consecutivos */
+        #contentDashboard .vea-kpis-regulares .flex.items-start.justify-between,
+        #contentHospitalizados > .grid:first-child .flex.items-start.justify-between{margin-bottom:0!important;gap:.45rem!important}
+        #contentDashboard .vea-kpis-regulares [id^="kpiPeriodo"],
+        #contentHospitalizados > .grid:first-child [id^="kpiHospPeriodo"],
+        #ciKpisModulo04 [id*="Periodo"],
+        #soatKpisCuatro [id*="Periodo"]{margin-top:0!important;padding-top:0!important;line-height:1.05!important;display:block!important}
+        #contentDashboard .vea-kpis-regulares h3,
+        #contentHospitalizados > .grid:first-child h3,
+        #ciKpisModulo04 [id*="Periodo"] + div,
+        #soatKpisCuatro [id*="Periodo"] + div{margin-top:.6rem!important}
+        /* VEA021 — el icono no debe empujar el año: título y periodo quedan unidos */
+        #contentDashboard .vea-kpis-regulares .flex.items-start.justify-between,
+        #contentHospitalizados > .grid:first-child .flex.items-start.justify-between{position:relative;min-height:0!important}
+        #contentDashboard .vea-kpis-regulares .flex.items-start.justify-between > div,
+        #contentHospitalizados > .grid:first-child .flex.items-start.justify-between > div{position:absolute;right:0;top:0}
+        #contentDashboard .vea-kpis-regulares .flex.items-start.justify-between > p,
+        #contentHospitalizados > .grid:first-child .flex.items-start.justify-between > p{display:block!important;padding-right:2.9rem!important}
+        #contentDashboard .vea-kpis-regulares [id^="kpiPeriodo"],
+        #contentHospitalizados > .grid:first-child [id^="kpiHospPeriodo"]{margin-top:0!important}
+        #ciKpisModulo04 [id*="Periodo"],
+        #soatKpisCuatro [id*="Periodo"]{margin-top:0!important;padding-top:0!important;line-height:1.05!important}
+        /* VEA023 — misma altura compacta en todos los módulos KPI */
+        #contentHospitalizados > .grid:first-child > div,
+        #ciKpisModulo04 > article,
+        #soatKpisCuatro > article{min-height:0!important;height:auto!important;justify-content:flex-start!important}
+        #contentHospitalizados > .grid:first-child > div > div:last-child,
+        #ciKpisModulo04 > article > div:last-child,
+        #soatKpisCuatro > article > div:last-child{position:static!important;margin-top:.75rem!important}
+        #ciKpisModulo04 > article > div[id*="Periodo"] + div,
+        #soatKpisCuatro > article > div[id*="Periodo"] + div{margin-top:.55rem!important}
+        #soatKpisCuatro > article > div[id*="Periodo"] ~ div.absolute{position:static!important;margin-top:.75rem!important}
+        /* VEA025 — tipografía KPI uniforme en blanco */
+        #contentDashboard .vea-kpis-regulares > div p,
+        #contentDashboard .vea-kpis-regulares > div h3,
+        #contentDashboard .vea-kpis-regulares > div > div:last-child,
+        #contentHospitalizados > .grid:first-child > div p,
+        #contentHospitalizados > .grid:first-child > div h3,
+        #contentHospitalizados > .grid:first-child > div > div:last-child,
+        #ciKpisModulo04 > article > div:not(.absolute),
+        #soatKpisCuatro > article > div:not(.absolute){color:#fff!important}
+        /* VEA026 — contraste correcto en modo claro para conservar legibilidad */
+        html[data-vea-theme="light"] #contentDashboard .vea-kpis-regulares > div p,
+        html[data-vea-theme="light"] #contentDashboard .vea-kpis-regulares > div h3,
+        html[data-vea-theme="light"] #contentDashboard .vea-kpis-regulares > div > div:last-child,
+        html[data-vea-theme="light"] #contentHospitalizados > .grid:first-child > div p,
+        html[data-vea-theme="light"] #contentHospitalizados > .grid:first-child > div h3,
+        html[data-vea-theme="light"] #contentHospitalizados > .grid:first-child > div > div:last-child,
+        html[data-vea-theme="light"] #ciKpisModulo04 > article > div:not(.absolute),
+        html[data-vea-theme="light"] #soatKpisCuatro > article > div:not(.absolute){color:#0f172a!important}
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
@@ -1535,10 +1612,9 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             </button>
 
             <div class="w-full xl:w-auto flex flex-col items-stretch gap-1">
-            <div id="veaIndicadorCargaMaster" role="status" aria-live="polite" aria-label="Estado de carga del Excel Master">
+            <div id="veaIndicadorCargaMaster" role="status" aria-live="polite" aria-label="Estado de sincronización de datos">
                 <span class="vea-carga-punto" aria-hidden="true"></span>
-                <div class="min-w-0 flex-1"><div id="veaCargaTituloMaster" class="vea-carga-titulo">Carga actualizada</div><div id="veaCargaFechaMaster" class="vea-carga-fecha">Verificando última sincronización…</div></div>
-                <span class="vea-carga-accion">Excel Master · Supabase</span>
+                <div class="vea-carga-linea"><span id="veaCargaTituloMaster" class="vea-carga-titulo">Carga actualizada</span><span class="vea-carga-separador">-</span><span id="veaCargaFechaMaster" class="vea-carga-fecha">Verificando última sincronización…</span></div>
             </div>
 
             <!-- Selectores de Evento Epidemiológico -->
@@ -1802,18 +1878,18 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
         <!-- TAB 1: DASHBOARD -->
         <div id="contentDashboard" class="space-y-6">
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 vea-kpis-regulares">
                 <!-- F4.15 KPI 1 -->
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
                     <div>
                         <div class="flex items-start justify-between gap-3">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">TOTAL HISTÓRICO INGRESADOS</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap">TOTAL HISTÓRICO INGRESADO</p>
                             <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H2v-2a4 4 0 014-4h3m6-4a4 4 0 11-8 0 4 4 0 018 0zm6 1a3 3 0 10-3-3"/></svg>
                         </div>
                         </div>
-                        <p id="kpiPeriodoHistorico" class="text-[11px] text-indigo-300 font-black mt-1">—</p>
-                        <h3 id="kpiHistoricoGeneral" class="text-2xl font-black text-white mt-2">0</h3>
+                        <p id="kpiPeriodoHistorico" class="text-[11px] text-indigo-300 font-black mt-0">—</p>
+                        <h3 id="kpiHistoricoGeneral" class="text-2xl font-black text-white mt-1">0</h3>
                     </div>
                     <div id="kpiDetalleHistorico" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Todos los años</div>
                 </div>
@@ -1827,8 +1903,8 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                             <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18l-7 8v6l-4 2v-8L3 4z"/></svg>
                         </div>
                         </div>
-                        <p id="kpiPeriodoFiltros" class="text-[11px] text-emerald-300 font-black mt-1">—</p>
-                        <h3 id="kpiCasosPorMes" class="text-2xl font-black text-white mt-2">0</h3>
+                        <p id="kpiPeriodoFiltros" class="text-[11px] text-emerald-300 font-black mt-0">—</p>
+                        <h3 id="kpiCasosPorMes" class="text-2xl font-black text-white mt-1">0</h3>
                     </div>
                     <div id="kpiDetalleCasosMes" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Años seleccionados</div>
                 </div>
@@ -1842,13 +1918,28 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                             <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M8 2v3m8-3v3M4 9h16M5 4h14a1 1 0 011 1v15H4V5a1 1 0 011-1zm3 9h2m4 0h2m-8 4h2m4 0h2"/></svg>
                         </div>
                         </div>
-                        <p id="kpiPeriodoCasesAno" class="text-[11px] text-rose-300 font-black mt-1">—</p>
-                        <h3 id="kpiCasesAno" class="text-2xl font-black text-white mt-2">0</h3>
+                        <p id="kpiPeriodoCasesAno" class="text-[11px] text-rose-300 font-black mt-0">—</p>
+                        <h3 id="kpiCasesAno" class="text-2xl font-black text-white mt-1">0</h3>
                     </div>
                     <div id="kpiDetalleAño" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Año activo</div>
                 </div>
 
-                <!-- F4.15 KPI 4 -->
+                <!-- F4.15 KPI 4: resultado de la semana epidemiológica -->
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
+                    <div>
+                        <div class="flex items-start justify-between gap-3">
+                            <p id="kpiLabelCasesSe" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">CASOS REGISTRADOS S.E.</p>
+                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M8 2v3m8-3v3M4 9h16M5 4h14a1 1 0 011 1v15H4V5a1 1 0 011-1zm3 9h2m4 0h2m-8 4h2m4 0h2"/></svg>
+                        </div>
+                        </div>
+                        <p id="kpiPeriodoCasesSe" class="text-[11px] text-rose-300 font-black mt-0">—</p>
+                        <h3 id="kpiCasesSe" class="text-2xl font-black text-white mt-1">0</h3>
+                    </div>
+                    <div id="kpiDetalleCasesSe" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">S.E. —</div>
+                </div>
+
+                <!-- F4.15 KPI 5 -->
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
                     <div>
                         <div class="flex items-start justify-between gap-3">
@@ -1857,25 +1948,10 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                             <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 20v-3a5 5 0 0110 0v3m1-1v-2a4 4 0 018 0v2"/></svg>
                         </div>
                         </div>
-                        <p id="kpiPeriodoGrupo" class="text-[11px] text-amber-300 font-black mt-1">—</p>
-                        <h3 id="kpiGrupoPrevalente" class="text-lg font-black text-white mt-2">—</h3>
+                        <p id="kpiPeriodoGrupo" class="text-[11px] text-amber-300 font-black mt-0">—</p>
+                        <h3 id="kpiGrupoPrevalente" class="text-lg font-black text-white mt-1">—</h3>
                     </div>
                     <div id="kpiGrupoDetalle" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Mayor concentración</div>
-                </div>
-
-                <!-- F4.15 KPI 5 -->
-                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-transform">
-                    <div>
-                        <div class="flex items-start justify-between gap-3">
-                            <p id="kpiLabelHospAno" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">HOSPITALIZADOS</p>
-                            <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
-                            <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5v15m0-5h18v5m-18-8h18v3M7 9a2 2 0 110-4 2 2 0 010 4zm2 3V9h6a4 4 0 014 3"/></svg>
-                        </div>
-                        </div>
-                        <p id="kpiPeriodoHospAno" class="text-[11px] text-pink-300 font-black mt-1">—</p>
-                        <h3 id="kpiHospAno" class="text-2xl font-black text-white mt-2">—</h3>
-                    </div>
-                    <div id="kpiDetalleHospAno" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Año activo</div>
                 </div>
             </div>
 
@@ -2378,35 +2454,35 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Total histórico ingresado</div>
                     <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2m7-10a4 4 0 100-8 4 4 0 000 8zm8 1a3 3 0 100-6m5 15v-2a4 4 0 00-3-3.87"/></svg></div>
-                    <div id="ciKpiHistoricoPeriodo" class="mt-7 text-[10px] font-black text-blue-400">—</div>
+                    <div id="ciKpiHistoricoPeriodo" class="mt-0 text-[10px] font-black text-blue-400">—</div>
                     <div id="ciKpiHistorico" class="mt-2 text-2xl font-black text-slate-100">—</div>
                     <div class="mt-4 text-[9px] text-slate-500">Todos los años</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Casos según filtros</div>
                     <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18l-7 8v6l-4 2v-8L3 4z"/></svg></div>
-                    <div id="ciKpiFiltrosPeriodo" class="mt-7 text-[10px] font-black text-teal-400">—</div>
+                    <div id="ciKpiFiltrosPeriodo" class="mt-0 text-[10px] font-black text-teal-400">—</div>
                     <div id="ciKpiFiltros" class="mt-2 text-2xl font-black text-slate-100">—</div>
                     <div class="mt-4 text-[9px] text-slate-500">Selección activa</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Casos registrados</div>
                     <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 2v3m8-3v3M4 9h16M5 4h14a1 1 0 011 1v15H4V5h1zm3 9h2m4 0h2m-8 4h2m4 0h2"/></svg></div>
-                    <div id="ciKpiActivoAnio" class="mt-7 text-[10px] font-black text-red-400">—</div>
+                    <div id="ciKpiActivoAnio" class="mt-0 text-[10px] font-black text-red-400">—</div>
                     <div id="ciKpiActivo" class="mt-2 text-2xl font-black text-slate-100">—</div>
                     <div class="mt-4 text-[9px] text-slate-500">Año activo</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Grupo etario</div>
                     <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path stroke-linecap="round" d="M3 20v-3a5 5 0 0110 0v3m1-1v-2a4 4 0 018 0v2"/></svg></div>
-                    <div id="ciKpiGrupoAnio" class="mt-7 text-[10px] font-black text-yellow-400">—</div>
+                    <div id="ciKpiGrupoAnio" class="mt-0 text-[10px] font-black text-yellow-400">—</div>
                     <div id="ciKpiGrupo" class="mt-2 text-xl font-black text-orange-400">—</div>
                     <div class="mt-4 text-[9px] text-slate-500">Mayor concentración</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Hospitalizados</div>
                     <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5v15m0-5h18v5m-18-8h18v3M7 9a2 2 0 110-4 2 2 0 010 4zm2 3V9h6a4 4 0 014 3"/></svg></div>
-                    <div id="ciKpiHospitalAnio" class="mt-7 text-[10px] font-black text-pink-400">—</div>
+                    <div id="ciKpiHospitalAnio" class="mt-0 text-[10px] font-black text-pink-400">—</div>
                     <div id="ciKpiHospital" class="mt-2 text-2xl font-black text-slate-100">—</div>
                     <div id="ciKpiHospitalDetalle" class="mt-4 text-[9px] text-slate-500">Fecha de hospitalización</div>
                 </article>
@@ -2591,13 +2667,13 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[166px]">
                     <div>
                         <div class="flex items-start justify-between gap-3">
-                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider">TOTAL HISTÓRICO INGRESADOS</p>
+                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap">TOTAL HISTÓRICO INGRESADO</p>
                             <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
                                 <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 0 0-4-4h-1M9 20H2v-2a4 4 0 0 1 4-4h3m6-4a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
                             </div>
                         </div>
-                        <p id="kpiHospPeriodoHistorico" class="text-[11px] leading-4 text-indigo-300 font-black mt-1">—</p>
-                        <h3 id="kpiHospHistoricoIngresados" class="text-2xl font-black text-white mt-2">0</h3>
+                        <p id="kpiHospPeriodoHistorico" class="text-[11px] leading-4 text-indigo-300 font-black mt-0">—</p>
+                        <h3 id="kpiHospHistoricoIngresados" class="text-2xl font-black text-white mt-1">0</h3>
                     </div>
                     <div class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Todos los años</div>
                 </div>
@@ -2610,8 +2686,8 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                                 <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18l-7 8v6l-4 2v-8L3 4z"/></svg>
                             </div>
                         </div>
-                        <p id="kpiHospAniosFiltros" class="text-[11px] leading-4 text-emerald-300 font-black mt-1">—</p>
-                        <h3 id="kpiHospCasosFiltros" class="text-2xl font-black text-white mt-2">0</h3>
+                        <p id="kpiHospAniosFiltros" class="text-[11px] leading-4 text-emerald-300 font-black mt-0">—</p>
+                        <h3 id="kpiHospCasosFiltros" class="text-2xl font-black text-white mt-1">0</h3>
                     </div>
                     <div class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Años seleccionados</div>
                 </div>
@@ -2624,8 +2700,8 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                                 <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M8 2v3m8-3v3M4 9h16M5 4h14a1 1 0 0 1 1 1v15H4V5a1 1 0 0 1 1-1Z"/></svg>
                             </div>
                         </div>
-                        <p id="kpiHospAnioActivoCasos" class="text-[11px] leading-4 text-rose-300 font-black mt-1">—</p>
-                        <h3 id="kpiHospCasosAnioActivo" class="text-2xl font-black text-white mt-2">0</h3>
+                        <p id="kpiHospAnioActivoCasos" class="text-[11px] leading-4 text-rose-300 font-black mt-0">—</p>
+                        <h3 id="kpiHospCasosAnioActivo" class="text-2xl font-black text-white mt-1">0</h3>
                     </div>
                     <div class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Mayor admisión hospitalaria del año activo</div>
                 </div>
@@ -2633,27 +2709,27 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[166px]">
                     <div>
                         <div class="flex items-start justify-between gap-3">
-                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap">GRUPO ETARIO</p>
+                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap">HOSPITALIZADOS REGISTRADOS S.E.</p>
                             <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
                                 <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 20v-3a5 5 0 0 1 10 0v3m1-1v-2a4 4 0 0 1 8 0v2"/></svg>
                             </div>
                         </div>
-                        <p id="kpiHospGrupoAnios" class="text-[11px] leading-4 text-amber-300 font-black mt-1">—</p>
-                        <h3 id="kpiHospGrupoPrevalente" class="text-2xl leading-8 font-black text-white mt-2 whitespace-nowrap">—</h3>
+                        <p id="kpiHospPeriodoSe" class="text-[11px] leading-4 text-rose-300 font-black mt-0">—</p>
+                        <h3 id="kpiHospCasosSe" class="text-2xl leading-8 font-black text-white mt-1 whitespace-nowrap">0</h3>
                     </div>
-                    <div id="kpiHospGrupoDetalle" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Mayor concentración</div>
+                    <div id="kpiHospSeDetalle" class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">S.E. —</div>
                 </div>
 
                 <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col justify-between min-h-[166px]">
                     <div>
                         <div class="flex items-start justify-between gap-3">
-                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider">PICO DE ADMISIÓN (S.E.)</p>
+                            <p class="text-[10px] leading-4 text-slate-400 font-bold uppercase tracking-wider">GRUPO ETARIO</p>
                             <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center shrink-0">
                                 <svg class="w-5 h-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5v15m0-5h18v5m-18-8h18v3M7 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm2 3V9h6a4 4 0 0 1 4 3"/></svg>
                             </div>
                         </div>
-                        <p id="kpiHospPicoAnio" class="text-[11px] leading-4 text-pink-300 font-black mt-1">—</p>
-                        <h3 id="kpiHospPicoActivo" class="text-lg font-black text-white mt-2">—</h3>
+                        <p id="kpiHospGrupoAnios" class="text-[11px] leading-4 text-amber-300 font-black mt-0">—</p>
+                        <h3 id="kpiHospGrupoPrevalente" class="text-2xl leading-8 font-black text-white mt-1 whitespace-nowrap">—</h3>
                     </div>
                     <div class="mt-4 text-[10px] text-slate-500 leading-relaxed font-bold">Año activo</div>
                 </div>
@@ -2798,28 +2874,28 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Total histórico ingresados</div>
                     <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m3-3h-6"/></svg></span>
-                    <div id="soatKpiHistoricoPeriodo" class="mt-8 text-xs font-black text-indigo-400">—</div>
+                    <div id="soatKpiHistoricoPeriodo" class="mt-0 text-xs font-black text-indigo-400">—</div>
                     <div id="soatKpiHistorico" class="mt-2 text-3xl font-black text-slate-100">0</div>
                     <div class="absolute bottom-4 left-4 text-xs text-slate-500">Todos los años</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Casos según filtros</div>
                     <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span>
-                    <div id="soatKpiTotalAnios" class="mt-8 text-xs font-black text-emerald-400">—</div>
+                    <div id="soatKpiTotalAnios" class="mt-0 text-xs font-black text-emerald-400">—</div>
                     <div id="soatKpiTotal" class="mt-2 text-3xl font-black text-slate-100">0</div>
                     <div class="absolute bottom-4 left-4 text-xs text-slate-500">Años seleccionados</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Casos registrados</div>
                     <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
-                    <div id="soatKpiRegistradosAnio" class="mt-8 text-xs font-black text-rose-400">—</div>
+                    <div id="soatKpiRegistradosAnio" class="mt-0 text-xs font-black text-rose-400">—</div>
                     <div id="soatKpiRegistrados" class="mt-2 text-3xl font-black text-slate-100">0</div>
                     <div id="soatKpiRegistradosDetalle" class="absolute bottom-4 left-4 text-xs text-slate-500">Mes · Año activo</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Grupo etario</div>
                     <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-                    <div id="soatKpiEdadAnio" class="mt-8 text-xs font-black text-amber-400">—</div>
+                    <div id="soatKpiEdadAnio" class="mt-0 text-xs font-black text-amber-400">—</div>
                     <div id="soatKpiEdad" class="mt-2 text-2xl font-black text-orange-400">—</div>
                     <div id="soatKpiEdadDetalle" class="absolute bottom-4 left-4 text-xs text-slate-500">0 casos · Mayor concentración</div>
                 </article>
@@ -7392,14 +7468,14 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                     : '—';
             }
             const kpiHistoricoGeneral = document.getElementById('kpiHistoricoGeneral');
-            if (kpiHistoricoGeneral) kpiHistoricoGeneral.textContent = totalHistorico.toLocaleString();
+            if (kpiHistoricoGeneral) kpiHistoricoGeneral.textContent = totalHistorico.toLocaleString('es-ES');
             const kpiDetalleHistorico = document.getElementById('kpiDetalleHistorico');
             if (kpiDetalleHistorico) kpiDetalleHistorico.textContent = dataset.length ? 'Todos los años' : 'Sin datos cargados';
 
             const periodoFiltros = document.getElementById('kpiPeriodoFiltros');
             if (periodoFiltros) periodoFiltros.textContent = aniosSeleccionados.length ? aniosSeleccionados.join(' · ') : '—';
             const kpiCasosFiltrados = document.getElementById('kpiCasosPorMes');
-            if (kpiCasosFiltrados) kpiCasosFiltrados.textContent = totalFiltrado.toLocaleString();
+            if (kpiCasosFiltrados) kpiCasosFiltrados.textContent = totalFiltrado.toLocaleString('es-ES');
             const kpiLabelFiltrados = document.getElementById('kpiLabelCasosMes');
             if (kpiLabelFiltrados) kpiLabelFiltrados.textContent = 'CASOS SEGÚN FILTROS';
             const kpiDetalleFiltrados = document.getElementById('kpiDetalleCasosMes');
@@ -7408,11 +7484,27 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const periodoCasesAno = document.getElementById('kpiPeriodoCasesAno');
             if (periodoCasesAno) periodoCasesAno.textContent = anioPrincipal ?? '—';
             const kpiCasesAno = document.getElementById('kpiCasesAno');
-            if (kpiCasesAno) kpiCasesAno.textContent = totalAnioPrincipal.toLocaleString();
+            if (kpiCasesAno) kpiCasesAno.textContent = totalAnioPrincipal.toLocaleString('es-ES');
             const kpiLabelCasesAno = document.getElementById('kpiLabelCasesAno');
             if (kpiLabelCasesAno) kpiLabelCasesAno.textContent = 'CASOS REGISTRADOS';
             const kpiDetalleAno = document.getElementById('kpiDetalleAño');
             if (kpiDetalleAno) kpiDetalleAno.textContent = anioPrincipal === null ? 'Sin año activo' : 'Año activo';
+
+            // Resultado de la Semana Epidemiológica activa (o la última disponible).
+            const semanasDisponiblesKpi = registrosAnioPrincipal
+                .map(item => Number(item.SEMANA))
+                .filter(Number.isFinite);
+            const semanaFiltroKpi = estado.semana !== 'Todas' && Number.isFinite(Number(estado.semana))
+                ? Number(estado.semana)
+                : (semanasDisponiblesKpi.length ? Math.max(...semanasDisponiblesKpi) : null);
+            const registrosSemanaKpi = semanaFiltroKpi === null ? [] : registrosAnioPrincipal.filter(item => Number(item.SEMANA) === semanaFiltroKpi);
+            const totalSemanaKpi = sumarCasosVigilancia(registrosSemanaKpi);
+            const periodoCasesSe = document.getElementById('kpiPeriodoCasesSe');
+            if (periodoCasesSe) periodoCasesSe.textContent = anioPrincipal ?? '—';
+            const kpiCasesSe = document.getElementById('kpiCasesSe');
+            if (kpiCasesSe) kpiCasesSe.textContent = totalSemanaKpi.toLocaleString('es-ES');
+            const detalleCasesSe = document.getElementById('kpiDetalleCasesSe');
+            if (detalleCasesSe) detalleCasesSe.textContent = semanaFiltroKpi === null ? 'S.E. —' : `S.E. - ${semanaFiltroKpi}`;
 
             // Grupo etario del año activo, respetando Mes y S.E. activos.
             const distribucionEdadKpi = sumarDistribucionEdadVea(registrosAnioPrincipal, selectedEvent);
@@ -9292,6 +9384,13 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             // F4.33 — TODOS estos KPIs se alimentan exclusivamente de TO_HOS/HOSP_EDADES_VEA.
             // Ya no se reutiliza CASOS de EDAs, IRAs, SOBA o Febriles para las tarjetas de Hospitalizados.
             const totalHistoricoHospitalizados = sumarHospitalizadosVea(datasetEvento);
+            const semanasHospDisponiblesKpi = regsAnioActivoHosp.map(item => Number(item.SEMANA)).filter(Number.isFinite);
+            const semanaHospKpi = estado.semana !== 'Todas' && Number.isFinite(Number(estado.semana))
+                ? Number(estado.semana)
+                : (semanasHospDisponiblesKpi.length ? Math.max(...semanasHospDisponiblesKpi) : null);
+            const totalHospSemanaKpi = semanaHospKpi === null
+                ? 0
+                : sumarHospitalizadosVea(regsAnioActivoHosp.filter(item => Number(item.SEMANA) === semanaHospKpi));
 
             const setHospKpi = (id, valor) => {
                 const el = document.getElementById(id);
@@ -9303,6 +9402,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             setHospKpi('kpiHospCasosFiltros', totalHospitalizados.toLocaleString('es-PE'));
             setHospKpi('kpiHospAnioActivoCasos', anioActivoHosp ?? '—');
             setHospKpi('kpiHospCasosAnioActivo', hospitalizadosAnioActivo.toLocaleString('es-PE'));
+            setHospKpi('kpiHospPeriodoSe', anioActivoHosp ?? '—');
+            setHospKpi('kpiHospCasosSe', totalHospSemanaKpi.toLocaleString('es-ES'));
+            setHospKpi('kpiHospSeDetalle', semanaHospKpi === null ? 'S.E. —' : `S.E. - ${semanaHospKpi}`);
             setHospKpi('kpiHospGrupoAnios', anioActivoHosp ?? '—');
             setHospKpi('kpiHospPicoAnio', anioActivoHosp ?? '—');
             const etiquetaAniosHosp = (aniosSeleccionados || []).slice().sort((a,b)=>a-b).join(' · ') || '—';
@@ -10667,6 +10769,20 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             return `${diaSemana} ${dia}.${mes}.${anio} - ${hora}:${minutos} ${periodo}`;
         }
 
+        function formatearFechaHoraPieGraficoVea(valor) {
+            if (!valor) return 'Sin fecha de actualización registrada';
+            const fecha = new Date(valor);
+            if (Number.isNaN(fecha.getTime())) return 'Sin fecha de actualización registrada';
+            const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+            const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            let horas = fecha.getHours();
+            const minutos = String(fecha.getMinutes()).padStart(2, '0');
+            const periodo = horas >= 12 ? 'p. m.' : 'a. m.';
+            horas = horas % 12 || 12;
+            return `${dias[fecha.getDay()]} ${dia}.${meses[fecha.getMonth()]}.${fecha.getFullYear()} - ${String(horas).padStart(2, '0')}:${minutos} ${periodo}`;
+        }
+
         function veaFuenteParaGraficoF468(canvas) {
             if (canvas.closest('#contentCasos')) return 'NOTIWEB — CDC Perú / MINSA';
             if (canvas.closest('#contentSoat')) return 'NOTIWEB SOAT— CDC Perú / MINSA';
@@ -10701,7 +10817,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         }
 
         function veaActualizarPiesInformativosGraficosF468() {
-            const fecha = formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos);
+            const fecha = formatearFechaHoraPieGraficoVea(veaUltimaActualizacionDatos);
             const estadoCarga = document.getElementById('veaCargaFechaMaster');
             if (estadoCarga) estadoCarga.textContent = veaUltimaActualizacionDatos ? `Última sincronización: ${fecha}` : 'Verificando última sincronización…';
             document.querySelectorAll('.vea-chart-meta').forEach(pie => {

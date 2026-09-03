@@ -1461,6 +1461,20 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
 @media(max-width:720px){.vea-alerta-modal-grid{grid-template-columns:1fr}.vea-alerta-modal-fila-principal,.vea-alerta-modal-fila-laboratorio{grid-column:auto}}
 @media(max-width:480px){.vea-alertas-tabs{padding:8px;gap:4px}.vea-alertas-tab{font-size:9px;padding:6px 4px}.vea-alertas-panel-detalle{padding-inline:12px}}
 </style>
+    <style>
+        /* VEA003 — borde institucional uniforme en tarjetas de gráficos VEA y Hospitalizados */
+        #contentDashboard .vea-card-borde-azul,
+        #contentHospitalizados .vea-card-borde-azul {
+            border-top: 3px solid #2f6bff !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 -1px 0 rgba(47,107,255,.18), 0 8px 24px rgba(2,8,23,.18);
+        }
+        html[data-vea-theme="light"] #contentDashboard .vea-card-borde-azul,
+        html[data-vea-theme="light"] #contentHospitalizados .vea-card-borde-azul {
+            border-top-color: #2563eb !important;
+            box-shadow: 0 -1px 0 rgba(37,99,235,.14), 0 8px 22px rgba(15,23,42,.08);
+        }
+    </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative">
 
@@ -10680,8 +10694,11 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
 
         function veaInstalarPiesInformativosGraficosF468() {
             document.querySelectorAll('canvas[id]').forEach(canvas => {
-                if (canvas.dataset.veaPieF468 === '1') return;
                 const tarjeta = veaTarjetaParaGraficoF468(canvas);
+                if (tarjeta && canvas.closest('#contentDashboard, #contentHospitalizados')) {
+                    tarjeta.classList.add('vea-card-borde-azul');
+                }
+                if (canvas.dataset.veaPieF468 === '1') return;
                 if (!tarjeta) return;
                 canvas.dataset.veaPieF468 = '1';
                 veaRetirarMetaAnteriorF468(tarjeta);

@@ -3,6 +3,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -2761,13 +2762,35 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 </div>
             </section>
 
-            <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-3" aria-label="Indicadores SOAT">
-                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><div id="soatKpiTotalTitulo" class="text-[10px] font-black uppercase tracking-wider text-slate-500">Total casos —</div><div id="soatKpiTotal" class="text-2xl font-black text-cyan-400 mt-2">0</div><div class="text-[10px] text-slate-500 mt-1">Según filtros activos</div></article>
-                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><div id="soatKpiMesTitulo" class="text-[10px] font-black uppercase tracking-wider text-slate-500">Casos del último mes —</div><div id="soatKpiMes" class="text-2xl font-black text-slate-100 mt-2">0</div><div id="soatKpiMesDetalle" class="text-[10px] text-slate-500 mt-1">—</div></article>
-                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><div id="soatKpiSemanaTitulo" class="text-[10px] font-black uppercase tracking-wider text-slate-500">Casos última S.E. —</div><div id="soatKpiSemana" class="text-2xl font-black text-slate-100 mt-2">0</div><div id="soatKpiSemanaDetalle" class="text-[10px] text-slate-500 mt-1">S.E. derivada de FEC_ACCD</div></article>
-                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><div id="soatKpiSexoTitulo" class="text-[10px] font-black uppercase tracking-wider text-slate-500">Sexo con más casos —</div><div id="soatKpiSexo" class="text-xl font-black text-slate-100 mt-2">—</div><div id="soatKpiSexoDetalle" class="text-[10px] text-slate-500 mt-1">—</div></article>
-                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><div id="soatKpiEdadTitulo" class="text-[10px] font-black uppercase tracking-wider text-slate-500">Grupo de edad principal —</div><div id="soatKpiEdad" class="text-xl font-black text-slate-100 mt-2">—</div><div id="soatKpiEdadDetalle" class="text-[10px] text-slate-500 mt-1">—</div></article>
-                <article class="bg-slate-950 border border-slate-800 rounded-2xl p-4"><div id="soatKpiHoraTitulo" class="text-[10px] font-black uppercase tracking-wider text-slate-500">Horario principal —</div><div id="soatKpiHora" class="text-xl font-black text-slate-100 mt-2">—</div><div id="soatKpiHoraDetalle" class="text-[10px] text-slate-500 mt-1">—</div></article>
+            <section id="soatKpisCuatro" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Cuatro indicadores principales SOAT">
+                <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
+                    <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Total histórico ingresados</div>
+                    <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m3-3h-6"/></svg></span>
+                    <div id="soatKpiHistoricoPeriodo" class="mt-8 text-xs font-black text-indigo-400">—</div>
+                    <div id="soatKpiHistorico" class="mt-2 text-3xl font-black text-slate-100">0</div>
+                    <div class="absolute bottom-4 left-4 text-xs text-slate-500">Todos los años</div>
+                </article>
+                <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
+                    <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Casos según filtros</div>
+                    <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></span>
+                    <div id="soatKpiTotalAnios" class="mt-8 text-xs font-black text-emerald-400">—</div>
+                    <div id="soatKpiTotal" class="mt-2 text-3xl font-black text-slate-100">0</div>
+                    <div class="absolute bottom-4 left-4 text-xs text-slate-500">Años seleccionados</div>
+                </article>
+                <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
+                    <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Casos registrados</div>
+                    <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+                    <div id="soatKpiRegistradosAnio" class="mt-8 text-xs font-black text-rose-400">—</div>
+                    <div id="soatKpiRegistrados" class="mt-2 text-3xl font-black text-slate-100">0</div>
+                    <div id="soatKpiRegistradosDetalle" class="absolute bottom-4 left-4 text-xs text-slate-500">Mes · Año activo</div>
+                </article>
+                <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
+                    <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Grupo etario</div>
+                    <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                    <div id="soatKpiEdadAnio" class="mt-8 text-xs font-black text-amber-400">—</div>
+                    <div id="soatKpiEdad" class="mt-2 text-2xl font-black text-orange-400">—</div>
+                    <div id="soatKpiEdadDetalle" class="absolute bottom-4 left-4 text-xs text-slate-500">0 casos · Mayor concentración</div>
+                </article>
             </section>
 
             <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -7130,7 +7153,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                         try {
                             ciV21InicializarSiCorresponde();
                             if (typeof actualizarCasosIndividualesV21 === 'function') {
-                                if (veaDispositivoLimitadoF321()) {
+                                // F4.99: también en PC el módulo se construye por etapas.
+                                // Un repositorio grande no debe retener el clic mientras crea cinco gráficos.
+                                {
                                     const firmaF323 = ciV21FirmaRenderF318();
                                     if (ciV21UltimaFirmaRenderF318 !== firmaF323) {
                                         ciV21UltimaFirmaRenderF318 = firmaF323;
@@ -7147,8 +7172,6 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                                             () => ciV21RenderG5(filtradosF323)
                                         ]);
                                     }
-                                } else {
-                                    actualizarCasosIndividualesV21();
                                 }
                             }
                         } catch (e) {
@@ -7157,9 +7180,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                     };
                     renderCasos();
                 } else if (tab === 'soat') {
-                    if (veaDispositivoLimitadoF321() &&
-                        (window.__veaSoatPreparadoF326 ||
-                         (soatEstadoV1.datasetRef === datosModulosIndependientes.soat && soatEstadoV1.filas.length))) {
+                    if (window.__veaSoatPreparadoF326 ||
+                        (soatEstadoV1.datasetRef === datosModulosIndependientes.soat && soatEstadoV1.filas.length)) {
                         window.__veaSoatPreparadoF326 = false;
                         soatCerrarAniosV1();
                         const firmaSoatF402 = soatFirmaVisualV1();
@@ -7169,11 +7191,6 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                             soatRenderChartsV1(filtradosSoatF402);
                             soatEstadoV1.firmaVisual = firmaSoatF402;
                         }
-                    } else if (window.__veaSoatPreparadoF326 ||
-                        (soatEstadoV1.datasetRef === datosModulosIndependientes.soat && soatEstadoV1.filas.length)) {
-                        window.__veaSoatPreparadoF326 = false;
-                        soatCerrarAniosV1();
-                        soatActualizarVisualV1(false);
                     } else {
                         actualizarSoatV1();
                     }
@@ -10180,24 +10197,26 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             return null;
         }
 
-        function soatAnioV1(row, fecha) {
-            if (fecha) return fecha.getFullYear();
+        function soatAnioV1(row, fecha, obtener = cabecera => soatValorV1(row,cabecera)) {
+            // El periodo consolidado de SOAT lo define el campo oficial de año.
+            // FEC_ACCD queda únicamente como respaldo para filas históricas sin año.
             for (const campo of ['ANO_ACCD','ANO','AÑO']) {
-                const n = soatNumeroV1(soatValorV1(row,campo));
+                const n = soatNumeroV1(obtener(campo));
                 if (Number.isInteger(n) && n >= 1900 && n <= 2100) return n;
             }
-            return null;
+            return fecha ? fecha.getFullYear() : null;
         }
 
-        function soatMesV1(row, fecha) {
-            if (fecha) return fecha.getMonth()+1;
-            const n = soatNumeroV1(soatValorV1(row,'MES'));
+        function soatMesV1(row, fecha, obtener = cabecera => soatValorV1(row,cabecera)) {
+            const n = soatNumeroV1(obtener('MES'));
             if (Number.isInteger(n) && n >= 1 && n <= 12) return n;
-            const s = soatNormalizarV1(soatValorV1(row,'MES_ACCD') || soatValorV1(row,'MES'));
+            const s = soatNormalizarV1(obtener('MES_ACCD') || obtener('MES'));
             const nombres = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SETIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
             const alternos = {SEPTIEMBRE:9};
             const i = nombres.findIndex(x => s.startsWith(x.slice(0,3)));
-            return i >= 0 ? i+1 : (alternos[s] || null);
+            if (i >= 0) return i+1;
+            if (alternos[s]) return alternos[s];
+            return fecha ? fecha.getMonth()+1 : null;
         }
 
         function soatSemanaV1(fecha) {
@@ -10219,9 +10238,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             return `${d.getUTCFullYear()}|${semana}`;
         }
 
-        function soatGrupoEdadV1(row) {
-            const edad = soatNumeroV1(soatValorV1(row,'EDAD'));
-            const tipo = soatNormalizarV1(soatValorV1(row,'TIPO_EDAD'));
+        function soatGrupoEdadV1(row, obtener = cabecera => soatValorV1(row,cabecera)) {
+            const edad = soatNumeroV1(obtener('EDAD'));
+            const tipo = soatNormalizarV1(obtener('TIPO_EDAD'));
             if (edad === null) return 'Sin dato';
             if (tipo === 'D' || tipo === 'M' || edad < 1) return '<1 año';
             if (edad <= 5) return '1–5 años';
@@ -10254,23 +10273,30 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const inicio = performance.now();
             soatEstadoV1.datasetRef = dataset;
             const clavesFirma = dataset.length ? Object.keys(dataset[0]).filter(k=>k!=='__filaExcel').sort() : [];
+            const clavesOriginales = new Map();
+            clavesFirma.forEach(clave => {
+                const normalizada = normalizarCabeceraVea(clave);
+                if (!clavesOriginales.has(normalizada)) clavesOriginales.set(normalizada, clave);
+            });
             const firmasVistas = new Set();
             soatEstadoV1.duplicadosExactos = 0;
             soatEstadoV1.filas = dataset.reduce((salida,row,indice) => {
                 const firma = JSON.stringify(clavesFirma.map(k=>row[k] instanceof Date ? row[k].toISOString() : row[k]));
                 if (firmasVistas.has(firma)) { soatEstadoV1.duplicadosExactos++; return salida; }
                 firmasVistas.add(firma);
-                const fechaOriginal = soatValorV1(row,'FEC_ACCD');
+                // F4.95: el esquema de 93 columnas se indexa una sola vez por dataset.
+                // Cada fila accede directamente a la propiedad original correspondiente.
+                const obtener = cabecera => {
+                    const original = clavesOriginales.get(normalizarCabeceraVea(cabecera));
+                    return original === undefined ? null : row[original];
+                };
+                const fechaOriginal = obtener('FEC_ACCD');
                 const fecha = soatFechaV1(fechaOriginal);
-                const anio = soatAnioV1(row,fecha);
-                const mes = soatMesV1(row,fecha);
-                const hora = soatTextoV1(soatValorV1(row,'HOR_ACCID')) || '—';
-                const sexo = soatTextoV1(soatValorV1(row,'SEXO')) || 'Sin dato';
-                const momento = soatValorPrimeroV92(row,['MOMENTO','MOMEN_ACCD','MOM_ACCD','MOMENTO_ACCD','TIPO_MOMENTO']);
-                const distrito = soatValorPrimeroV92(row,['DISTRITO','DISTRI','DIST_ACCD','DISTRITO_ACCD','DISTRITO_ACCIDENTE']);
-                const diagnostico = soatValorPrimeroV92(row,['DIAGNOSTICO','DIAGNÓSTICO','DX','DIAG_CIE10','CIE10','DIAGNOSTICO1']);
-                const categoriaDx = soatValorPrimeroV92(row,['CATEGORIA_DX','CATEGORÍA DX','CAT_DX','CATEGORIA','CATEGORIA_DIAGNOSTICA']);
-                salida.push({ row, indice, anio, mes, fecha, semana:soatSemanaV1(fecha), semanaClave:soatClaveSemanaV1(fecha), hora, rangoHora:soatRangoHoraV1(hora), grupoEdad:soatGrupoEdadV1(row), sexo, momento, distrito, diagnostico, categoriaDx });
+                const anio = soatAnioV1(row,fecha,obtener);
+                const mes = soatMesV1(row,fecha,obtener);
+                const hora = soatTextoV1(obtener('HOR_ACCID')) || '—';
+                const sexo = soatTextoV1(obtener('SEXO')) || 'Sin dato';
+                salida.push({ row, indice, anio, mes, fecha, semana:soatSemanaV1(fecha), semanaClave:soatClaveSemanaV1(fecha), hora, rangoHora:soatRangoHoraV1(hora), grupoEdad:soatGrupoEdadV1(row,obtener), sexo });
                 return salida;
             },[]).sort((a,b) => {
                 const ta = a.fecha ? a.fecha.getTime() : -Infinity, tb = b.fecha ? b.fecha.getTime() : -Infinity;
@@ -10286,6 +10312,46 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             soatAuditoriaRendimientoV1.preparaciones++;
             soatAuditoriaRendimientoV1.ultimoPreparadoMs = performance.now()-inicio;
             return soatEstadoV1.filas;
+        }
+
+        // F4.95 — La primera apertura de SOAT procesa por lotes y cede el hilo.
+        // Así, aunque existan 11 mil o más registros, otro botón del menú puede
+        // responder mientras se prepara el modelo.
+        let soatPreparacionPromesaV95 = null;
+        async function soatPrepararFilasCooperativoV95() {
+            const dataset = Array.isArray(datosModulosIndependientes.soat) ? datosModulosIndependientes.soat : [];
+            if (soatEstadoV1.datasetRef === dataset) return soatEstadoV1.filas;
+            if (soatPreparacionPromesaV95) return soatPreparacionPromesaV95;
+            soatPreparacionPromesaV95 = (async () => {
+                const inicio=performance.now();
+                const clavesFirma=dataset.length?Object.keys(dataset[0]).filter(k=>k!=='__filaExcel').sort():[];
+                const clavesOriginales=new Map();
+                clavesFirma.forEach(clave=>{const n=normalizarCabeceraVea(clave);if(!clavesOriginales.has(n))clavesOriginales.set(n,clave);});
+                const firmasVistas=new Set(), salida=[];
+                soatEstadoV1.duplicadosExactos=0;
+                for(let indice=0;indice<dataset.length;indice++) {
+                    const row=dataset[indice];
+                    const firma=JSON.stringify(clavesFirma.map(k=>row[k] instanceof Date?row[k].toISOString():row[k]));
+                    if(firmasVistas.has(firma)){soatEstadoV1.duplicadosExactos++;continue;}
+                    firmasVistas.add(firma);
+                    const obtener=cabecera=>{const original=clavesOriginales.get(normalizarCabeceraVea(cabecera));return original===undefined?null:row[original];};
+                    const fecha=soatFechaV1(obtener('FEC_ACCD'));
+                    const anio=soatAnioV1(row,fecha,obtener), mes=soatMesV1(row,fecha,obtener);
+                    const hora=soatTextoV1(obtener('HOR_ACCID'))||'—', sexo=soatTextoV1(obtener('SEXO'))||'Sin dato';
+                    salida.push({row,indice,anio,mes,fecha,semana:soatSemanaV1(fecha),semanaClave:soatClaveSemanaV1(fecha),hora,rangoHora:soatRangoHoraV1(hora),grupoEdad:soatGrupoEdadV1(row,obtener),sexo});
+                    if(indice&&indice%100===0) await new Promise(resolve=>setTimeout(resolve,0));
+                }
+                salida.sort((a,b)=>{const ta=a.fecha?a.fecha.getTime():-Infinity,tb=b.fecha?b.fecha.getTime():-Infinity;if(tb!==ta)return tb-ta;if((b.anio||0)!==(a.anio||0))return(b.anio||0)-(a.anio||0);return b.indice-a.indice;});
+                // Si el repositorio cambió durante el proceso, no publicar un modelo viejo.
+                if(dataset!==datosModulosIndependientes.soat)return [];
+                soatEstadoV1.datasetRef=dataset;soatEstadoV1.filas=salida;
+                soatEstadoV1.aniosDisponibles=[...new Set(salida.map(f=>f.anio).filter(Number.isFinite))].sort((a,b)=>a-b);
+                soatEstadoV1.semanasDisponibles=[...new Set(salida.map(f=>f.semana).filter(Number.isInteger))].sort((a,b)=>a-b);
+                soatEstadoV1.seleccionAnios=soatEstadoV1.aniosDisponibles.slice(-3);soatEstadoV1.mes='Todos';soatEstadoV1.semana='Todas';soatEstadoV1.firmaVisual=null;
+                soatAuditoriaRendimientoV1.preparaciones++;soatAuditoriaRendimientoV1.ultimoPreparadoMs=performance.now()-inicio;
+                return salida;
+            })().finally(()=>{soatPreparacionPromesaV95=null;});
+            return soatPreparacionPromesaV95;
         }
 
         function soatFiltrarV1() {
@@ -10314,18 +10380,19 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         function soatRenderKpisV1(filtrados) {
             const anioActivo = soatEstadoV1.seleccionAnios.length ? Math.max(...soatEstadoV1.seleccionAnios) : Math.max(...soatEstadoV1.filas.map(f=>f.anio).filter(Number.isFinite));
             const filasAnio = filtrados.filter(f=>f.anio===anioActivo);
-            const sufijo=Number.isFinite(anioActivo)?`— ${anioActivo}`:'—';
-            ['Total','Mes','Semana','Sexo','Edad','Hora'].forEach(k=>{const e=document.getElementById(`soatKpi${k}Titulo`);if(e)e.textContent=(k==='Total'?'Total casos':k==='Mes'?'Casos del último mes':k==='Semana'?'Casos última S.E.':k==='Sexo'?'Sexo con más casos':k==='Edad'?'Grupo de edad principal':'Horario principal')+` ${sufijo}`;});
-            const total=document.getElementById('soatKpiTotal'); if(total) total.textContent=filasAnio.length.toLocaleString();
-            const ultimaFecha=filasAnio.map(f=>f.fecha).filter(Boolean).sort((a,b)=>b-a)[0]||null;
-            const ultimoMes=ultimaFecha?ultimaFecha.getMonth()+1:null;
-            const casosMes=ultimoMes?filasAnio.filter(f=>f.mes===ultimoMes).length:0;
-            const km=document.getElementById('soatKpiMes');if(km)km.textContent=casosMes.toLocaleString(); const kmd=document.getElementById('soatKpiMesDetalle');if(kmd)kmd.textContent=ultimoMes?SOAT_MESES_V1[ultimoMes-1]:'Sin fecha válida';
-            const ultimaSemana=ultimaFecha?soatSemanaV1(ultimaFecha):null;
-            const ultimaSemanaClave=ultimaFecha?soatClaveSemanaV1(ultimaFecha):null;
-            const casosSemana=ultimaSemanaClave?filasAnio.filter(f=>f.semanaClave===ultimaSemanaClave).length:0;
-            const ks=document.getElementById('soatKpiSemana');if(ks)ks.textContent=casosSemana.toLocaleString();const ksd=document.getElementById('soatKpiSemanaDetalle');if(ksd)ksd.textContent=ultimaSemana?`S.E. ${ultimaSemana} derivada de FEC_ACCD`:'Sin fecha válida';
-            [['Sexo','sexo',[]],['Edad','grupoEdad',SOAT_GRUPOS_EDAD_V1],['Hora','rangoHora',SOAT_RANGOS_HORA_V1]].forEach(([k,c,o])=>{const top=soatConteoV1(filasAnio,c,o)[0];const v=document.getElementById(`soatKpi${k}`),d=document.getElementById(`soatKpi${k}Detalle`);if(v)v.textContent=top?.[0]||'—';if(d)d.textContent=top?`${top[1].toLocaleString()} casos`:'Sin datos';});
+            const aniosHistoricos=soatEstadoV1.aniosDisponibles;
+            const historico=document.getElementById('soatKpiHistorico');if(historico)historico.textContent=soatEstadoV1.filas.length.toLocaleString();
+            const historicoPeriodo=document.getElementById('soatKpiHistoricoPeriodo');if(historicoPeriodo)historicoPeriodo.textContent=aniosHistoricos.length?`${aniosHistoricos[0]} – ${aniosHistoricos.at(-1)}`:'Sin datos';
+            const aniosSeleccionados=document.getElementById('soatKpiTotalAnios');if(aniosSeleccionados)aniosSeleccionados.textContent=soatEstadoV1.seleccionAnios.length?soatEstadoV1.seleccionAnios.slice().sort((a,b)=>a-b).join(' · '):'Ningún año';
+            const total=document.getElementById('soatKpiTotal');if(total)total.textContent=filtrados.length.toLocaleString();
+            const registrados=document.getElementById('soatKpiRegistrados');if(registrados)registrados.textContent=filasAnio.length.toLocaleString();
+            const registradosAnio=document.getElementById('soatKpiRegistradosAnio');if(registradosAnio)registradosAnio.textContent=Number.isFinite(anioActivo)?String(anioActivo):'Sin año activo';
+            const mesActivo=soatEstadoV1.mes==='Todos'?'Todos los meses':(SOAT_MESES_V1[Number(soatEstadoV1.mes)-1]||'Mes activo');
+            const registradosDetalle=document.getElementById('soatKpiRegistradosDetalle');if(registradosDetalle)registradosDetalle.textContent=`${mesActivo} · Año activo`;
+            const edadPrincipal=soatConteoV1(filasAnio,'grupoEdad',SOAT_GRUPOS_EDAD_V1)[0];
+            const edadAnio=document.getElementById('soatKpiEdadAnio');if(edadAnio)edadAnio.textContent=Number.isFinite(anioActivo)?String(anioActivo):'Sin año activo';
+            const ke=document.getElementById('soatKpiEdad');if(ke)ke.textContent=edadPrincipal?.[0]||'—';
+            const ked=document.getElementById('soatKpiEdadDetalle');if(ked)ked.textContent=edadPrincipal?`${edadPrincipal[1].toLocaleString()} casos · Mayor concentración`:'0 casos · Mayor concentración';
         }
 
         function soatChartV1(clave,canvasId,estadoId,tipo,data,options={}) {
@@ -10388,8 +10455,11 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             soatEstadoV1.seleccionAnios=soatEstadoV1.aniosDisponibles.slice(-3);soatEstadoV1.mes='Todos';soatEstadoV1.semana='Todas';soatLlenarControlesV1();soatCerrarAniosV1();soatActualizarVisualV1(true);
         }
 
-        function actualizarSoatV1() {
-            const anterior=soatEstadoV1.datasetRef;soatPrepararFilasV1();if(anterior!==soatEstadoV1.datasetRef)soatLlenarControlesV1();
+        async function actualizarSoatV1() {
+            const anterior=soatEstadoV1.datasetRef;
+            await soatPrepararFilasCooperativoV95();
+            if(tabActiva!=='soat')return;
+            if(anterior!==soatEstadoV1.datasetRef)soatLlenarControlesV1();
             soatCerrarAniosV1();
             const estado=document.getElementById('estadoModuloSoat');if(estado)estado.textContent=soatEstadoV1.filas.length?`${soatEstadoV1.filas.length.toLocaleString()} registros válidos · ${soatEstadoV1.duplicadosExactos.toLocaleString()} duplicados exactos excluidos · fuente: hoja SOAT`:'Sin datos cargados';
             soatActualizarVisualV1(false);
@@ -10413,6 +10483,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         // La publishable key es segura para cliente; RLS decide qué tablas puede leer cada sesión.
         const VEA_SUPABASE_URL = 'https://qtsfkoasfoaovadilwgk.supabase.co';
         const VEA_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_uzdpUnVRYRQY3lROvtNwiw_qa4iyJwj';
+        const VEA_SOAT_SNAPSHOT_VERSION = '20260902-11529';
+        const VEA_SOAT_REGLA_PERIODO_VERSION = 'periodo-oficial-v1';
+        const VEA_SOAT_SNAPSHOT_URL = '/data/soat-actualizacion-20260902.json';
         let veaSupabaseClient = null;
 
         async function veaSupabaseLeerTablaCompleta(tabla) {
@@ -10451,6 +10524,28 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             return Array.isArray(resultado.registros) ? resultado.registros : [];
         }
 
+        async function veaAplicarActualizacionSoatEmpaquetada() {
+            const respuesta = await fetch(`${VEA_SOAT_SNAPSHOT_URL}?v=${VEA_SOAT_SNAPSHOT_VERSION}`, { cache:'no-store' });
+            if (!respuesta.ok) throw new Error(`Actualización SOAT no disponible (${respuesta.status}).`);
+            const paquete = await respuesta.json();
+            if (paquete?.version !== VEA_SOAT_SNAPSHOT_VERSION || !Array.isArray(paquete?.registros) || paquete.registros.length !== 102) {
+                throw new Error('La actualización SOAT no superó el control de versión y cantidad.');
+            }
+            const registrosNuevos = veaSupabaseParsearFilas('soat', paquete.registros);
+            const destino = Array.isArray(datosModulosIndependientes.soat) ? datosModulosIndependientes.soat : [];
+            const idsExistentes = new Set(destino.map(row => String(row?.ID ?? '').trim()).filter(Boolean));
+            let agregados = 0;
+            registrosNuevos.forEach(row => {
+                const id = String(row?.ID ?? '').trim();
+                if (id && idsExistentes.has(id)) return;
+                destino.push({ ...row });
+                if (id) idsExistentes.add(id);
+                agregados++;
+            });
+            datosModulosIndependientes.soat = destino;
+            return { agregados, total:destino.length, version:paquete.version };
+        }
+
         async function esperarSupabaseVea(maxMs = 4000) {
             const inicio = Date.now();
             while (!window.supabase?.createClient && (Date.now() - inicio) < maxMs) {
@@ -10473,7 +10568,7 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 if (respuesta.error) throw respuesta.error;
                 return `${tabla}:${Number(respuesta.count) || 0}:${respuesta.data?.[0]?._row_id ?? ''}`;
             }));
-            return partes.join('|');
+            return `${partes.join('|')}|soat_snapshot:${VEA_SOAT_SNAPSHOT_VERSION}|soat_periodo:${VEA_SOAT_REGLA_PERIODO_VERSION}`;
         }
 
 
@@ -11002,6 +11097,37 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             }
         }
 
+        // F4.99 — persistencia de baja prioridad. Copiar decenas de miles de objetos a
+        // IndexedDB inmediatamente después de sincronizar retenía el hilo principal.
+        // Se espera inactividad real y cada interacción vuelve a aplazar el guardado.
+        let veaCachePendienteF499 = null;
+        let veaCacheIdleF499 = null;
+        function veaProgramarCacheEnReposoF499(totalRemoto) {
+            veaCachePendienteF499 = totalRemoto;
+            if (veaCacheIdleF499 !== null) {
+                if ('cancelIdleCallback' in window) cancelIdleCallback(veaCacheIdleF499);
+                else clearTimeout(veaCacheIdleF499);
+            }
+            const guardar = () => {
+                veaCacheIdleF499 = null;
+                const total = veaCachePendienteF499;
+                veaCachePendienteF499 = null;
+                veaCacheGuardarProcesado(total);
+            };
+            veaCacheIdleF499 = 'requestIdleCallback' in window
+                ? requestIdleCallback(guardar, { timeout: 30000 })
+                : setTimeout(guardar, 12000);
+        }
+
+        document.addEventListener('pointerdown', () => {
+            if (veaCachePendienteF499 === null || veaCacheIdleF499 === null) return;
+            if ('cancelIdleCallback' in window) cancelIdleCallback(veaCacheIdleF499);
+            else clearTimeout(veaCacheIdleF499);
+            veaCacheIdleF499 = null;
+            const total = veaCachePendienteF499;
+            setTimeout(() => veaProgramarCacheEnReposoF499(total), 0);
+        }, { passive:true });
+
         async function veaCacheRestaurarProcesado() {
             try {
                 const db = await veaCacheAbrirDB();
@@ -11080,28 +11206,29 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                                 ]);
                             }, 1800);
                         } else {
-                            // PC/laptop: conservar exactamente el flujo ya validado.
-                            requestAnimationFrame(() => {
-                                actualizarCalculosYGraficos();
-                                const secundarios = () => {
-                                    soatPrepararFilasV1();
-                                    soatLlenarControlesV1();
-                                    soatCerrarAniosV1();
-                                    renderizarModulosDinamicosVea();
-                                };
-                                if ('requestIdleCallback' in window) {
-                                    requestIdleCallback(secundarios, { timeout: 1800 });
-                                } else {
-                                    setTimeout(secundarios, 350);
-                                }
-                            });
+                            // F4.95: en PC también se respeta la navegación. El Dashboard
+                            // se construye por partes y SOAT queda bajo demanda.
+                            try { actualizarKpisVigilancia(); } catch (e) {
+                                console.warn('[VEA Cache PC F4.95] KPI', e);
+                            }
+                            setTimeout(() => {
+                                if (tabActiva !== 'dashboard') return;
+                                veaEjecutarTareasCooperativasF323('dashboard', [
+                                    () => actualizarBandaAlerta(),
+                                    () => renderTablaMinsaDinamica(obtenerRegistrosFiltradosVigilancia(selectedEvent),obtenerAnioPrincipalActivo()),
+                                    () => actualizarGraficosMensualesYTimelineContinuo(),
+                                    () => renderCanalEndemicoChart(),
+                                    () => actualizarTablaMatrizSemanas()
+                                ]);
+                            }, 450);
                         }
                     }, 0);
                 });
 
                 console.info('[VEA Cache] Restaurado', { total, antiguedadMs: Date.now() - Number(payload.ts || 0) });
                 // Preparar módulos secundarios mientras el usuario ya puede usar el Dashboard.
-                if (window.innerWidth >= 768) setTimeout(veaPrecalentarModulos, 150); // FASE 3.20: en móvil no precalentar; priorizar interacción
+                // F4.95: no precalentar módulos ocultos; cada módulo se prepara tras
+                // mostrarse y la cola se cancela al siguiente clic del usuario.
                 return payload;
             } catch (err) {
                 console.warn('[VEA Cache] No se pudo restaurar caché:', err);
@@ -11190,9 +11317,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 }
                 if (!filas.length) { cargadas.push(`${tabla}:0`); continue; }
                 try {
-                    if (veaDispositivoLimitadoF321()) await veaCederInterfazF321();
+                    await veaCederInterfazF321();
                     const registros = veaSupabaseParsearFilas(tabla, filas);
-                    if (veaDispositivoLimitadoF321()) await veaCederInterfazF321();
+                    await veaCederInterfazF321();
                     if (tipo === 'vigilancia') {
                         databaseActiva[destino] = registros;
                         logsSincronizacion[destino] = { cargada:true, registros:registros.length, cabeceraEncontrada:`Supabase · ${tabla}` };
@@ -11205,6 +11332,13 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 }
             }
 
+            try {
+                const ajusteSoat = await veaAplicarActualizacionSoatEmpaquetada();
+                cargadas.push(`soat_snapshot:${ajusteSoat.agregados}`);
+            } catch (err) {
+                errores.push(`soat_snapshot: ${String(err?.message || err || 'Error desconocido')}`);
+            }
+
             if (databaseActiva.IRAs.length) {
                 databaseActiva.SOBA = databaseActiva.IRAs
                     .filter(r => r.SOBA !== null && r.SOBA !== undefined && Number.isFinite(Number(r.SOBA)))
@@ -11215,37 +11349,29 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             reinicializarEstadosFiltrosTrasCargaVea();
             await veaCederInterfazF321();
 
-            if (!veaDispositivoLimitadoF321()) {
-                soatPrepararFilasV1();
-                soatLlenarControlesV1();
-                soatCerrarAniosV1();
-                actualizarCalculosYGraficos();
-                renderizarModulosDinamicosVea();
-                programarWarmupModulosF311();
-            } else {
-                // FASE 3.22: NO lanzar actualizarCalculosYGraficos() inmediatamente.
-                // Aunque la descarga ya terminó, ese render completo puede ocupar el
-                // hilo principal varios segundos en teléfonos. Se agenda como trabajo
-                // cancelable y solo si el usuario permanece en Dashboard.
-                if (tabActiva === 'dashboard') {
-                    if (veaTimerRenderMovilF322) clearTimeout(veaTimerRenderMovilF322);
-                    veaTimerRenderMovilF322 = setTimeout(() => {
-                        veaTimerRenderMovilF322 = null;
-                        if (tabActiva !== 'dashboard') return;
-                        requestAnimationFrame(() => {
-                            if (tabActiva === 'dashboard') {
-                                try { actualizarCalculosYGraficos(); }
-                                catch (e) { console.warn('[VEA Dashboard móvil 3.22]', e); }
-                            }
-                        });
-                    }, 1200);
-                }
+            // F4.95: después de sincronizar, no preparar módulos ocultos ni ejecutar
+            // un render global. La navegación queda disponible y el Dashboard se
+            // completa mediante tareas cancelables si el usuario permanece en él.
+            renderizarModulosDinamicosVea();
+            try { actualizarKpisVigilancia(); } catch (e) { console.warn('[VEA Sync F4.95] KPI', e); }
+            if (tabActiva === 'dashboard') {
+                if (veaTimerRenderMovilF322) clearTimeout(veaTimerRenderMovilF322);
+                veaTimerRenderMovilF322 = setTimeout(() => {
+                    veaTimerRenderMovilF322 = null;
+                    if (tabActiva !== 'dashboard') return;
+                    veaEjecutarTareasCooperativasF323('dashboard', [
+                        () => actualizarBandaAlerta(),
+                        () => renderTablaMinsaDinamica(obtenerRegistrosFiltradosVigilancia(selectedEvent),obtenerAnioPrincipalActivo()),
+                        () => actualizarGraficosMensualesYTimelineContinuo(),
+                        () => renderCanalEndemicoChart(),
+                        () => actualizarTablaMatrizSemanas()
+                    ]);
+                }, veaDispositivoLimitadoF321() ? 1200 : 450);
             }
             await veaCederInterfazF321();
 
-            // FASE 4.01: cuando el estado indique sincronizado, los modelos ya están listos.
-            // Aquí no se crean gráficos ni se modifica el diseño.
-            await veaPrepararModelosNavegacionF401();
+            // Los modelos secundarios se construyen solo al abrir su módulo.
+            window.__veaModelosListosF401 = false;
 
             window.dispatchEvent(new CustomEvent('vea:supabase-cargado', { detail:{ cargadas, protegidas, errores } }));
             const totalRemoto = databaseActiva.EDAs.length + databaseActiva.IRAs.length + databaseActiva.Febriles.length
@@ -11277,8 +11403,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             }
             if (barraSupabase) barraSupabase.style.width = '100%';
             console.info('[VEA Supabase]', { cargadas, protegidas, errores, totalRemoto });
-            // Guardar también en móvil, pero después del pintado para no bloquear la apertura.
-            setTimeout(() => veaCacheGuardarProcesado(totalRemoto), veaDispositivoLimitadoF321() ? 1800 : 0);
+            // El guardado completo es secundario: nunca compite con navegación o filtros.
+            veaProgramarCacheEnReposoF499(totalRemoto);
             return { cargadas, protegidas, errores, totalRemoto };
         }
         window.cargarRepositorioVeaDesdeSupabase = cargarRepositorioVeaDesdeSupabase;
@@ -11301,9 +11427,6 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             // Con caché validada la interfaz queda utilizable de inmediato, pero la
             // verificación remota SIEMPRE se ejecuta al abrir VEA.
             if (cacheVeaDisponible) {
-                // FASE 3.20: el warmup simultáneo bloqueaba el hilo principal en móviles.
-                if (window.innerWidth >= 768) programarWarmupModulosF311();
-
                 document.documentElement.dataset.veaInteraccion = 'prioritaria';
                 const txt = document.getElementById('textoProgresoVea');
                 if (txt) txt.textContent = 'Consultando base VEA…';

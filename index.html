@@ -4,7 +4,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5996,8 +5995,18 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
         }
 
         function ciV21Color(indice, alpha = 0.75) {
-            const hue = (indice * 73 + 355) % 360;
-            return `hsla(${hue}, 72%, 58%, ${alpha})`;
+            // VEA001 — Paleta institucional para Casos Individuales.
+            // Conserva la diferenciación multianual sin colores aleatorios.
+            const paleta = [
+                [124,185,232], // azul claro institucional
+                [56,189,248],  // celeste
+                [37,99,235],   // azul medio
+                [0,87,184],    // azul institucional
+                [30,64,175],   // azul profundo
+                [22,50,79]     // azul marino
+            ];
+            const [r,g,b] = paleta[indice % paleta.length];
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
         function ciV21EscaparHtml(valor) {
@@ -6508,7 +6517,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             const datasets = [{
                 label:String(anioActivo ?? 'Año activo'),
                 data:grupos.map(g => registrosActivos.filter(r => ciV21GrupoEdad(r) === g).length),
-                backgroundColor:'rgba(6,182,212,.82)', borderColor:'rgba(34,211,238,1)', borderWidth:1
+                backgroundColor:'rgba(0,87,184,.82)', borderColor:'rgba(37,99,235,1)', borderWidth:1
             }];
             const hay = datasets.some(ds=>ds.data.some(v=>v>0));
             ciV21MostrarEstado('ciEstadoG5', !hay, 'Sin datos etarios para los filtros activos.');
@@ -10411,7 +10420,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
         }
 
         function soatRenderChartsV1(filtrados) {
-            const colores=['#22d3ee','#a78bfa','#f59e0b','#34d399','#fb7185','#60a5fa'];
+            // VEA001 — Paleta institucional SOAT, apta para pantalla y PowerPoint.
+            const colores=['#FCA5A5','#EF5350','#C62828','#991B1B','#607D8B','#16324F'];
             const anios=soatEstadoV1.seleccionAnios.slice().sort((a,b)=>a-b);
             const resumen=new Map(anios.map(a=>[a,{total:0,mes:Array(12).fill(0),mesObservado:new Set(),edad:new Map(),sexo:new Map(),hora:new Map()}]));
             filtrados.forEach(f=>{const r=resumen.get(f.anio);if(!r)return;r.total++;if(f.mes>=1&&f.mes<=12){r.mes[f.mes-1]++;r.mesObservado.add(f.mes);}[['edad',f.grupoEdad],['sexo',f.sexo],['hora',f.rangoHora]].forEach(([k,v])=>r[k].set(v,(r[k].get(v)||0)+1));});
@@ -10494,7 +10504,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             // FASE 3.5: páginas concurrentes. Supabase limita normalmente cada respuesta,
             // pero no obliga a pedirlas una detrás de otra. Se conservan TODAS las filas.
             const lote = 1000;
-            const concurrencia = 8;
+            // VEA002 — Evita ráfagas de hasta 56 consultas simultáneas al abrir.
+            // Tres páginas por tabla mantienen buen caudal sin saturar red, navegador ni Supabase.
+            const concurrencia = 3;
             const salida = [];
             let desdeBase = 0;
             let terminado = false;
@@ -11002,11 +11014,14 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const ctx = salida.getContext('2d');
             const fondo = claro ? '#ffffff' : '#020817'; const texto = claro ? '#0f172a' : '#f8fafc';
             ctx.fillStyle = fondo; ctx.fillRect(0,0,salida.width,salida.height);
+            // Cabecera institucional de alto contraste para informes y PowerPoint.
+            ctx.fillStyle = '#16324f'; ctx.fillRect(0,0,salida.width,34);
             ctx.fillStyle = claro ? '#e2e8f0' : '#172036'; ctx.fillRect(55,55,1490,1010);
             ctx.fillStyle = fondo; ctx.fillRect(65,65,1470,990);
             const tarjeta = veaTarjetaParaGraficoF468(canvas);
             const titulo = tarjeta?.querySelector('h3,h4')?.textContent?.trim() || canvas.id;
-            ctx.fillStyle = claro ? '#2563eb' : '#60a5fa'; ctx.font = '700 24px Arial'; ctx.fillText('HOSPITAL DE VENTANILLA — VEA',90,110);
+            const colorModulo = modulo === 'SOAT' ? '#c62828' : (modulo === 'Casos Individuales' ? '#0057b8' : '#2563eb');
+            ctx.fillStyle = colorModulo; ctx.font = '700 24px Arial'; ctx.fillText('HOSPITAL DE VENTANILLA — UNIDAD DE EPIDEMIOLOGÍA',90,110);
             ctx.fillStyle = texto; ctx.font = '800 40px Arial'; ctx.fillText(titulo,90,165);
             ctx.fillStyle = claro ? '#475569' : '#94a3b8'; ctx.font = '20px Arial';
             veaTextoEnLineasF469(ctx, `${modulo} · ${filtros}`,90,205,1420,28);
@@ -11285,11 +11300,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             }
 
             veaSupabaseClient ||= window.supabase.createClient(VEA_SUPABASE_URL, VEA_SUPABASE_PUBLISHABLE_KEY);
-            if (!veaFirmaRemotaActual) {
-                try { veaFirmaRemotaActual = await veaSupabaseObtenerFirmaLiviana(); }
-                catch (_) { /* La carga completa mantiene su propio control de errores. */ }
-            }
-            if (txtEstadoSupabase) txtEstadoSupabase.textContent = 'Sincronizando automáticamente con Supabase…';
+            // En una primera visita no se anteponen siete consultas de firma a la descarga real.
+            // La firma se obtiene después, cuando la interfaz ya tiene datos visibles.
+            if (txtEstadoSupabase) txtEstadoSupabase.textContent = 'Cargando Dashboard desde Supabase…';
             if (barraSupabase) barraSupabase.style.width = '35%';
             const mapa = [
                 ['edas','EDAs','vigilancia'], ['iras','IRAs','vigilancia'], ['febriles','Febriles','vigilancia'],
@@ -11298,9 +11311,9 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const cargadas = [], protegidas = [], errores = [];
             limpiarRepositorioVeaEnMemoria();
 
-            // RENDIMIENTO: las siete tablas son independientes, por lo que se descargan en paralelo.
-            // Se conserva exactamente el mismo parser y destino de datos; solo cambia la estrategia de I/O.
-            const resultadosSupabase = await Promise.all(mapa.map(async ([tabla, destino, tipo]) => {
+            // VEA002 — Carga escalonada: primero las tres vigilancias del Dashboard;
+            // después los módulos secundarios. Así la pantalla útil no espera SOAT/VIH/TBC.
+            const descargarGrupo = grupo => Promise.all(grupo.map(async ([tabla, destino, tipo]) => {
                 try {
                     const filas = await veaSupabaseLeerTablaCompleta(tabla);
                     return { tabla, destino, tipo, filas };
@@ -11309,11 +11322,15 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                 }
             }));
 
-            for (const { tabla, destino, tipo, filas = [], error } of resultadosSupabase) {
+            const aplicarResultados = async resultados => {
+            for (const { tabla, destino, tipo, filas = [], error } of resultados) {
                 if (error) {
                     const msg = String(error?.message || error || 'Error desconocido');
                     if (/permission|policy|jwt|auth|row.level|rls/i.test(msg)) protegidas.push(tabla);
                     else errores.push(`${tabla}: ${msg}`);
+                    // Una tabla fallida conserva su último respaldo, sin borrar módulos sanos.
+                    if (tipo === 'vigilancia') databaseActiva[destino] = respaldoRepositorioVea[destino] || [];
+                    else datosModulosIndependientes[destino] = respaldoRepositorioVea[destino] || [];
                     continue;
                 }
                 if (!filas.length) { cargadas.push(`${tabla}:0`); continue; }
@@ -11332,6 +11349,24 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
                     errores.push(`${tabla}: ${String(err?.message || err || 'Error desconocido')}`);
                 }
             }
+            };
+
+            const prioritarias = mapa.slice(0, 3);
+            const secundarias = mapa.slice(3);
+            await aplicarResultados(await descargarGrupo(prioritarias));
+
+            if (databaseActiva.IRAs.length) {
+                databaseActiva.SOBA = databaseActiva.IRAs
+                    .filter(r => r.SOBA !== null && r.SOBA !== undefined && Number.isFinite(Number(r.SOBA)))
+                    .map(r => ({ ANO:r.ANO, SEMANA:r.SEMANA, MES:r.MES, CASOS:Number(r.SOBA), EDADES_VEA:{ ...(r.SOBA_EDADES_VEA || {}) }, TO_HOS:null, __filaExcel:r.__filaExcel }));
+            }
+            reinicializarEstadosFiltrosTrasCargaVea();
+            renderizarModulosDinamicosVea();
+            try { actualizarKpisVigilancia(); } catch (e) { console.warn('[VEA002 Dashboard prioritario] KPI', e); }
+            if (txtEstadoSupabase) txtEstadoSupabase.textContent = 'Dashboard disponible · completando Casos, SOAT, VIH y TBC…';
+            if (barraSupabase) barraSupabase.style.width = '65%';
+            await veaCederInterfazF321();
+            await aplicarResultados(await descargarGrupo(secundarias));
 
             try {
                 const ajusteSoat = await veaAplicarActualizacionSoatEmpaquetada();
@@ -11378,7 +11413,8 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const totalRemoto = databaseActiva.EDAs.length + databaseActiva.IRAs.length + databaseActiva.Febriles.length
                 + (datosModulosIndependientes.casos || []).length + (datosModulosIndependientes.soat || []).length
                 + (datosModulosIndependientes.vih || []).length + (datosModulosIndependientes.tbc || []).length;
-            if (errores.length || protegidas.length || totalRemoto === 0) {
+            const sinDatosPrincipales = !databaseActiva.EDAs.length && !databaseActiva.IRAs.length && !databaseActiva.Febriles.length;
+            if (sinDatosPrincipales || totalRemoto === 0) {
                 databaseActiva.EDAs = respaldoRepositorioVea.EDAs;
                 databaseActiva.IRAs = respaldoRepositorioVea.IRAs;
                 databaseActiva.Febriles = respaldoRepositorioVea.Febriles;
@@ -11398,14 +11434,20 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             }
 
             veaUltimaActualizacionDatos = Date.now();
+            if (!veaFirmaRemotaActual) {
+                try { veaFirmaRemotaActual = await veaSupabaseObtenerFirmaLiviana(); }
+                catch (_) { /* La interfaz ya está operativa; la firma se reintentará en otra apertura. */ }
+            }
             actualizarMetadatosGraficosVea();
             if (txtEstadoSupabase) {
-                txtEstadoSupabase.textContent = `Datos actualizados correctamente · ${totalRemoto.toLocaleString('es-PE')} registros · Última sincronización: ${formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos)}`;
+                txtEstadoSupabase.textContent = errores.length || protegidas.length
+                    ? `Datos disponibles · ${totalRemoto.toLocaleString('es-PE')} registros · ${errores.length + protegidas.length} origen(es) pendientes`
+                    : `Datos actualizados correctamente · ${totalRemoto.toLocaleString('es-PE')} registros · Última sincronización: ${formatearFechaHoraActualizacionVea(veaUltimaActualizacionDatos)}`;
             }
             if (barraSupabase) barraSupabase.style.width = '100%';
             console.info('[VEA Supabase]', { cargadas, protegidas, errores, totalRemoto });
             // El guardado completo es secundario: nunca compite con navegación o filtros.
-            veaProgramarCacheEnReposoF499(totalRemoto);
+            if (!errores.length && !protegidas.length) veaProgramarCacheEnReposoF499(totalRemoto);
             return { cargadas, protegidas, errores, totalRemoto };
         }
         window.cargarRepositorioVeaDesdeSupabase = cargarRepositorioVeaDesdeSupabase;

@@ -2450,7 +2450,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 </div>
             </div>
 
-            <div id="ciKpisModulo04" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div id="ciKpisModulo04" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-6">
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Total histórico ingresado</div>
                     <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2m7-10a4 4 0 100-8 4 4 0 000 8zm8 1a3 3 0 100-6m5 15v-2a4 4 0 00-3-3.87"/></svg></div>
@@ -2473,18 +2473,25 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                     <div class="mt-4 text-[9px] text-slate-500">Año activo</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
-                    <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Grupo etario</div>
+                    <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Casos registrados S.E.</div>
                     <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path stroke-linecap="round" d="M3 20v-3a5 5 0 0110 0v3m1-1v-2a4 4 0 018 0v2"/></svg></div>
+                    <div id="ciKpiSeAnio" class="mt-0 text-[10px] font-black text-red-400">—</div>
+                    <div id="ciKpiSe" class="mt-2 text-2xl font-black text-slate-100">—</div>
+                    <div id="ciKpiSeDetalle" class="mt-4 text-[9px] text-slate-500">Semana epidemiológica activa</div>
+                </article>
+                <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
+                    <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Grupo etario</div>
+                    <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5v15m0-5h18v5m-18-8h18v3M7 9a2 2 0 110-4 2 2 0 010 4zm2 3V9h6a4 4 0 014 3"/></svg></div>
                     <div id="ciKpiGrupoAnio" class="mt-0 text-[10px] font-black text-yellow-400">—</div>
                     <div id="ciKpiGrupo" class="mt-2 text-xl font-black text-orange-400">—</div>
                     <div class="mt-4 text-[9px] text-slate-500">Mayor concentración</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
-                    <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Hospitalizados</div>
-                    <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5v15m0-5h18v5m-18-8h18v3M7 9a2 2 0 110-4 2 2 0 010 4zm2 3V9h6a4 4 0 014 3"/></svg></div>
-                    <div id="ciKpiHospitalAnio" class="mt-0 text-[10px] font-black text-pink-400">—</div>
-                    <div id="ciKpiHospital" class="mt-2 text-2xl font-black text-slate-100">—</div>
-                    <div id="ciKpiHospitalDetalle" class="mt-4 text-[9px] text-slate-500">Fecha de hospitalización</div>
+                    <div class="pr-11 text-[9px] font-black uppercase tracking-wider text-sky-200">Diagnóstico individual<br>predominante</div>
+                    <div class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-500/30 bg-blue-950/70 text-cyan-300"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"/></svg></div>
+                    <div id="ciKpiDiagnosticoAnio" class="mt-0 text-[10px] font-black text-red-400">—</div>
+                    <div id="ciKpiDiagnostico" class="mt-2 text-sm font-black text-slate-100 leading-tight">—</div>
+                    <div id="ciKpiDiagnosticoDetalle" class="mt-4 text-[9px] text-slate-500">Mayor concentración</div>
                 </article>
             </div>
 
@@ -2870,7 +2877,7 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                 </div>
             </section>
 
-            <section id="soatKpisCuatro" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Cuatro indicadores principales SOAT">
+            <section id="soatKpisCuatro" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-6" aria-label="Seis indicadores principales SOAT">
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
                     <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Total histórico ingresados</div>
                     <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m3-3h-6"/></svg></span>
@@ -2893,11 +2900,25 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
                     <div id="soatKpiRegistradosDetalle" class="absolute bottom-4 left-4 text-xs text-slate-500">Mes · Año activo</div>
                 </article>
                 <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
-                    <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Grupo etario</div>
+                    <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Mes con más casos</div>
                     <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                    <div id="soatKpiMesAnio" class="mt-0 text-xs font-black text-fuchsia-400">—</div>
+                    <div id="soatKpiMes" class="mt-2 text-2xl font-black text-fuchsia-300">—</div>
+                    <div id="soatKpiMesDetalle" class="absolute bottom-4 left-4 text-xs text-slate-500">0 casos · Mayor concentración</div>
+                </article>
+                <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
+                    <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Grupo etario predominante</div>
+                    <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M7 14h3M14 14h3M7 18h3"/></svg></span>
                     <div id="soatKpiEdadAnio" class="mt-0 text-xs font-black text-amber-400">—</div>
                     <div id="soatKpiEdad" class="mt-2 text-2xl font-black text-orange-400">—</div>
                     <div id="soatKpiEdadDetalle" class="absolute bottom-4 left-4 text-xs text-slate-500">0 casos · Mayor concentración</div>
+                </article>
+                <article class="relative min-h-[164px] rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
+                    <div class="pr-12 text-[10px] font-black uppercase tracking-wider text-slate-400">Hora con más casos</div>
+                    <span class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-blue-800/70 bg-blue-950 text-cyan-400" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+                    <div id="soatKpiHoraAnio" class="mt-0 text-xs font-black text-sky-400">—</div>
+                    <div id="soatKpiHora" class="mt-2 text-xl font-black text-sky-300">—</div>
+                    <div id="soatKpiHoraDetalle" class="absolute bottom-4 left-4 text-xs text-slate-500">0 casos · Mayor concentración</div>
                 </article>
             </section>
 
@@ -6266,8 +6287,13 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             asignar('ciKpiFiltros', registros.length.toLocaleString('es-PE'));
             asignar('ciKpiActivoAnio', etiquetaActivo);
             asignar('ciKpiActivo', registrosKpi.length.toLocaleString('es-PE'));
+            const semanasActivas = registrosKpi.map(ciV21Semana).filter(Number.isInteger);
+            const semanaActiva = semanasActivas.length ? Math.max(...semanasActivas) : null;
+            const registrosSe = semanaActiva === null ? [] : registrosKpi.filter(row => ciV21Semana(row) === semanaActiva);
+            asignar('ciKpiSeAnio', etiquetaActivo);
+            asignar('ciKpiSe', registrosSe.length.toLocaleString('es-PE'));
+            asignar('ciKpiSeDetalle', semanaActiva === null ? 'Sin semana epidemiológica' : `S.E. ${semanaActiva}`);
             asignar('ciKpiGrupoAnio', etiquetaActivo);
-            asignar('ciKpiHospitalAnio', etiquetaActivo);
 
             const conteoGrupos = new Map();
             registrosKpi.forEach(row => {
@@ -6276,11 +6302,16 @@ html[data-vea-theme="light"] .vea-alerta-fuente-visible{background:#ecfeff;borde
             });
             const grupoPrincipal = [...conteoGrupos.entries()].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], 'es'))[0];
             asignar('ciKpiGrupo', grupoPrincipal?.[0] || '—');
-
-            const tieneCampoHospital = ciV21TieneCampoHospitalizacion(dataset);
-            const hospitalizados = tieneCampoHospital ? registrosKpi.filter(ciV21EsHospitalizado).length : null;
-            asignar('ciKpiHospital', hospitalizados === null ? '—' : hospitalizados.toLocaleString('es-PE'));
-            asignar('ciKpiHospitalDetalle', tieneCampoHospital ? 'Fecha de hospitalización registrada' : 'Campo fecha_hos no disponible');
+            const conteoDiagnosticos = new Map();
+            registrosKpi.forEach(row => {
+                const codigo = ciV21Diagnostico(row);
+                if (codigo) conteoDiagnosticos.set(codigo, (conteoDiagnosticos.get(codigo) || 0) + 1);
+            });
+            const diagnosticoPrincipal = [...conteoDiagnosticos.entries()]
+                .sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], 'es'))[0];
+            asignar('ciKpiDiagnosticoAnio', etiquetaActivo);
+            asignar('ciKpiDiagnostico', diagnosticoPrincipal ? ciV21EtiquetaDiagnostico(registrosKpi, diagnosticoPrincipal[0]) : '—');
+            asignar('ciKpiDiagnosticoDetalle', diagnosticoPrincipal ? `${diagnosticoPrincipal[1].toLocaleString('es-PE')} casos · Mayor concentración` : 'Sin diagnóstico');
         }
 
         function ciV21TextoBusqueda(valor) {
@@ -10533,10 +10564,18 @@ const veaMetricasPrimerIngresoF402 = window.veaMetricasPrimerIngresoF402 || {};
             const registradosAnio=document.getElementById('soatKpiRegistradosAnio');if(registradosAnio)registradosAnio.textContent=Number.isFinite(anioActivo)?String(anioActivo):'Sin año activo';
             const mesActivo=soatEstadoV1.mes==='Todos'?'Todos los meses':(SOAT_MESES_V1[Number(soatEstadoV1.mes)-1]||'Mes activo');
             const registradosDetalle=document.getElementById('soatKpiRegistradosDetalle');if(registradosDetalle)registradosDetalle.textContent=`${mesActivo} · Año activo`;
+            const mesPrincipal=soatConteoV1(filasAnio,'mes',SOAT_MESES_V1.map((_,i)=>i+1))[0];
+            const mesAnio=document.getElementById('soatKpiMesAnio');if(mesAnio)mesAnio.textContent=Number.isFinite(anioActivo)?String(anioActivo):'Sin año activo';
+            const km=document.getElementById('soatKpiMes');if(km)km.textContent=mesPrincipal?SOAT_MESES_V1[Number(mesPrincipal[0])-1]||'Sin dato':'—';
+            const kmd=document.getElementById('soatKpiMesDetalle');if(kmd)kmd.textContent=mesPrincipal?`${mesPrincipal[1].toLocaleString()} casos · Mayor concentración`:'0 casos · Mayor concentración';
             const edadPrincipal=soatConteoV1(filasAnio,'grupoEdad',SOAT_GRUPOS_EDAD_V1)[0];
             const edadAnio=document.getElementById('soatKpiEdadAnio');if(edadAnio)edadAnio.textContent=Number.isFinite(anioActivo)?String(anioActivo):'Sin año activo';
             const ke=document.getElementById('soatKpiEdad');if(ke)ke.textContent=edadPrincipal?.[0]||'—';
             const ked=document.getElementById('soatKpiEdadDetalle');if(ked)ked.textContent=edadPrincipal?`${edadPrincipal[1].toLocaleString()} casos · Mayor concentración`:'0 casos · Mayor concentración';
+            const horaPrincipal=soatConteoV1(filasAnio,'rangoHora',SOAT_RANGOS_HORA_V1)[0];
+            const horaAnio=document.getElementById('soatKpiHoraAnio');if(horaAnio)horaAnio.textContent=Number.isFinite(anioActivo)?String(anioActivo):'Sin año activo';
+            const kh=document.getElementById('soatKpiHora');if(kh)kh.textContent=horaPrincipal?.[0]||'—';
+            const khd=document.getElementById('soatKpiHoraDetalle');if(khd)khd.textContent=horaPrincipal?`${horaPrincipal[1].toLocaleString()} casos · Mayor concentración`:'0 casos · Mayor concentración';
         }
 
         function soatChartV1(clave,canvasId,estadoId,tipo,data,options={}) {
@@ -12531,7 +12570,9 @@ function abrirAvisoBoletinSEVea(){
     return `${sunday.getUTCDate()} de ${meses[sunday.getUTCMonth()]} al ${saturday.getUTCDate()} de ${meses[saturday.getUTCMonth()]} del ${saturday.getUTCFullYear()}`;
   }
   const rangoSE=rangoSemanaEpidemiologicaCDC(anio,se);
-  const html=`<!doctype html><html><head><meta charset="utf-8"><title>BOLETIN_EPIDEMIOLOGICO_SE_${se}_${anio}</title>
+  // F4.95 — nombre descriptivo para guardar/imprimir el boletín.
+  const nombreArchivoBoletin=`Hosp_Ventanilla_BOLETIN_SE_${se}_${anio}`;
+  const html=`<!doctype html><html><head><meta charset="utf-8"><title>${nombreArchivoBoletin}</title>
 <style>
 @page{size:A4 portrait;margin:7mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;color:#101827;background:#fff;font-size:9px}
 .hero{background:linear-gradient(90deg,#07306f,#0b438d);color:#fff;border-radius:3px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;gap:14px}
@@ -13078,6 +13119,395 @@ table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;te
   .boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{font-size:9px}
   .boletinDoc .sectionHeading{font-size:9.5px;line-height:1.2}
 }
+
+/* VEA044 — impresión nativa A4: distribución editorial estable, sin exportador escalado */
+@media print{
+ @page{size:A4 portrait;margin:5mm}
+ html,body{width:auto!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ .actions{display:none!important}
+ .boletinDoc{display:block!important;width:200mm!important;max-width:200mm!important;height:auto!important;min-height:0!important;margin:0 auto!important;padding:0!important;transform:none!important;zoom:1!important;overflow:visible!important}
+ .boletinDoc .hero{min-height:20mm!important;padding:7px 10px!important}
+ .boletinDoc .hero h1{font-size:20px!important}.boletinDoc .heroHospital{font-size:12px!important}.boletinDoc .hero p{font-size:8.5px!important}
+ .boletinDoc .sebox{min-width:116px!important;padding:5px 9px!important}.boletinDoc .sebox b{font-size:19px!important}.boletinDoc .meta{padding:5px 4px!important;gap:6px!important}
+ .boletinDoc .sectionHeading{font-size:9px!important;padding:5px 8px!important;margin:6px 0 5px!important}
+ .boletinDoc .resumenGeneralKpis{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:4px!important}
+ .boletinDoc .resumenGeneralKpis .kpi{min-height:67px!important;padding:4px!important;grid-template-rows:20px minmax(22px,auto) 13px 17px!important}
+ .boletinDoc .resumenGeneralKpis .kpi label{font-size:5.4px!important;padding-left:18px!important}.boletinDoc .resumenGeneralKpis .kpi strong{font-size:16px!important}.boletinDoc .resumenGeneralKpis .kpi small{font-size:6px!important}.boletinDoc .resumenGeneralKpis .kpi em{font-size:5.6px!important}
+ .boletinDoc .grid2{grid-template-columns:1fr 1fr!important;gap:6px!important;margin-top:6px!important;align-items:stretch!important}
+ .boletinDoc .grid2>.card{width:100%!important;min-width:0!important;break-inside:avoid!important;page-break-inside:avoid!important}
+ .boletinDoc .title{font-size:8.5px!important;padding:4px 6px!important;line-height:1.1!important}.boletinDoc .body{padding:5px 6px!important}
+ .boletinDoc svg{display:block!important;width:100%!important;height:135px!important;max-height:none!important}
+ .boletinDoc .legend{font-size:6px!important;gap:8px!important}.boletinDoc .legendTop{padding:3px 4px!important;margin-bottom:3px!important}
+ .boletinDoc .analysis{font-size:6.5px!important;line-height:1.2!important;min-height:24px!important;padding:4px 6px!important}
+ .boletinDoc table{font-size:6.6px!important}.boletinDoc th,.boletinDoc td{padding:3px 3px!important;line-height:1.08!important}.boletinDoc .tablaComparativoEvento th{font-size:6.2px!important}.boletinDoc .tablaComparativoEvento td{font-size:6.4px!important}
+ .boletinDoc .bottom{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;margin-top:6px!important}.boletinDoc .bottom>.card{min-width:0!important}.boletinDoc .textblock,.boletinDoc .checks{font-size:7px!important;line-height:1.3!important}.boletinDoc .checks div{margin:4px 0!important}
+ .boletinDoc .footer{margin-top:6px!important;padding:4px 6px!important;font-size:6.2px!important}
+}
+
+/* VEA047 — zoom de layout para evitar desborde en segunda hoja */
+@media print{
+ @page{size:A4 portrait;margin:5mm}
+ html,body{zoom:1!important;width:auto!important;height:auto!important;min-height:0!important;overflow:visible!important}
+ .boletinDoc{zoom:.90!important;width:111.1111%!important;max-width:111.1111%!important;height:auto!important;min-height:0!important;margin:0 auto!important;transform:none!important;overflow:visible!important}
+ .boletinDoc .footer{break-after:avoid!important;page-break-after:avoid!important}
+}
+
+/* VEA048 — compactación final de impresión para una sola hoja A4 */
+@media print{
+ @page{size:A4 portrait;margin:4mm}
+ .boletinDoc{width:202mm!important;max-width:202mm!important}
+ .boletinDoc .hero{min-height:19mm!important;padding:6px 9px!important}
+ .boletinDoc .meta{padding:4px 3px!important}
+ .boletinDoc .sectionHeading{margin:4px 0 4px!important;padding:4px 7px!important}
+ .boletinDoc .resumenGeneralKpis{gap:3px!important}
+ .boletinDoc .resumenGeneralKpis .kpi{min-height:63px!important;grid-template-rows:18px minmax(20px,auto) 12px 15px!important}
+ .boletinDoc .grid2{gap:4px!important;margin-top:4px!important}
+ .boletinDoc .title{padding:3px 5px!important}
+ .boletinDoc .body{padding:3px 5px!important}
+ .boletinDoc svg{height:120px!important}
+ .boletinDoc .legendTop{padding:2px 3px!important;margin-bottom:2px!important}
+ .boletinDoc .analysis{padding:3px 5px!important;min-height:19px!important;font-size:6px!important}
+ .boletinDoc .bottom{gap:4px!important;margin-top:4px!important}
+ .boletinDoc .textblock,.boletinDoc .checks{font-size:6.5px!important;line-height:1.2!important}
+ .boletinDoc .checks div{margin:3px 0!important}
+ .boletinDoc .footer{margin-top:4px!important;padding:3px 5px!important;font-size:5.8px!important}
+}
+
+/* VEA049 — ocupar el A4 sin desbordar a una segunda hoja */
+@media print{
+ @page{size:A4 portrait;margin:4mm}
+ .boletinDoc{width:202mm!important;max-width:202mm!important}
+ .boletinDoc .hero{min-height:20mm!important;padding:7px 10px!important}
+ .boletinDoc .resumenGeneralKpis .kpi{min-height:66px!important}
+ .boletinDoc .grid2{gap:5px!important;margin-top:5px!important}
+ .boletinDoc svg{height:132px!important}
+ .boletinDoc .analysis{min-height:21px!important;padding:3px 5px!important}
+ .boletinDoc .bottom{gap:5px!important;margin-top:5px!important}
+ .boletinDoc .footer{margin-top:5px!important;padding:3px 5px!important}
+}
+
+/* VEA050 — escala final para ocupar verticalmente la hoja A4 */
+@media print{
+ .boletinDoc{zoom:.95!important;width:105.2632%!important;max-width:105.2632%!important}
+ .boletinDoc svg{height:136px!important}
+}
+
+/* VEA051 — ocupar el alto disponible del A4 sin crear segunda hoja */
+@media print{
+ @page{size:A4 portrait;margin:2.5mm}
+ .boletinDoc{width:205mm!important;max-width:205mm!important}
+ .boletinDoc .hero{min-height:21mm!important;padding:7px 10px!important}
+ .boletinDoc .resumenGeneralKpis .kpi{min-height:69px!important}
+ .boletinDoc .grid2{gap:5px!important;margin-top:5px!important}
+ .boletinDoc svg{height:160px!important}
+ .boletinDoc .analysis{min-height:22px!important;padding:4px 5px!important}
+ .boletinDoc .bottom{margin-top:5px!important}
+ .boletinDoc .footer{margin-top:5px!important;padding:4px 5px!important}
+}
+
+/* VEA052 — ajuste fino del borde inferior A4 */
+@media print{
+ .boletinDoc{zoom:.98!important;width:102.0408%!important;max-width:102.0408%!important}
+ .boletinDoc svg{height:138px!important}
+ .boletinDoc .footer{margin-bottom:0!important}
+}
+
+/* VEA053 — ajuste fino de KPIs y ocupación inferior del A4 */
+@media print{
+ .boletinDoc{zoom:1.02!important;width:98.0392%!important;max-width:98.0392%!important}
+ .boletinDoc .resumenGeneralKpis .kpi{min-height:70px!important}
+ .boletinDoc svg{height:140px!important}
+}
+
+/* VEA054 — configuración estable de una sola página A4 */
+@media print{
+ @page{size:A4 portrait;margin:3mm}
+ .boletinDoc{zoom:.90!important;width:111.1111%!important;max-width:111.1111%!important}
+ .boletinDoc svg{height:128px!important}
+ .boletinDoc .footer{margin-top:3px!important;padding:3px 5px!important}
+}
+
+/* VEA055 — ocupar verticalmente el A4 manteniendo una sola página */
+@media print{
+ .boletinDoc svg{height:175px!important}
+ .boletinDoc .resumenGeneralKpis .kpi{min-height:72px!important}
+ .boletinDoc .analysis{min-height:23px!important}
+ .boletinDoc .bottom{margin-top:6px!important}
+ .boletinDoc .footer{margin-top:5px!important;padding:4px 5px!important}
+}
+
+/* VEA056 — plantilla física A4 con filas fijas y sin paginación automática */
+@media print{
+ @page{size:210mm 297mm;margin:0}
+ html,body{width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;margin:0!important;padding:0!important;overflow:hidden!important}
+ .boletinDoc{display:flex!important;flex-direction:column!important;width:210mm!important;height:297mm!important;max-width:210mm!important;min-height:297mm!important;margin:0!important;padding:4mm!important;box-sizing:border-box!important;zoom:1!important;transform:none!important;overflow:hidden!important}
+ .boletinDoc .hero{flex:0 0 20mm!important;min-height:20mm!important;max-height:20mm!important;padding:6px 10px!important}
+ .boletinDoc .meta{flex:0 0 8mm!important;height:8mm!important;padding:3px 4px!important}
+ .boletinDoc .sectionHeading{flex:0 0 7mm!important;height:7mm!important;margin:4px 0!important;padding:4px 7px!important}
+ .boletinDoc .resumenGeneralKpis{flex:0 0 28mm!important;height:28mm!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:3px!important;margin:0 0 4px!important}
+ .boletinDoc .resumenGeneralKpis .kpi{min-height:28mm!important;height:28mm!important}
+ .boletinDoc .grid2{flex:0 0 185mm!important;height:185mm!important;grid-template-columns:1fr 1fr!important;grid-template-rows:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:0!important;min-height:0!important}
+ .boletinDoc .grid2>.card{height:100%!important;min-height:0!important;break-inside:avoid!important;page-break-inside:avoid!important}
+ .boletinDoc .grid2 svg{height:135px!important;max-height:none!important;width:100%!important}
+ .boletinDoc .bottom{flex:0 0 28mm!important;height:28mm!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:4px 0 0!important}
+ .boletinDoc .bottom>.card{height:28mm!important;min-height:0!important}
+ .boletinDoc .footer{flex:0 0 6mm!important;height:6mm!important;margin:4px 0 0!important;padding:3px 5px!important}
+}
+
+/* VEA057 — tipografía equilibrada de KPIs y pie institucional */
+@media print{
+ .boletinDoc .resumenGeneralKpis{flex-basis:30mm!important;height:30mm!important}
+ .boletinDoc .resumenGeneralKpis .kpi{height:30mm!important;min-height:30mm!important;grid-template-rows:19px minmax(22px,auto) 13px 16px!important}
+ .boletinDoc .resumenGeneralKpis .kpi label{font-size:6.1px!important;line-height:1.05!important;letter-spacing:-.1px!important}
+ .boletinDoc .resumenGeneralKpis .kpi strong{font-size:15px!important;line-height:1!important}
+ .boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{font-size:7.4px!important;line-height:1.08!important}
+ .boletinDoc .resumenGeneralKpis .kpi small{font-size:6.2px!important}
+ .boletinDoc .resumenGeneralKpis .kpi em{font-size:5.9px!important}
+ .boletinDoc .grid2{flex-basis:182mm!important;height:182mm!important}
+ .boletinDoc .grid2 svg{height:132px!important}
+ .boletinDoc .footer{flex-basis:7mm!important;height:7mm!important;font-size:6.4px!important;padding:4px 5px!important}
+}
+/* VEA058 — KPIs compactos: separación mínima y expansión controlada para textos largos */
+@media print{
+ .boletinDoc .resumenGeneralKpis .kpi{
+   padding:3px 4px!important;
+   gap:0!important;
+   grid-template-rows:16px minmax(20px,auto) 11px 13px!important;
+   align-content:center!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi label{
+   min-height:0!important;
+   padding-left:16px!important;
+   line-height:1.05!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi strong{
+   min-height:0!important;
+   margin:0!important;
+   line-height:1!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{
+   min-height:0!important;
+   max-height:20px!important;
+   overflow:hidden!important;
+   display:-webkit-box!important;
+   -webkit-box-orient:vertical!important;
+   -webkit-line-clamp:2!important;
+   overflow-wrap:anywhere!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi small{
+   min-height:0!important;
+   line-height:1!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi em{
+   min-height:0!important;
+   padding-top:2px!important;
+   line-height:1!important;
+ }
+}
+/* VEA059 — altura proporcional y centrado óptico de las tarjetas KPI */
+@media print{
+ .boletinDoc .resumenGeneralKpis{
+   flex-basis:24mm!important;
+   height:24mm!important;
+   margin-bottom:3px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi{
+   height:24mm!important;
+   min-height:24mm!important;
+   padding:2.5px 4px!important;
+   grid-template-rows:15px minmax(18px,auto) 10px 12px!important;
+   align-content:center!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{
+   max-height:18px!important;
+   -webkit-line-clamp:2!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi em{padding-top:1px!important}
+}
+/* VEA060 — iconos y cabeceras en una misma línea visual */
+@media print{
+ .boletinDoc .resumenGeneralKpis .kpi{
+   align-content:start!important;
+   vertical-align:top!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpiIcon{
+   left:4px!important;
+   top:3px!important;
+   width:13px!important;
+   height:13px!important;
+   border-radius:4px!important;
+   font-size:8px!important;
+   z-index:2!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi label{
+   align-self:start!important;
+   white-space:normal!important;
+   text-wrap:balance!important;
+   overflow:visible!important;
+   padding:1px 2px 0 16px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi strong,
+ .boletinDoc .resumenGeneralKpis .kpi small,
+ .boletinDoc .resumenGeneralKpis .kpi em{
+   align-self:start!important;
+ }
+}
+/* VEA061 — referencia digital: cabecera, icono y contenido alineados */
+@media screen and (min-width:701px){
+ .boletinDoc .resumenGeneralKpis .kpi{
+   min-height:126px!important;
+   padding:7px 6px 6px!important;
+   grid-template-rows:27px 31px 18px 24px!important;
+   align-content:start!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpiIcon{
+   left:7px!important;top:7px!important;width:28px!important;height:28px!important;
+   font-size:15px!important;border-radius:7px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi label{
+   align-self:center!important;padding:0 3px 0 30px!important;
+   min-height:0!important;white-space:normal!important;line-height:1.08!important;
+   text-wrap:balance!important;overflow:visible!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi strong{align-self:center!important;min-height:0!important}
+ .boletinDoc .resumenGeneralKpis .kpi small{align-self:center!important;min-height:0!important}
+ .boletinDoc .resumenGeneralKpis .kpi em{align-self:center!important;min-height:0!important;padding-top:4px!important}
+}
+@media print{
+ .boletinDoc .resumenGeneralKpis .kpi label{align-self:center!important}
+}
+/* VEA062 — cuadro KPI ajustado al contenido, sin vacío inferior */
+@media screen and (min-width:701px){
+ .boletinDoc .resumenGeneralKpis .kpi{
+   height:104px!important;
+   min-height:104px!important;
+   padding:5px 6px 4px!important;
+   grid-template-rows:24px 28px 16px 22px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpiIcon{top:5px!important;left:6px!important;width:26px!important;height:26px!important}
+ .boletinDoc .resumenGeneralKpis .kpi label{padding-left:29px!important;font-size:clamp(8px,.68vw,10px)!important}
+ .boletinDoc .resumenGeneralKpis .kpi em{padding-top:3px!important}
+}
+/* VEA063 — eliminar alto heredado y vacío inferior del contenedor KPI */
+@media screen and (min-width:701px){
+ .boletinDoc .resumenGeneralKpis{
+   height:100px!important;
+   min-height:100px!important;
+   align-items:start!important;
+   grid-auto-rows:100px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi{
+   box-sizing:border-box!important;
+   height:100px!important;
+   min-height:0!important;
+   align-self:start!important;
+   grid-template-rows:23px 27px 15px 21px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi label,
+ .boletinDoc .resumenGeneralKpis .kpi strong,
+ .boletinDoc .resumenGeneralKpis .kpi small,
+ .boletinDoc .resumenGeneralKpis .kpi em{
+   min-height:0!important;
+ }
+}
+/* VEA064 — patrón final de referencia: tarjetas compactas, cuadradas y uniformes */
+@media screen and (min-width:701px){
+ .boletinDoc .resumenGeneralKpis{
+   grid-template-columns:repeat(6,minmax(0,1fr))!important;
+   gap:5px!important;
+   height:100px!important;
+   margin-bottom:6px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi{
+   height:100px!important;
+   min-height:100px!important;
+   border-radius:5px!important;
+   padding:5px!important;
+   grid-template-rows:22px 28px 15px 21px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpiIcon{
+   top:5px!important;left:6px!important;width:24px!important;height:24px!important;
+   border-radius:6px!important;font-size:13px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi label{
+   padding:0 2px 0 27px!important;
+   font-size:clamp(7.6px,.64vw,9.2px)!important;
+   line-height:1.05!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi strong{font-size:clamp(18px,1.35vw,22px)!important}
+ .boletinDoc .resumenGeneralKpis .kpi strong.kpiPred{font-size:clamp(8.2px,.72vw,10.5px)!important;line-height:1.05!important;max-height:18px!important}
+ .boletinDoc .resumenGeneralKpis .kpi small{font-size:clamp(7px,.58vw,8.6px)!important}
+ .boletinDoc .resumenGeneralKpis .kpi em{font-size:clamp(6.8px,.56vw,8.2px)!important}
+}
+/* VEA065 — eliminar franja blanca entre KPIs y gráficos en A4 */
+@media print{
+ .boletinDoc .resumenGeneralKpis{
+   margin-bottom:0!important;
+ }
+ .boletinDoc .grid2{
+   margin-top:0!important;
+ }
+}
+/* VEA066 — cierre del margen residual: KPI y siguiente bloque quedan unidos */
+@media print{
+ .boletinDoc .resumenGeneralKpis{
+   margin-bottom:-2px!important;
+ }
+ .boletinDoc .grid2{
+   margin-top:-4px!important;
+ }
+ .boletinDoc .resumenGeneralKpis .kpi{
+   overflow:hidden!important;
+ }
+}
+/* VEA068 — cabeceras KPI largas sin solaparse con los iconos */
+@media screen and (min-width:701px){
+ #ciKpisModulo04{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:16px!important}
+ #ciKpisModulo04>article{
+   min-width:0!important;
+   min-height:126px!important;
+   overflow:hidden!important;
+ }
+ #ciKpisModulo04>article>div:first-child{
+   max-width:calc(100% - 3.25rem)!important;
+   padding-right:0!important;
+   line-height:1.12!important;
+   white-space:normal!important;
+   overflow-wrap:anywhere!important;
+ }
+ #ciKpisModulo04>article>div:nth-child(2){
+   right:1rem!important;
+   top:1rem!important;
+   width:2.5rem!important;
+   height:2.5rem!important;
+ }
+ #ciKpisModulo04 #ciKpiDiagnostico{
+   max-height:2.6rem!important;
+   overflow:hidden!important;
+   overflow-wrap:anywhere!important;
+ }
+}
+/* VEA069 — corrección directa del sexto KPI: ancho real reservado al icono */
+@media screen and (min-width:701px){
+ #ciKpisModulo04>article:nth-child(6)>div:first-child{
+   display:block!important;
+   width:calc(100% - 3.5rem)!important;
+   max-width:calc(100% - 3.5rem)!important;
+   min-height:2.15rem!important;
+   padding:0!important;
+   font-size:8px!important;
+   line-height:1.12!important;
+   white-space:normal!important;
+   overflow:hidden!important;
+   text-overflow:clip!important;
+   overflow-wrap:anywhere!important;
+   word-break:normal!important;
+ }
+ #ciKpisModulo04>article:nth-child(6)>div:nth-child(2){
+   right:1rem!important;
+   top:1rem!important;
+ }
+}
 </style></head><body onload="window.__barraTimer=setTimeout(()=>document.getElementById('barraAccionesBoletinVea')?.classList.add('collapsed'),5000)">
 <div id="barraAccionesBoletinVea" class="actions" onmouseenter="clearTimeout(window.__barraTimer)" onmouseleave="clearTimeout(window.__barraTimer);window.__barraTimer=setTimeout(()=>this.classList.add('collapsed'),2500)"><button class="toolbarToggle" onclick="this.parentElement.classList.toggle('collapsed');clearTimeout(window.__barraTimer)" title="Mostrar u ocultar controles"><span class="hideIcon">▼</span><span class="showIcon">▲</span></button><div class="actionItems"><button class="zoomBtn" onclick="window.opener&&window.opener.cambiarZoomBoletinVea(window,-.1)" title="Reducir zoom">−</button><span id="zoomValorBoletinVea" class="zoomValue">${Math.round(zoomInicial*100)}%</span><button class="zoomBtn" onclick="window.opener&&window.opener.cambiarZoomBoletinVea(window,.1)" title="Aumentar zoom">+</button><button class="fit" onclick="window.opener&&window.opener.ajustarZoomBoletinVea(window)" title="Ajustar al ancho">⛶ <span class="actionLabel">AJUSTAR</span></button><button class="print" onclick="window.print()" title="Imprimir boletín">🖨 <span class="actionLabel">IMPRIMIR</span></button><button class="pdf" onclick="window.print()" title="Guardar como PDF">PDF</button><button class="filters" onclick="if(window.opener&&!window.opener.closed&&typeof window.opener.abrirSelectorBoletinVea==='function'){window.opener.abrirSelectorBoletinVea();window.opener.focus();}window.close()" title="Volver al selector Año + S.E.">↩ <span class="actionLabel">FILTROS</span></button><button class="close" onclick="window.close()" title="Cerrar boletín">✕ <span class="actionLabel">CERRAR</span></button></div></div>
 <div id="contenidoBoletinVea" class="boletinDoc" style="zoom:${zoomInicial}">
@@ -13112,6 +13542,11 @@ table{width:100%;border-collapse:collapse;font-size:8px}th{background:#eaf1f9;te
   const w=window.open('','_blank');
   if(!w){alert('El navegador bloqueó la ventana del boletín. Habilite ventanas emergentes para este sitio.');return;}
   w.document.open(); w.document.write(html); w.document.close();
+  // VEA044 — se conserva únicamente la impresión nativa del navegador.
+  const pdfBtn=w.document.querySelector('.pdf');
+  if(pdfBtn) pdfBtn.remove();
+  const printBtn=w.document.querySelector('.print');
+  if(printBtn) printBtn.onclick=()=>{w.document.title=nombreArchivoBoletin;w.print();};
 }
 document.addEventListener('change',function(){setTimeout(actualizarTextoBoletinSEVea,0)});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',actualizarTextoBoletinSEVea);
